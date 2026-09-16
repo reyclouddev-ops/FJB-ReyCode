@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Forum FJB ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(59,130,246,.12), transparent 30%),
+                radial-gradient(circle at 90% 10%, rgba(14,165,233,.08), transparent 28%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .input {
+            width: 100%;
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input:focus {
+            border-color: rgba(59,130,246,.5);
+            background: rgba(255,255,255,.05);
+        }
+
+        .input:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-bold text-white leading-none">
+                        ReyCode
+                    </div>
+
+                    <div class="text-[11px] text-gray-500 mt-1">
+                        Account Settings
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+
+                <a
+                    id="profileLink"
+                    href="/"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Profile
+                </a>
+
+                <a
+                    href="/"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Home
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+
+    <div
+        id="loadingPage"
+        class="glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-8 h-8 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat pengaturan...
+        </p>
+    </div>
+
+    <div
+        id="loginRequired"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 flex items-center justify-center text-2xl">
+            🔐
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Login diperlukan
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Kamu harus login untuk membuka pengaturan akun.
+        </p>
+
+        <a
+            href="/login.html"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Login
+        </a>
+
+    </div>
+
+    <div
+        id="settingsPage"
+        class="hidden"
+    >
+
+        <div class="mb-6">
+
+            <h1 class="text-2xl sm:text-3xl font-black text-white">
+                Pengaturan Akun
+            </h1>
+
+            <p class="mt-2 text-sm text-gray-500">
+                Kelola informasi publik yang tampil di profil FJB kamu.
+            </p>
+
+        </div>
+
+        <div class="grid lg:grid-cols-[280px_1fr] gap-5">
+
+            <aside class="glass rounded-2xl p-5 h-fit">
+
+                <div class="text-center">
+
+                    <div
+                        id="avatarPreview"
+                        class="w-24 h-24 mx-auto rounded-full bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-3xl font-black text-blue-300 overflow-hidden"
+                    >
+                        R
+                    </div>
+
+                    <h2
+                        id="sidebarUsername"
+                        class="mt-4 font-bold text-white"
+                    >
+                        -
+                    </h2>
+
+                    <p
+                        id="sidebarEmail"
+                        class="mt-1 text-xs text-gray-600 break-all"
+                    >
+                        -
+                    </p>
+
+                    <div
+                        id="sidebarBadge"
+                        class="mt-3 flex justify-center"
+                    ></div>
+
+                </div>
+
+                <div class="mt-6 pt-5 border-t border-white/[.06] space-y-2">
+
+                    <a
+                        id="viewProfileButton"
+                        href="/"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[.04] text-sm text-gray-300 hover:text-white hover:bg-white/[.07] transition"
+                    >
+                        <span>👤</span>
+                        <span>Lihat Profil</span>
+                    </a>
+
+                    <a
+                        href="/create-post.html"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[.04] text-sm text-gray-300 hover:text-white hover:bg-white/[.07] transition"
+                    >
+                        <span>✏️</span>
+                        <span>Buat Postingan</span>
+                    </a>
+
+                    <a
+                        href="/forum.html"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[.04] text-sm text-gray-300 hover:text-white hover:bg-white/[.07] transition"
+                    >
+                        <span>💬</span>
+                        <span>Forum</span>
+                    </a>
+
+                </div>
+
+            </aside>
+
+            <section class="space-y-5">
+
+                <form
+                    id="profileForm"
+                    class="glass rounded-2xl p-5 sm:p-7"
+                >
+
+                    <div class="flex items-start justify-between gap-4">
+
+                        <div>
+                            <h2 class="text-lg font-black text-white">
+                                Profil Publik
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Informasi ini dapat terlihat oleh pengguna lain.
+                            </p>
+                        </div>
+
+                        <span class="text-xl">
+                            👤
+                        </span>
+
+                    </div>
+
+                    <div class="mt-7 space-y-5">
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Username
+                            </label>
+
+                            <input
+                                id="username"
+                                type="text"
+                                disabled
+                                class="input rounded-xl px-4 py-3 text-sm"
+                            >
+
+                            <p class="mt-2 text-[10px] text-gray-600">
+                                Username tidak dapat diubah dari halaman ini.
+                            </p>
+
+                        </div>
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Email
+                            </label>
+
+                            <input
+                                id="email"
+                                type="email"
+                                disabled
+                                class="input rounded-xl px-4 py-3 text-sm"
+                            >
+
+                            <p class="mt-2 text-[10px] text-gray-600">
+                                Email akun tidak dapat diubah dari halaman ini.
+                            </p>
+
+                        </div>
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Avatar URL
+                            </label>
+
+                            <input
+                                id="avatar"
+                                type="url"
+                                maxlength="2000"
+                                placeholder="https://example.com/avatar.jpg"
+                                class="input rounded-xl px-4 py-3 text-sm"
+                            >
+
+                            <div class="mt-2 flex items-center justify-between gap-3">
+
+                                <p class="text-[10px] text-gray-600">
+                                    Gunakan URL gambar HTTPS/HTTP.
+                                </p>
+
+                                <button
+                                    id="resetAvatar"
+                                    type="button"
+                                    class="text-[10px] text-blue-400 hover:text-blue-300 font-bold"
+                                >
+                                    Reset Avatar
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <div class="flex items-center justify-between gap-3 mb-2">
+
+                                <label class="block text-xs font-bold text-gray-400">
+                                    Bio
+                                </label>
+
+                                <span
+                                    id="bioCounter"
+                                    class="text-[10px] text-gray-600"
+                                >
+                                    0/500
+                                </span>
+
+                            </div>
+
+                            <textarea
+                                id="bio"
+                                maxlength="500"
+                                rows="6"
+                                placeholder="Ceritakan sedikit tentang kamu..."
+                                class="input rounded-xl px-4 py-3 text-sm resize-y"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="formError"
+                        class="hidden mt-5 rounded-xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-400"
+                    ></div>
+
+                    <div
+                        id="formSuccess"
+                        class="hidden mt-5 rounded-xl border border-emerald-500/10 bg-emerald-500/5 px-4 py-3 text-xs text-emerald-400"
+                    ></div>
+
+                    <div class="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
+
+                        <a
+                            id="cancelButton"
+                            href="/"
+                            class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-center text-sm font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                        >
+                            Batal
+                        </a>
+
+                        <button
+                            id="saveButton"
+                            type="submit"
+                            class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Simpan Perubahan
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <section class="glass rounded-2xl p-5 sm:p-7">
+
+                    <div class="flex items-start justify-between gap-4">
+
+                        <div>
+                            <h2 class="text-lg font-black text-white">
+                                Status Akun
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Informasi status akun kamu.
+                            </p>
+                        </div>
+
+                        <span class="text-xl">
+                            🛡️
+                        </span>
+
+                    </div>
+
+                    <div class="mt-6 grid sm:grid-cols-2 gap-3">
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+
+                            <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                Role
+                            </p>
+
+                            <p
+                                id="accountRole"
+                                class="mt-2 text-sm font-bold text-white"
+                            >
+                                -
+                            </p>
+
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+
+                            <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                Verifikasi
+                            </p>
+
+                            <p
+                                id="accountVerification"
+                                class="mt-2 text-sm font-bold text-white"
+                            >
+                                -
+                            </p>
+
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+
+                            <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                Status Akun
+                            </p>
+
+                            <p
+                                id="accountStatus"
+                                class="mt-2 text-sm font-bold text-white"
+                            >
+                                -
+                            </p>
+
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+
+                            <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                Reseller
+                            </p>
+
+                            <p
+                                id="resellerStatus"
+                                class="mt-2 text-sm font-bold text-white"
+                            >
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5 sm:p-7">
+
+                    <div class="flex items-start justify-between gap-4">
+
+                        <div>
+                            <h2 class="text-lg font-black text-white">
+                                Statistik
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Ringkasan aktivitas akun.
+                            </p>
+                        </div>
+
+                        <span class="text-xl">
+                            📊
+                        </span>
+
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+                            <p class="text-[10px] text-gray-600">
+                                Postingan
+                            </p>
+
+                            <p
+                                id="postsCount"
+                                class="mt-2 text-xl font-black text-white"
+                            >
+                                0
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+                            <p class="text-[10px] text-gray-600">
+                                Followers
+                            </p>
+
+                            <p
+                                id="followersCount"
+                                class="mt-2 text-xl font-black text-white"
+                            >
+                                0
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+                            <p class="text-[10px] text-gray-600">
+                                Following
+                            </p>
+
+                            <p
+                                id="followingCount"
+                                class="mt-2 text-xl font-black text-white"
+                            >
+                                0
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+                            <p class="text-[10px] text-gray-600">
+                                Likes
+                            </p>
+
+                            <p
+                                id="likesCount"
+                                class="mt-2 text-xl font-black text-white"
+                            >
+                                0
+                            </p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[100] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    saving: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function avatarContent(user) {
+    const avatar =
+        user?.avatar ||
+        user?.username?.charAt(0)?.toUpperCase() ||
+        'R'
+
+    if (
+        typeof avatar === 'string' &&
+        /^https?:\/\//i.test(avatar)
+    ) {
+        return `
+            <img
+                src="${escapeHtml(avatar)}"
+                alt=""
+                class="w-full h-full object-cover"
+                onerror="this.style.display='none'"
+            >
+        `
+    }
+
+    return escapeHtml(
+        String(avatar).charAt(0).toUpperCase()
+    )
+}
+
+function getBadge(user) {
+    if (!user) {
+        return null
+    }
+
+    if (user.role === 'developer') {
+        return {
+            text: 'DEVELOPER',
+            className: 'bg-black text-white border border-white/10'
+        }
+    }
+
+    if (user.role === 'admin') {
+        return {
+            text: 'ADMIN',
+            className: 'bg-white text-black'
+        }
+    }
+
+    if (user.role === 'system') {
+        return {
+            text: 'SYSTEM',
+            className: 'bg-blue-600 text-white'
+        }
+    }
+
+    if (
+        user.resellerStatus === 'approved' &&
+        user.verified
+    ) {
+        return {
+            text: 'RESELLER',
+            className: 'bg-blue-600 text-white'
+        }
+    }
+
+    return null
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(window.toastTimer)
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function showFormError(message) {
+    $('formSuccess').classList.add(
+        'hidden'
+    )
+
+    $('formError').textContent =
+        message
+
+    $('formError').classList.remove(
+        'hidden'
+    )
+}
+
+function showFormSuccess(message) {
+    $('formError').classList.add(
+        'hidden'
+    )
+
+    $('formSuccess').textContent =
+        message
+
+    $('formSuccess').classList.remove(
+        'hidden'
+    )
+}
+
+function hideMessages() {
+    $('formError').classList.add(
+        'hidden'
+    )
+
+    $('formSuccess').classList.add(
+        'hidden'
+    )
+}
+
+function renderUser(user) {
+    state.user = user
+
+    const username =
+        user.username ||
+        ''
+
+    $('username').value =
+        username
+
+    $('email').value =
+        user.email ||
+        ''
+
+    $('avatar').value =
+        user.avatar &&
+        /^https?:\/\//i.test(user.avatar)
+            ? user.avatar
+            : ''
+
+    $('bio').value =
+        user.bio ||
+        ''
+
+    $('sidebarUsername').textContent =
+        `@${username}`
+
+    $('sidebarEmail').textContent =
+        user.email ||
+        ''
+
+    $('avatarPreview').innerHTML =
+        avatarContent(user)
+
+    const badge =
+        getBadge(user)
+
+    if (badge) {
+        $('sidebarBadge').innerHTML = `
+            <span class="px-2.5 py-1 rounded-lg text-[9px] font-black ${badge.className}">
+                ${escapeHtml(badge.text)}
+            </span>
+        `
+    } else if (user.verified) {
+        $('sidebarBadge').innerHTML = `
+            <span class="px-2.5 py-1 rounded-lg bg-blue-600/10 text-blue-400 text-[9px] font-black">
+                ✓ VERIFIED
+            </span>
+        `
+    } else {
+        $('sidebarBadge').innerHTML = ''
+    }
+
+    const profileUrl =
+        `/profile.html?username=${encodeURIComponent(username)}`
+
+    $('profileLink').href =
+        profileUrl
+
+    $('viewProfileButton').href =
+        profileUrl
+
+    $('cancelButton').href =
+        profileUrl
+
+    $('accountRole').textContent =
+        user.role === 'developer'
+            ? 'Developer'
+            : user.role === 'admin'
+                ? 'Admin'
+                : user.role === 'system'
+                    ? 'System'
+                    : 'User'
+
+    $('accountVerification').textContent =
+        user.verified
+            ? 'Terverifikasi ✓'
+            : 'Belum terverifikasi'
+
+    $('accountVerification').className =
+        user.verified
+            ? 'mt-2 text-sm font-bold text-blue-400'
+            : 'mt-2 text-sm font-bold text-gray-500'
+
+    $('accountStatus').textContent =
+        user.accountStatus === 'suspended'
+            ? 'Suspended'
+            : 'Active'
+
+    $('accountStatus').className =
+        user.accountStatus === 'suspended'
+            ? 'mt-2 text-sm font-bold text-red-400'
+            : 'mt-2 text-sm font-bold text-emerald-400'
+
+    const resellerLabels = {
+        none: 'Belum mengajukan',
+        pending: 'Sedang ditinjau',
+        approved: 'Disetujui ✓',
+        rejected: 'Ditolak',
+        suspended: 'Ditangguhkan'
+    }
+
+    $('resellerStatus').textContent =
+        resellerLabels[
+            user.resellerStatus
+        ] ||
+        user.resellerStatus ||
+        'Belum mengajukan'
+
+    $('postsCount').textContent =
+        formatNumber(
+            user.postsCount
+        )
+
+    $('followersCount').textContent =
+        formatNumber(
+            user.followersCount
+        )
+
+    $('followingCount').textContent =
+        formatNumber(
+            user.followingCount
+        )
+
+    $('likesCount').textContent =
+        formatNumber(
+            user.likesCount
+        )
+
+    updateBioCounter()
+}
+
+async function loadSession() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            response.ok &&
+            data?.success &&
+            data?.user
+        ) {
+            renderUser(data.user)
+
+            $('loadingPage').classList.add(
+                'hidden'
+            )
+
+            $('settingsPage').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        $('loadingPage').classList.add(
+            'hidden'
+        )
+
+        $('loginRequired').classList.remove(
+            'hidden'
+        )
+
+    } catch {
+        $('loadingPage').classList.add(
+            'hidden'
+        )
+
+        $('loginRequired').classList.remove(
+            'hidden'
+        )
+    }
+}
+
+function updateBioCounter() {
+    const length =
+        $('bio').value.length
+
+    $('bioCounter').textContent =
+        `${length}/500`
+
+    $('bioCounter').className =
+        length >= 480
+            ? 'text-[10px] text-yellow-400'
+            : 'text-[10px] text-gray-600'
+}
+
+function setSaving(value) {
+    state.saving =
+        value
+
+    $('saveButton').disabled =
+        value
+
+    if (value) {
+        $('saveButton').innerHTML = `
+            <span class="inline-flex items-center gap-2">
+                <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full spin"></span>
+                Menyimpan...
+            </span>
+        `
+    } else {
+        $('saveButton').textContent =
+            'Simpan Perubahan'
+    }
+}
+
+function normalizeAvatar(value) {
+    const avatar =
+        value.trim()
+
+    if (!avatar) {
+        return null
+    }
+
+    try {
+        const url =
+            new URL(avatar)
+
+        if (
+            url.protocol !== 'http:' &&
+            url.protocol !== 'https:'
+        ) {
+            return false
+        }
+
+        return avatar
+    } catch {
+        return false
+    }
+}
+
+async function saveProfile(event) {
+    event.preventDefault()
+
+    if (state.saving) {
+        return
+    }
+
+    hideMessages()
+
+    const avatar =
+        normalizeAvatar(
+            $('avatar').value
+        )
+
+    if (avatar === false) {
+        showFormError(
+            'Avatar URL harus menggunakan http:// atau https:// yang valid.'
+        )
+        return
+    }
+
+    const bio =
+        $('bio').value.trim()
+
+    if (bio.length > 500) {
+        showFormError(
+            'Bio maksimal 500 karakter.'
+        )
+        return
+    }
+
+    setSaving(true)
+
+    try {
+        const response =
+            await fetch(
+                '/api/profile/update',
+                {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        avatar,
+                        bio
+                    })
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal menyimpan perubahan profil.'
+            )
+        }
+
+        const updatedUser =
+            data.user ||
+            data.data ||
+            data.profile
+
+        if (updatedUser) {
+            renderUser(updatedUser)
+        }
+
+        showFormSuccess(
+            data.message ||
+            'Profil berhasil diperbarui.'
+        )
+
+        showToast(
+            'Profil berhasil diperbarui.'
+        )
+
+    } catch (error) {
+        showFormError(
+            error.message ||
+            'Terjadi kesalahan.'
+        )
+    } finally {
+        setSaving(false)
+    }
+}
+
+$('profileForm').addEventListener(
+    'submit',
+    saveProfile
+)
+
+$('bio').addEventListener(
+    'input',
+    updateBioCounter
+)
+
+$('avatar').addEventListener(
+    'input',
+    () => {
+        const value =
+            $('avatar').value.trim()
+
+        if (
+            value &&
+            /^https?:\/\//i.test(value)
+        ) {
+            $('avatarPreview').innerHTML = `
+                <img
+                    src="${escapeHtml(value)}"
+                    alt=""
+                    class="w-full h-full object-cover"
+                    onerror="this.parentElement.innerHTML='${escapeHtml(state.user?.username?.charAt(0)?.toUpperCase() || 'R')}'"
+                >
+            `
+        } else {
+            $('avatarPreview').innerHTML =
+                avatarContent(state.user)
+        }
+    }
+)
+
+$('resetAvatar').addEventListener(
+    'click',
+    () => {
+        $('avatar').value = ''
+
+        $('avatarPreview').innerHTML =
+            avatarContent({
+                ...state.user,
+                avatar: null
+            })
+
+        showToast(
+            'Avatar akan direset ke inisial username.'
+        )
+    }
+)
+
+loadSession()
+</script>
+
+</body>
+</html>

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Postingan - Forum FJB ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(59,130,246,.12), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(14,165,233,.07), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        input,
+        textarea,
+        select {
+            color-scheme: dark;
+        }
+
+        .media-item {
+            animation: mediaIn .25s ease-out;
+        }
+
+        @keyframes mediaIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden-field {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-4">
+
+            <a href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-bold text-white leading-none">
+                        ReyCode
+                    </div>
+                    <div class="text-[11px] text-gray-500 mt-1">
+                        Forum FJB
+                    </div>
+                </div>
+            </a>
+
+            <a
+                href="/"
+                class="px-4 py-2 rounded-xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+            >
+                ← Kembali
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 py-7 sm:py-10">
+
+    <div id="loading" class="glass rounded-2xl p-8 text-center">
+        <div class="w-8 h-8 mx-auto rounded-full border-2 border-white/10 border-t-blue-500 animate-spin"></div>
+        <p class="mt-4 text-sm text-gray-500">
+            Memeriksa sesi...
+        </p>
+    </div>
+
+    <section id="formSection" class="hidden">
+
+        <div class="mb-6">
+            <p class="text-xs uppercase tracking-widest text-blue-400 font-bold">
+                Forum FJB ReyCode
+            </p>
+
+            <h1 class="mt-2 text-2xl sm:text-3xl font-black text-white">
+                Buat Postingan
+            </h1>
+
+            <p class="mt-2 text-sm text-gray-500">
+                Bagikan informasi, media, atau tawarkan produk kamu.
+            </p>
+        </div>
+
+        <form id="postForm" class="space-y-5">
+
+            <div class="glass rounded-2xl p-5 sm:p-6">
+
+                <label class="block text-sm font-semibold text-gray-300 mb-2">
+                    Jenis Postingan
+                </label>
+
+                <div class="grid grid-cols-2 gap-3">
+
+                    <label class="cursor-pointer">
+                        <input
+                            type="radio"
+                            name="type"
+                            value="post"
+                            checked
+                            class="peer sr-only"
+                        >
+
+                        <div class="rounded-xl border border-white/[.07] bg-white/[.025] p-4 peer-checked:border-blue-500/50 peer-checked:bg-blue-500/10 transition">
+                            <div class="text-lg">📝</div>
+                            <div class="mt-2 font-bold text-white">
+                                Post
+                            </div>
+                            <div class="mt-1 text-xs text-gray-500">
+                                Informasi atau diskusi
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer">
+                        <input
+                            type="radio"
+                            name="type"
+                            value="product"
+                            class="peer sr-only"
+                        >
+
+                        <div class="rounded-xl border border-white/[.07] bg-white/[.025] p-4 peer-checked:border-blue-500/50 peer-checked:bg-blue-500/10 transition">
+                            <div class="text-lg">🛒</div>
+                            <div class="mt-2 font-bold text-white">
+                                Produk
+                            </div>
+                            <div class="mt-1 text-xs text-gray-500">
+                                Jual atau tawarkan produk
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div class="glass rounded-2xl p-5 sm:p-6 space-y-5">
+
+                <div id="titleField" class="hidden-field">
+
+                    <label for="title" class="block text-sm font-semibold text-gray-300 mb-2">
+                        Judul Produk
+                    </label>
+
+                    <input
+                        id="title"
+                        name="title"
+                        type="text"
+                        maxlength="200"
+                        placeholder="Contoh: Panel Pterodactyl Premium"
+                        class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                    >
+
+                    <div class="flex justify-end mt-1">
+                        <span id="titleCount" class="text-[11px] text-gray-600">
+                            0/200
+                        </span>
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <label for="content" class="block text-sm font-semibold text-gray-300 mb-2">
+                        Isi Postingan
+                    </label>
+
+                    <textarea
+                        id="content"
+                        name="content"
+                        rows="8"
+                        maxlength="10000"
+                        required
+                        placeholder="Tulis isi postingan kamu..."
+                        class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition resize-y"
+                    ></textarea>
+
+                    <div class="flex justify-end mt-1">
+                        <span id="contentCount" class="text-[11px] text-gray-600">
+                            0/10000
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <label for="category" class="block text-sm font-semibold text-gray-300 mb-2">
+                            Kategori
+                        </label>
+
+                        <input
+                            id="category"
+                            name="category"
+                            type="text"
+                            maxlength="100"
+                            required
+                            placeholder="Contoh: programming"
+                            class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                        >
+
+                    </div>
+
+                    <div>
+
+                        <label for="subcategory" class="block text-sm font-semibold text-gray-300 mb-2">
+                            Subkategori
+                        </label>
+
+                        <input
+                            id="subcategory"
+                            name="subcategory"
+                            type="text"
+                            maxlength="100"
+                            required
+                            placeholder="Contoh: nodejs"
+                            class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div id="productFields" class="hidden space-y-4">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                        <div>
+
+                            <label for="price" class="block text-sm font-semibold text-gray-300 mb-2">
+                                Harga
+                            </label>
+
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-gray-500">
+                                    Rp
+                                </span>
+
+                                <input
+                                    id="price"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    placeholder="0"
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                                >
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <label for="stock" class="block text-sm font-semibold text-gray-300 mb-2">
+                                Stok
+                            </label>
+
+                            <input
+                                id="stock"
+                                type="number"
+                                min="0"
+                                step="1"
+                                placeholder="0"
+                                class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="rounded-xl border border-blue-500/10 bg-blue-500/5 p-4">
+                        <p class="text-xs text-blue-300 leading-5">
+                            Pastikan informasi produk, harga, dan stok yang kamu masukkan sesuai dengan kondisi sebenarnya.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="glass rounded-2xl p-5 sm:p-6">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <div>
+                        <h2 class="font-bold text-white">
+                            Media
+                        </h2>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            Tambahkan URL gambar atau video.
+                        </p>
+                    </div>
+
+                    <span id="mediaCount" class="text-xs text-gray-500">
+                        0/10
+                    </span>
+
+                </div>
+
+                <div id="mediaContainer" class="mt-5 space-y-3"></div>
+
+                <button
+                    type="button"
+                    id="addMediaButton"
+                    class="mt-4 w-full py-3 rounded-xl border border-dashed border-white/[.1] hover:border-blue-500/30 hover:bg-blue-500/5 text-sm font-semibold text-gray-400 hover:text-white transition"
+                >
+                    + Tambah Media
+                </button>
+
+                <p class="mt-3 text-[11px] text-gray-600">
+                    URL harus menggunakan http:// atau https://.
+                </p>
+
+            </div>
+
+            <div class="glass rounded-2xl p-5 sm:p-6">
+
+                <label class="block text-sm font-semibold text-gray-300 mb-3">
+                    Visibility
+                </label>
+
+                <div class="grid grid-cols-2 gap-3">
+
+                    <label class="cursor-pointer">
+                        <input
+                            type="radio"
+                            name="visibility"
+                            value="public"
+                            checked
+                            class="peer sr-only"
+                        >
+
+                        <div class="rounded-xl border border-white/[.07] bg-white/[.025] p-4 peer-checked:border-blue-500/50 peer-checked:bg-blue-500/10 transition">
+                            <div class="text-lg">🌐</div>
+                            <div class="mt-2 font-bold text-white text-sm">
+                                Public
+                            </div>
+                            <div class="mt-1 text-xs text-gray-500">
+                                Bisa dilihat semua orang
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer">
+                        <input
+                            type="radio"
+                            name="visibility"
+                            value="private"
+                            class="peer sr-only"
+                        >
+
+                        <div class="rounded-xl border border-white/[.07] bg-white/[.025] p-4 peer-checked:border-blue-500/50 peer-checked:bg-blue-500/10 transition">
+                            <div class="text-lg">🔒</div>
+                            <div class="mt-2 font-bold text-white text-sm">
+                                Private
+                            </div>
+                            <div class="mt-1 text-xs text-gray-500">
+                                Terbatas sesuai aturan akses
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div id="errorBox" class="hidden rounded-xl border border-red-500/15 bg-red-500/5 px-4 py-3">
+                <p id="errorMessage" class="text-sm text-red-400"></p>
+            </div>
+
+            <div id="successBox" class="hidden rounded-xl border border-emerald-500/15 bg-emerald-500/5 px-4 py-3">
+                <p id="successMessage" class="text-sm text-emerald-400"></p>
+            </div>
+
+            <button
+                id="submitButton"
+                type="submit"
+                class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold transition"
+            >
+                Publikasikan Postingan
+            </button>
+
+        </form>
+
+    </section>
+
+    <section id="loginSection" class="hidden glass rounded-2xl p-10 text-center">
+
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/10 flex items-center justify-center text-2xl">
+            🔐
+        </div>
+
+        <h2 class="mt-5 text-xl font-bold text-white">
+            Login diperlukan
+        </h2>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Kamu harus login terlebih dahulu untuk membuat postingan.
+        </p>
+
+        <a
+            id="loginLink"
+            href="/login.html"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Login
+        </a>
+
+    </section>
+
+</main>
+
+<script>
+const state = {
+    user: null,
+    media: [],
+    submitting: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function showError(message) {
+    $('successBox').classList.add('hidden')
+    $('errorMessage').textContent = message
+    $('errorBox').classList.remove('hidden')
+}
+
+function showSuccess(message) {
+    $('errorBox').classList.add('hidden')
+    $('successMessage').textContent = message
+    $('successBox').classList.remove('hidden')
+}
+
+function clearMessages() {
+    $('errorBox').classList.add('hidden')
+    $('successBox').classList.add('hidden')
+}
+
+async function checkSession() {
+    try {
+        const response = await fetch('/api/auth/me', {
+            credentials: 'include'
+        })
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success || !data.user) {
+            showLogin()
+            return false
+        }
+
+        if (data.user.accountStatus === 'suspended') {
+            showLogin()
+            return false
+        }
+
+        state.user = data.user
+
+        $('loading').classList.add('hidden')
+        $('formSection').classList.remove('hidden')
+
+        return true
+    } catch {
+        showLogin()
+        return false
+    }
+}
+
+function showLogin() {
+    $('loading').classList.add('hidden')
+    $('formSection').classList.add('hidden')
+    $('loginSection').classList.remove('hidden')
+
+    const redirect =
+        encodeURIComponent(location.href)
+
+    $('loginLink').href =
+        `/login.html?redirect=${redirect}`
+}
+
+function updateTypeFields() {
+    const type =
+        document.querySelector(
+            'input[name="type"]:checked'
+        )?.value || 'post'
+
+    if (type === 'product') {
+        $('titleField').classList.remove('hidden-field')
+        $('productFields').classList.remove('hidden')
+
+        $('title').required = true
+        $('price').required = true
+        $('stock').required = true
+    } else {
+        $('titleField').classList.add('hidden-field')
+        $('productFields').classList.add('hidden')
+
+        $('title').required = false
+        $('price').required = false
+        $('stock').required = false
+    }
+}
+
+function renderMedia() {
+    const container = $('mediaContainer')
+
+    container.innerHTML = ''
+
+    state.media.forEach((item, index) => {
+        const row = document.createElement('div')
+
+        row.className =
+            'media-item flex flex-col sm:flex-row gap-2'
+
+        row.innerHTML = `
+            <select
+                data-media-type="${index}"
+                class="sm:w-32 px-3 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white focus:border-blue-500/50"
+            >
+                <option value="image" ${item.type === 'image' ? 'selected' : ''}>
+                    Gambar
+                </option>
+                <option value="video" ${item.type === 'video' ? 'selected' : ''}>
+                    Video
+                </option>
+            </select>
+
+            <input
+                data-media-url="${index}"
+                type="url"
+                value="${escapeHtml(item.url)}"
+                placeholder="https://example.com/image.jpg"
+                class="flex-1 px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50"
+            >
+
+            <button
+                type="button"
+                data-remove-media="${index}"
+                class="sm:w-12 h-12 rounded-xl border border-white/[.07] hover:border-red-500/20 hover:bg-red-500/10 text-gray-500 hover:text-red-400 transition flex items-center justify-center"
+            >
+                ×
+            </button>
+        `
+
+        container.appendChild(row)
+    })
+
+    container.querySelectorAll('[data-media-type]').forEach(select => {
+        select.addEventListener('change', event => {
+            const index =
+                Number(event.target.dataset.mediaType)
+
+            state.media[index].type =
+                event.target.value
+        })
+    })
+
+    container.querySelectorAll('[data-media-url]').forEach(input => {
+        input.addEventListener('input', event => {
+            const index =
+                Number(event.target.dataset.mediaUrl)
+
+            state.media[index].url =
+                event.target.value
+        })
+    })
+
+    container.querySelectorAll('[data-remove-media]').forEach(button => {
+        button.addEventListener('click', () => {
+            const index =
+                Number(button.dataset.removeMedia)
+
+            state.media.splice(index, 1)
+
+            renderMedia()
+        })
+    })
+
+    $('mediaCount').textContent =
+        `${state.media.length}/10`
+
+    $('addMediaButton').disabled =
+        state.media.length >= 10
+
+    $('addMediaButton').classList.toggle(
+        'opacity-40',
+        state.media.length >= 10
+    )
+}
+
+function addMedia() {
+    if (state.media.length >= 10) {
+        showError('Maksimal 10 media.')
+        return
+    }
+
+    state.media.push({
+        url: '',
+        type: 'image'
+    })
+
+    clearMessages()
+    renderMedia()
+}
+
+function validUrl(value) {
+    try {
+        const url = new URL(value)
+
+        return (
+            url.protocol === 'http:' ||
+            url.protocol === 'https:'
+        )
+    } catch {
+        return false
+    }
+}
+
+function normalizeText(value) {
+    return String(value || '')
+        .trim()
+        .toLowerCase()
+}
+
+async function submitPost(event) {
+    event.preventDefault()
+
+    if (state.submitting) {
+        return
+    }
+
+    clearMessages()
+
+    const type =
+        document.querySelector(
+            'input[name="type"]:checked'
+        )?.value || 'post'
+
+    const visibility =
+        document.querySelector(
+            'input[name="visibility"]:checked'
+        )?.value || 'public'
+
+    const title =
+        $('title').value.trim()
+
+    const content =
+        $('content').value.trim()
+
+    const category =
+        normalizeText($('category').value)
+
+    const subcategory =
+        normalizeText($('subcategory').value)
+
+    const priceValue =
+        $('price').value.trim()
+
+    const stockValue =
+        $('stock').value.trim()
+
+    if (!content) {
+        showError('Isi postingan wajib diisi.')
+        $('content').focus()
+        return
+    }
+
+    if (content.length > 10000) {
+        showError('Isi postingan maksimal 10.000 karakter.')
+        return
+    }
+
+    if (!category) {
+        showError('Kategori wajib diisi.')
+        $('category').focus()
+        return
+    }
+
+    if (!subcategory) {
+        showError('Subkategori wajib diisi.')
+        $('subcategory').focus()
+        return
+    }
+
+    if (type === 'product') {
+        if (!title) {
+            showError('Judul produk wajib diisi.')
+            $('title').focus()
+            return
+        }
+
+        if (title.length > 200) {
+            showError('Judul maksimal 200 karakter.')
+            return
+        }
+
+        if (
+            priceValue === '' ||
+            Number.isNaN(Number(priceValue)) ||
+            Number(priceValue) < 0
+        ) {
+            showError('Harga produk tidak valid.')
+            $('price').focus()
+            return
+        }
+
+        if (
+            stockValue === '' ||
+            !Number.isInteger(Number(stockValue)) ||
+            Number(stockValue) < 0
+        ) {
+            showError('Stok harus berupa angka bulat minimal 0.')
+            $('stock').focus()
+            return
+        }
+    }
+
+    const validMedia = []
+
+    for (const item of state.media) {
+        const url = String(item.url || '').trim()
+
+        if (!url) {
+            continue
+        }
+
+        if (!validUrl(url)) {
+            showError(
+                `URL media tidak valid: ${url}`
+            )
+            return
+        }
+
+        validMedia.push({
+            url,
+            type: item.type === 'video'
+                ? 'video'
+                : 'image'
+        })
+    }
+
+    if (validMedia.length > 10) {
+        showError('Maksimal 10 media.')
+        return
+    }
+
+    const payload = {
+        type,
+        title: type === 'product'
+            ? title
+            : undefined,
+        content,
+        images: validMedia,
+        visibility,
+        category,
+        subcategory
+    }
+
+    if (type === 'product') {
+        payload.price = Number(priceValue)
+        payload.currency = 'IDR'
+        payload.stock = Number(stockValue)
+    }
+
+    state.submitting = true
+
+    $('submitButton').disabled = true
+    $('submitButton').textContent =
+        'Mempublikasikan...'
+
+    try {
+        const response = await fetch('/api/posts/create', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+
+        const data = await response.json()
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            throw new Error(
+                data.message ||
+                'Sesi login sudah tidak berlaku.'
+            )
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal membuat postingan.'
+            )
+        }
+
+        const post =
+            data.post ||
+            data.data ||
+            data
+
+        showSuccess(
+            'Postingan berhasil dibuat.'
+        )
+
+        $('submitButton').textContent =
+            'Berhasil ✓'
+
+        setTimeout(() => {
+            if (post._id) {
+                location.href =
+                    `/post.html?id=${encodeURIComponent(post._id)}`
+            } else {
+                location.href = '/'
+            }
+        }, 700)
+    } catch (error) {
+        showError(error.message)
+
+        $('submitButton').disabled = false
+        $('submitButton').textContent =
+            'Publikasikan Postingan'
+
+        state.submitting = false
+    }
+}
+
+document.querySelectorAll(
+    'input[name="type"]'
+).forEach(input => {
+    input.addEventListener(
+        'change',
+        updateTypeFields
+    )
+})
+
+$('addMediaButton').addEventListener(
+    'click',
+    addMedia
+)
+
+$('postForm').addEventListener(
+    'submit',
+    submitPost
+)
+
+$('title').addEventListener(
+    'input',
+    event => {
+        $('titleCount').textContent =
+            `${event.target.value.length}/200`
+    }
+)
+
+$('content').addEventListener(
+    'input',
+    event => {
+        $('contentCount').textContent =
+            `${event.target.value.length}/10000`
+    }
+)
+
+updateTypeFields()
+renderMedia()
+checkSession()
+</script>
+
+</body>
+</html>

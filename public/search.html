@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - Forum FJB ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 8% 0%, rgba(59,130,246,.12), transparent 30%),
+                radial-gradient(circle at 92% 10%, rgba(14,165,233,.08), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .result-card {
+            transition: .2s ease;
+        }
+
+        .result-card:hover {
+            border-color: rgba(255,255,255,.12);
+            background: rgba(255,255,255,.025);
+            transform: translateY(-1px);
+        }
+
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,.04),
+                rgba(255,255,255,.08),
+                rgba(255,255,255,.04)
+            );
+            background-size: 200% 100%;
+            animation: skeleton 1.4s infinite;
+        }
+
+        @keyframes skeleton {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.12);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/" class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-bold text-white leading-none">
+                        ReyCode
+                    </div>
+
+                    <div class="text-[11px] text-gray-500 mt-1">
+                        Search
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+
+                <a
+                    href="/forum.html"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Forum
+                </a>
+
+                <a
+                    id="profileButton"
+                    href="/login.html"
+                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+                >
+                    Login
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+    <section class="glass rounded-2xl p-5 sm:p-7">
+
+        <div class="max-w-3xl mx-auto text-center">
+
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 flex items-center justify-center text-2xl">
+                🔎
+            </div>
+
+            <h1 class="mt-5 text-2xl sm:text-3xl font-black text-white">
+                Cari di Forum FJB
+            </h1>
+
+            <p class="mt-2 text-sm text-gray-500">
+                Cari postingan, produk, atau pengguna di komunitas ReyCode.
+            </p>
+
+            <form
+                id="searchForm"
+                class="mt-6 flex flex-col sm:flex-row gap-2"
+            >
+
+                <div class="relative flex-1">
+
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600">
+                        🔎
+                    </span>
+
+                    <input
+                        id="searchInput"
+                        type="search"
+                        autocomplete="off"
+                        placeholder="Contoh: nodejs, pterodactyl, reseller..."
+                        class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50"
+                    >
+
+                </div>
+
+                <button
+                    id="searchButton"
+                    type="submit"
+                    class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+                >
+                    Cari
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <section class="mt-5">
+
+        <div class="flex flex-wrap items-center gap-2">
+
+            <button
+                data-tab="all"
+                class="tab-button active px-4 py-2 rounded-xl bg-blue-600 text-xs font-bold text-white"
+            >
+                Semua
+            </button>
+
+            <button
+                data-tab="posts"
+                class="tab-button px-4 py-2 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-semibold text-gray-400 hover:text-white"
+            >
+                Postingan
+            </button>
+
+            <button
+                data-tab="products"
+                class="tab-button px-4 py-2 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-semibold text-gray-400 hover:text-white"
+            >
+                Produk
+            </button>
+
+            <button
+                data-tab="users"
+                class="tab-button px-4 py-2 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-semibold text-gray-400 hover:text-white"
+            >
+                Pengguna
+            </button>
+
+        </div>
+
+    </section>
+
+    <section
+        id="initialState"
+        class="mt-5 glass rounded-2xl p-10 text-center"
+    >
+
+        <div class="text-3xl">
+            🔍
+        </div>
+
+        <h2 class="mt-4 font-bold text-white">
+            Mulai pencarian
+        </h2>
+
+        <p class="mt-2 text-sm text-gray-600">
+            Masukkan kata kunci untuk mencari di Forum FJB ReyCode.
+        </p>
+
+    </section>
+
+    <section
+        id="loadingState"
+        class="hidden mt-5 space-y-4"
+    >
+
+        <div class="glass rounded-2xl p-5">
+            <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-full skeleton"></div>
+                <div class="flex-1">
+                    <div class="w-40 h-4 rounded skeleton"></div>
+                    <div class="w-24 h-3 rounded skeleton mt-2"></div>
+                </div>
+            </div>
+            <div class="w-2/3 h-5 rounded skeleton mt-5"></div>
+            <div class="w-full h-4 rounded skeleton mt-3"></div>
+        </div>
+
+        <div class="glass rounded-2xl p-5">
+            <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-full skeleton"></div>
+                <div class="flex-1">
+                    <div class="w-32 h-4 rounded skeleton"></div>
+                    <div class="w-20 h-3 rounded skeleton mt-2"></div>
+                </div>
+            </div>
+            <div class="w-3/4 h-5 rounded skeleton mt-5"></div>
+        </div>
+
+    </section>
+
+    <section
+        id="resultsState"
+        class="hidden mt-5"
+    >
+
+        <div class="flex items-center justify-between gap-3">
+
+            <div>
+                <h2 class="text-lg font-bold text-white">
+                    Hasil pencarian
+                </h2>
+
+                <p
+                    id="resultDescription"
+                    class="text-xs text-gray-600 mt-1"
+                ></p>
+            </div>
+
+            <span
+                id="resultCount"
+                class="text-xs text-gray-600"
+            >
+                0 hasil
+            </span>
+
+        </div>
+
+        <div
+            id="resultsContainer"
+            class="mt-4 space-y-3"
+        ></div>
+
+    </section>
+
+    <section
+        id="emptyState"
+        class="hidden mt-5 glass rounded-2xl p-10 text-center"
+    >
+
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-2xl">
+            📭
+        </div>
+
+        <h2 class="mt-5 font-bold text-white">
+            Tidak ada hasil
+        </h2>
+
+        <p
+            id="emptyMessage"
+            class="mt-2 text-sm text-gray-600"
+        >
+            Coba gunakan kata kunci lain.
+        </p>
+
+    </section>
+
+    <section
+        id="errorState"
+        class="hidden mt-5 glass rounded-2xl p-8 text-center"
+    >
+
+        <div class="text-2xl">
+            ⚠️
+        </div>
+
+        <p
+            id="errorMessage"
+            class="mt-3 text-sm text-red-400"
+        ></p>
+
+        <button
+            id="retryButton"
+            class="mt-5 px-5 py-2.5 rounded-xl bg-white/[.05] border border-white/[.07] text-sm font-bold text-white"
+        >
+            Coba Lagi
+        </button>
+
+    </section>
+
+    <section
+        id="pagination"
+        class="hidden mt-5 glass rounded-2xl p-4"
+    >
+
+        <div class="flex items-center justify-between gap-3">
+
+            <button
+                id="previousButton"
+                class="px-4 py-2.5 rounded-xl border border-white/[.07] bg-white/[.03] hover:bg-white/[.07] text-xs font-bold text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+                ← Sebelumnya
+            </button>
+
+            <span
+                id="pageInfo"
+                class="text-xs text-gray-600"
+            >
+                Halaman 1
+            </span>
+
+            <button
+                id="nextButton"
+                class="px-4 py-2.5 rounded-xl border border-white/[.07] bg-white/[.03] hover:bg-white/[.07] text-xs font-bold text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+                Berikutnya →
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[100] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    query: '',
+    tab: 'all',
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+    loading: false,
+    loggedIn: false,
+    user: null
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    }).format(date)
+}
+
+function formatPrice(post) {
+    if (
+        post.price === null ||
+        post.price === undefined
+    ) {
+        return ''
+    }
+
+    const currency =
+        post.currency ||
+        'IDR'
+
+    if (currency === 'IDR') {
+        return `Rp ${formatNumber(post.price)}`
+    }
+
+    try {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency
+        }).format(post.price)
+    } catch {
+        return `${currency} ${formatNumber(post.price)}`
+    }
+}
+
+function getBadge(user) {
+    if (!user) {
+        return null
+    }
+
+    if (user.role === 'developer') {
+        return {
+            text: 'DEVELOPER',
+            className: 'bg-black text-white border border-white/10'
+        }
+    }
+
+    if (user.role === 'admin') {
+        return {
+            text: 'ADMIN',
+            className: 'bg-white text-black'
+        }
+    }
+
+    if (user.role === 'system') {
+        return {
+            text: 'SYSTEM',
+            className: 'bg-blue-600 text-white'
+        }
+    }
+
+    if (
+        user.resellerStatus === 'approved' &&
+        user.verified
+    ) {
+        return {
+            text: 'RESELLER',
+            className: 'bg-blue-600 text-white'
+        }
+    }
+
+    return null
+}
+
+function avatarHtml(user) {
+    const username =
+        user?.username ||
+        'user'
+
+    const avatar =
+        user?.avatar ||
+        username.charAt(0).toUpperCase()
+
+    if (
+        typeof avatar === 'string' &&
+        /^https?:\/\//i.test(avatar)
+    ) {
+        return `
+            <img
+                src="${escapeHtml(avatar)}"
+                alt=""
+                class="w-full h-full object-cover"
+            >
+        `
+    }
+
+    return escapeHtml(
+        String(avatar).charAt(0).toUpperCase()
+    )
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(window.toastTimer)
+
+    window.toastTimer = setTimeout(() => {
+        $('toast').classList.add(
+            'translate-y-20',
+            'opacity-0'
+        )
+
+        $('toast').classList.remove(
+            'translate-y-0',
+            'opacity-100'
+        )
+    }, 2500)
+}
+
+async function loadSession() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include'
+                }
+            )
+
+        const data =
+            await response.json()
+
+        if (
+            response.ok &&
+            data.success &&
+            data.user
+        ) {
+            state.loggedIn = true
+            state.user = data.user
+
+            $('profileButton').textContent =
+                `@${data.user.username}`
+
+            $('profileButton').href =
+                `/profile.html?username=${encodeURIComponent(data.user.username)}`
+        }
+    } catch {
+        state.loggedIn = false
+    }
+}
+
+function updateTabs() {
+    document
+        .querySelectorAll('.tab-button')
+        .forEach(button => {
+            const active =
+                button.dataset.tab === state.tab
+
+            if (active) {
+                button.className =
+                    'tab-button active px-4 py-2 rounded-xl bg-blue-600 text-xs font-bold text-white'
+            } else {
+                button.className =
+                    'tab-button px-4 py-2 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-semibold text-gray-400 hover:text-white'
+            }
+        })
+}
+
+function updateUrl() {
+    const params =
+        new URLSearchParams()
+
+    if (state.query) {
+        params.set(
+            'q',
+            state.query
+        )
+    }
+
+    if (state.tab !== 'all') {
+        params.set(
+            'type',
+            state.tab
+        )
+    }
+
+    const query =
+        params.toString()
+
+    history.replaceState(
+        null,
+        '',
+        query
+            ? `/search.html?${query}`
+            : '/search.html'
+    )
+}
+
+function buildPostQuery() {
+    const params =
+        new URLSearchParams()
+
+    params.set(
+        'page',
+        state.page
+    )
+
+    params.set(
+        'limit',
+        state.limit
+    )
+
+    if (state.query) {
+        params.set(
+            'search',
+            state.query
+        )
+    }
+
+    if (state.tab === 'products') {
+        params.set(
+            'type',
+            'product'
+        )
+    }
+
+    if (state.tab === 'posts') {
+        params.set(
+            'type',
+            'post'
+        )
+    }
+
+    return params
+}
+
+async function searchPosts() {
+    const response =
+        await fetch(
+            `/api/posts/list?${buildPostQuery().toString()}`,
+            {
+                credentials: 'include'
+            }
+        )
+
+    const data =
+        await response.json()
+
+    if (
+        !response.ok ||
+        !data.success
+    ) {
+        throw new Error(
+            data.message ||
+            'Gagal mencari postingan.'
+        )
+    }
+
+    const posts =
+        Array.isArray(data.posts)
+            ? data.posts
+            : Array.isArray(data.data)
+                ? data.data
+                : []
+
+    const pagination =
+        data.pagination ||
+        {}
+
+    return {
+        type: 'posts',
+        items: posts,
+        total: Number(
+            pagination.total ??
+            data.total ??
+            posts.length
+        ),
+        totalPages: Number(
+            pagination.totalPages ??
+            pagination.pages ??
+            0
+        )
+    }
+}
+
+async function searchUsers() {
+    const params =
+        new URLSearchParams()
+
+    params.set(
+        'page',
+        state.page
+    )
+
+    params.set(
+        'limit',
+        state.limit
+    )
+
+    params.set(
+        'search',
+        state.query
+    )
+
+    const response =
+        await fetch(
+            `/api/admin/users?${params.toString()}`,
+            {
+                credentials: 'include'
+            }
+        )
+
+    const data =
+        await response.json()
+
+    if (
+        response.status === 401 ||
+        response.status === 403
+    ) {
+        return {
+            type: 'users',
+            items: [],
+            total: 0,
+            totalPages: 0,
+            restricted: true
+        }
+    }
+
+    if (
+        !response.ok ||
+        !data.success
+    ) {
+        throw new Error(
+            data.message ||
+            'Gagal mencari pengguna.'
+        )
+    }
+
+    const users =
+        Array.isArray(data.users)
+            ? data.users
+            : []
+
+    const pagination =
+        data.pagination ||
+        {}
+
+    return {
+        type: 'users',
+        items: users,
+        total: Number(
+            pagination.total ??
+            data.total ??
+            users.length
+        ),
+        totalPages: Number(
+            pagination.totalPages ??
+            pagination.pages ??
+            0
+        )
+    }
+}
+
+async function performSearch() {
+    if (state.loading) {
+        return
+    }
+
+    if (!state.query.trim()) {
+        showToast(
+            'Masukkan kata kunci pencarian.'
+        )
+        return
+    }
+
+    state.query =
+        state.query.trim()
+
+    state.page = 1
+
+    updateUrl()
+    updateTabs()
+
+    state.loading = true
+
+    $('initialState').classList.add('hidden')
+    $('resultsState').classList.add('hidden')
+    $('emptyState').classList.add('hidden')
+    $('errorState').classList.add('hidden')
+    $('pagination').classList.add('hidden')
+    $('loadingState').classList.remove('hidden')
+
+    try {
+        let result
+
+        if (state.tab === 'users') {
+            result =
+                await searchUsers()
+        } else {
+            result =
+                await searchPosts()
+        }
+
+        renderResults(result)
+
+    } catch (error) {
+        $('errorMessage').textContent =
+            error.message
+
+        $('errorState').classList.remove(
+            'hidden'
+        )
+    } finally {
+        $('loadingState').classList.add(
+            'hidden'
+        )
+
+        state.loading = false
+    }
+}
+
+function renderResults(result) {
+    if (
+        result.restricted
+    ) {
+        $('resultsState').classList.add(
+            'hidden'
+        )
+
+        $('emptyMessage').textContent =
+            'Pencarian pengguna membutuhkan akses yang tersedia di endpoint server.'
+
+        $('emptyState').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    state.total =
+        Number(result.total || 0)
+
+    state.totalPages =
+        Number(result.totalPages || 0)
+
+    if (
+        !state.totalPages &&
+        state.total > 0
+    ) {
+        state.totalPages =
+            Math.ceil(
+                state.total /
+                state.limit
+            )
+    }
+
+    if (!result.items.length) {
+        $('resultsState').classList.add(
+            'hidden'
+        )
+
+        $('emptyMessage').textContent =
+            `Tidak ada hasil untuk "${state.query}".`
+
+        $('emptyState').classList.remove(
+            'hidden'
+        )
+
+        $('pagination').classList.add(
+            'hidden'
+        )
+
+        return
+    }
+
+    $('resultCount').textContent =
+        `${formatNumber(state.total)} hasil`
+
+    $('resultDescription').textContent =
+        `Hasil untuk "${state.query}"`
+
+    $('resultsContainer').innerHTML =
+        result.items
+            .map(item =>
+                result.type === 'users'
+                    ? renderUser(item)
+                    : renderPost(item)
+            )
+            .join('')
+
+    $('resultsState').classList.remove(
+        'hidden'
+    )
+
+    renderPagination()
+}
+
+function renderUser(user) {
+    const badge =
+        getBadge(user)
+
+    const username =
+        user.username ||
+        'user'
+
+    return `
+        <a
+            href="/profile.html?username=${encodeURIComponent(username)}"
+            class="result-card glass rounded-2xl p-4 sm:p-5 block fade"
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div class="w-12 h-12 rounded-full bg-blue-600/10 border border-blue-500/10 flex items-center justify-center text-sm font-black text-blue-300 overflow-hidden shrink-0">
+                    ${avatarHtml(user)}
+                </div>
+
+                <div class="flex-1 min-w-0">
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        <span class="font-bold text-white">
+                            ${escapeHtml(username)}
+                        </span>
+
+                        ${
+                            user.verified
+                                ? `
+                                    <span class="text-blue-400 text-xs">
+                                        ✓
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                        ${
+                            badge
+                                ? `
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold ${badge.className}">
+                                        ${escapeHtml(badge.text)}
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                    </div>
+
+                    ${
+                        user.bio
+                            ? `
+                                <p class="mt-1 text-xs text-gray-500 line-clamp-2">
+                                    ${escapeHtml(user.bio)}
+                                </p>
+                            `
+                            : `
+                                <p class="mt-1 text-xs text-gray-700">
+                                    @${escapeHtml(username)}
+                                </p>
+                            `
+                    }
+
+                </div>
+
+                <span class="text-gray-600">
+                    →
+                </span>
+
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/[.05] flex flex-wrap gap-4 text-[10px] text-gray-600">
+
+                <span>
+                    ${formatNumber(user.postsCount)} postingan
+                </span>
+
+                <span>
+                    ${formatNumber(user.followersCount)} followers
+                </span>
+
+                <span>
+                    ${formatNumber(user.followingCount)} following
+                </span>
+
+            </div>
+
+        </a>
+    `
+}
+
+function renderPost(post) {
+    const author =
+        post.author ||
+        {}
+
+    const username =
+        author.username ||
+        'user'
+
+    const badge =
+        getBadge(author)
+
+    const title =
+        post.title ||
+        (
+            post.type === 'product'
+                ? 'Produk'
+                : 'Postingan'
+        )
+
+    const content =
+        post.content ||
+        ''
+
+    const images =
+        Array.isArray(post.images)
+            ? post.images
+            : []
+
+    const firstMedia =
+        images[0]
+
+    const mediaUrl =
+        typeof firstMedia === 'string'
+            ? firstMedia
+            : firstMedia?.url
+
+    const mediaType =
+        typeof firstMedia === 'object'
+            ? firstMedia?.type
+            : 'image'
+
+    return `
+        <a
+            href="/post.html?id=${encodeURIComponent(post._id)}"
+            class="result-card glass rounded-2xl p-5 block fade"
+        >
+
+            <div class="flex items-start gap-3">
+
+                <div class="w-10 h-10 rounded-full bg-blue-600/10 border border-blue-500/10 flex items-center justify-center text-xs font-black text-blue-300 overflow-hidden shrink-0">
+                    ${avatarHtml(author)}
+                </div>
+
+                <div class="flex-1 min-w-0">
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        <span class="text-sm font-bold text-white">
+                            ${escapeHtml(username)}
+                        </span>
+
+                        ${
+                            author.verified
+                                ? `
+                                    <span class="text-blue-400 text-[11px]">
+                                        ✓
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                        ${
+                            badge
+                                ? `
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold ${badge.className}">
+                                        ${escapeHtml(badge.text)}
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                        <span class="text-[10px] text-gray-700">
+                            ${escapeHtml(formatDate(post.createdAt))}
+                        </span>
+
+                    </div>
+
+                    <h3 class="mt-3 text-base sm:text-lg font-black text-white leading-tight">
+                        ${escapeHtml(title)}
+                    </h3>
+
+                    <div class="mt-2 flex flex-wrap gap-2">
+
+                        <span class="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[9px] font-bold">
+                            ${
+                                post.type === 'product'
+                                    ? 'PRODUK'
+                                    : 'POST'
+                            }
+                        </span>
+
+                        <span class="px-2 py-1 rounded-lg bg-white/[.04] text-gray-500 text-[9px] font-semibold">
+                            ${escapeHtml(post.category || 'general')}
+                        </span>
+
+                        ${
+                            post.subcategory
+                                ? `
+                                    <span class="px-2 py-1 rounded-lg bg-white/[.04] text-gray-600 text-[9px]">
+                                        ${escapeHtml(post.subcategory)}
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                    </div>
+
+                    ${
+                        post.type === 'product' &&
+                        post.price !== null &&
+                        post.price !== undefined
+                            ? `
+                                <div class="mt-3 text-sm font-black text-blue-400">
+                                    ${escapeHtml(formatPrice(post))}
+                                </div>
+                            `
+                            : ''
+                    }
+
+                    <p class="mt-3 text-sm text-gray-500 leading-6 line-clamp-3">
+                        ${escapeHtml(content)}
+                    </p>
+
+                </div>
+
+            </div>
+
+            ${
+                mediaUrl
+                    ? `
+                        <div class="mt-4 rounded-xl overflow-hidden bg-black/30 border border-white/[.05]">
+                            ${
+                                mediaType === 'video'
+                                    ? `
+                                        <div class="h-44 flex items-center justify-center text-gray-500 text-sm">
+                                            ▶ Video
+                                        </div>
+                                    `
+                                    : `
+                                        <img
+                                            src="${escapeHtml(mediaUrl)}"
+                                            alt=""
+                                            loading="lazy"
+                                            class="w-full max-h-64 object-contain"
+                                        >
+                                    `
+                            }
+                        </div>
+                    `
+                    : ''
+            }
+
+            <div class="mt-4 pt-3 border-t border-white/[.05] flex flex-wrap items-center gap-4 text-[10px] text-gray-600">
+
+                <span>
+                    ❤️ ${formatNumber(post.likesCount)}
+                </span>
+
+                <span>
+                    💬 ${formatNumber(post.commentsCount)}
+                </span>
+
+                <span>
+                    ⭐ ${Number(post.ratingAverage || 0).toFixed(1)}
+                </span>
+
+                <span class="ml-auto text-blue-400 font-bold">
+                    Buka →
+                </span>
+
+            </div>
+
+        </a>
+    `
+}
+
+function renderPagination() {
+    if (
+        state.totalPages <= 1
+    ) {
+        $('pagination').classList.add(
+            'hidden'
+        )
+        return
+    }
+
+    $('pagination').classList.remove(
+        'hidden'
+    )
+
+    $('previousButton').disabled =
+        state.page <= 1
+
+    $('nextButton').disabled =
+        state.page >= state.totalPages
+
+    $('pageInfo').textContent =
+        `Halaman ${state.page} dari ${state.totalPages}`
+}
+
+async function goToPage(page) {
+    if (
+        page < 1 ||
+        (
+            state.totalPages &&
+            page > state.totalPages
+        )
+    ) {
+        return
+    }
+
+    state.page =
+        page
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
+
+    await performSearch()
+}
+
+function readUrl() {
+    const params =
+        new URLSearchParams(
+            location.search
+        )
+
+    state.query =
+        params.get('q') ||
+        params.get('search') ||
+        ''
+
+    const type =
+        params.get('type') ||
+        ''
+
+    if (
+        type === 'posts' ||
+        type === 'post'
+    ) {
+        state.tab = 'posts'
+    } else if (
+        type === 'products' ||
+        type === 'product'
+    ) {
+        state.tab = 'products'
+    } else if (
+        type === 'users' ||
+        type === 'user'
+    ) {
+        state.tab = 'users'
+    } else {
+        state.tab = 'all'
+    }
+
+    $('searchInput').value =
+        state.query
+
+    updateTabs()
+}
+
+$('searchForm').addEventListener(
+    'submit',
+    event => {
+        event.preventDefault()
+
+        state.query =
+            $('searchInput').value.trim()
+
+        if (!state.query) {
+            showToast(
+                'Masukkan kata kunci pencarian.'
+            )
+            return
+        }
+
+        performSearch()
+    }
+)
+
+document
+    .querySelectorAll('.tab-button')
+    .forEach(button => {
+        button.addEventListener(
+            'click',
+            () => {
+                state.tab =
+                    button.dataset.tab
+
+                state.page = 1
+
+                updateTabs()
+
+                if (state.query) {
+                    performSearch()
+                }
+            }
+        )
+    })
+
+$('previousButton').addEventListener(
+    'click',
+    () => {
+        goToPage(
+            state.page - 1
+        )
+    }
+)
+
+$('nextButton').addEventListener(
+    'click',
+    () => {
+        goToPage(
+            state.page + 1
+        )
+    }
+)
+
+$('retryButton').addEventListener(
+    'click',
+    () => {
+        performSearch()
+    }
+)
+
+async function init() {
+    readUrl()
+
+    await loadSession()
+
+    if (state.query) {
+        await performSearch()
+    }
+}
+
+init()
+</script>
+
+</body>
+</html>

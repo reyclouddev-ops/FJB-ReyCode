@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <title>Daftar — Forum FJB ReyCode</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-[#050505] text-white font-sans antialiased">
+
+  <div class="min-h-screen flex items-center justify-center px-5 py-10">
+    <main class="w-full max-w-md">
+
+      <div class="text-center mb-8">
+        <div class="mx-auto mb-5 w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center text-2xl font-black shadow-2xl">
+          R
+        </div>
+
+        <h1 class="text-3xl font-bold tracking-tight">
+          Buat Akun
+        </h1>
+
+        <p class="mt-2 text-sm text-zinc-500">
+          Bergabung dengan Forum FJB ReyCode
+        </p>
+      </div>
+
+      <section class="rounded-3xl border border-zinc-800 bg-zinc-950/90 p-6 shadow-2xl">
+
+        <div id="alert" class="hidden mb-5 rounded-2xl border px-4 py-3 text-sm"></div>
+
+        <form id="registerForm" class="space-y-5">
+
+          <div>
+            <label for="username" class="block mb-2 text-sm font-medium text-zinc-300">
+              Username
+            </label>
+
+            <input
+              id="username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              minlength="3"
+              maxlength="30"
+              required
+              placeholder="contoh: reydev"
+              class="w-full rounded-2xl border border-zinc-800 bg-black px-4 py-3.5 text-sm text-white outline-none transition focus:border-zinc-500"
+            >
+
+            <p class="mt-2 text-xs text-zinc-600">
+              3–30 karakter, hanya huruf, angka, dan underscore.
+            </p>
+          </div>
+
+          <div>
+            <label for="email" class="block mb-2 text-sm font-medium text-zinc-300">
+              Email
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              maxlength="150"
+              required
+              placeholder="nama@email.com"
+              class="w-full rounded-2xl border border-zinc-800 bg-black px-4 py-3.5 text-sm text-white outline-none transition focus:border-zinc-500"
+            >
+          </div>
+
+          <div>
+            <label for="password" class="block mb-2 text-sm font-medium text-zinc-300">
+              Password
+            </label>
+
+            <div class="relative">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                maxlength="128"
+                required
+                placeholder="Minimal 8 karakter"
+                class="w-full rounded-2xl border border-zinc-800 bg-black px-4 py-3.5 pr-16 text-sm text-white outline-none transition focus:border-zinc-500"
+              >
+
+              <button
+                id="togglePassword"
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl px-3 py-2 text-xs text-zinc-500 hover:text-white transition"
+              >
+                Lihat
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="confirmPassword" class="block mb-2 text-sm font-medium text-zinc-300">
+              Konfirmasi Password
+            </label>
+
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="128"
+              required
+              placeholder="Ulangi password"
+              class="w-full rounded-2xl border border-zinc-800 bg-black px-4 py-3.5 text-sm text-white outline-none transition focus:border-zinc-500"
+            >
+          </div>
+
+          <div class="rounded-2xl border border-zinc-900 bg-zinc-950 p-4">
+            <div class="flex gap-3">
+              <div class="mt-0.5 text-zinc-400">
+                🔒
+              </div>
+
+              <div>
+                <p class="text-sm font-medium text-zinc-300">
+                  Keamanan akun
+                </p>
+
+                <p class="mt-1 text-xs leading-5 text-zinc-600">
+                  Data keamanan seperti IP dapat dicatat untuk membantu
+                  mencegah penyalahgunaan akun. Informasi tersebut tidak
+                  ditampilkan secara publik.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            id="submitButton"
+            type="submit"
+            class="w-full rounded-2xl bg-white px-4 py-3.5 text-sm font-bold text-black transition hover:bg-zinc-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <span id="submitText">Buat Akun</span>
+            <span id="loadingText" class="hidden">Membuat akun...</span>
+          </button>
+
+        </form>
+
+        <div class="my-6 flex items-center gap-4">
+          <div class="h-px flex-1 bg-zinc-900"></div>
+          <span class="text-xs text-zinc-700">ATAU</span>
+          <div class="h-px flex-1 bg-zinc-900"></div>
+        </div>
+
+        <p class="text-center text-sm text-zinc-500">
+          Sudah punya akun?
+          <a
+            href="/login.html"
+            class="font-semibold text-white hover:text-zinc-300 transition"
+          >
+            Login
+          </a>
+        </p>
+
+      </section>
+
+      <p class="mt-6 text-center text-xs text-zinc-700">
+        Forum FJB ReyCode
+      </p>
+
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm')
+    const alertBox = document.getElementById('alert')
+    const submitButton = document.getElementById('submitButton')
+    const submitText = document.getElementById('submitText')
+    const loadingText = document.getElementById('loadingText')
+
+    const usernameInput = document.getElementById('username')
+    const emailInput = document.getElementById('email')
+    const passwordInput = document.getElementById('password')
+    const confirmPasswordInput = document.getElementById('confirmPassword')
+
+    const togglePassword = document.getElementById('togglePassword')
+
+    function showAlert(message, type = 'error') {
+      alertBox.className =
+        'mb-5 rounded-2xl border px-4 py-3 text-sm'
+
+      if (type === 'success') {
+        alertBox.classList.add(
+          'border-emerald-900',
+          'bg-emerald-950/30',
+          'text-emerald-400'
+        )
+      } else {
+        alertBox.classList.add(
+          'border-red-900',
+          'bg-red-950/30',
+          'text-red-400'
+        )
+      }
+
+      alertBox.textContent = message
+      alertBox.classList.remove('hidden')
+    }
+
+    function hideAlert() {
+      alertBox.classList.add('hidden')
+      alertBox.textContent = ''
+    }
+
+    function setLoading(loading) {
+      submitButton.disabled = loading
+
+      if (loading) {
+        submitText.classList.add('hidden')
+        loadingText.classList.remove('hidden')
+      } else {
+        submitText.classList.remove('hidden')
+        loadingText.classList.add('hidden')
+      }
+    }
+
+    function isValidUsername(username) {
+      return /^[a-z0-9_]{3,30}$/.test(username)
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    }
+
+    togglePassword.addEventListener('click', () => {
+      const isPassword =
+        passwordInput.type === 'password'
+
+      passwordInput.type =
+        isPassword ? 'text' : 'password'
+
+      togglePassword.textContent =
+        isPassword ? 'Sembunyikan' : 'Lihat'
+    })
+
+    usernameInput.addEventListener('input', () => {
+      usernameInput.value =
+        usernameInput.value
+          .toLowerCase()
+          .replace(/[^a-z0-9_]/g, '')
+    })
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault()
+
+      hideAlert()
+
+      const username =
+        usernameInput.value.trim().toLowerCase()
+
+      const email =
+        emailInput.value.trim().toLowerCase()
+
+      const password =
+        passwordInput.value
+
+      const confirmPassword =
+        confirmPasswordInput.value
+
+      if (!isValidUsername(username)) {
+        showAlert(
+          'Username harus 3–30 karakter dan hanya boleh menggunakan huruf, angka, serta underscore.'
+        )
+        usernameInput.focus()
+        return
+      }
+
+      if (!isValidEmail(email)) {
+        showAlert('Format email tidak valid.')
+        emailInput.focus()
+        return
+      }
+
+      if (password.length < 8) {
+        showAlert('Password minimal 8 karakter.')
+        passwordInput.focus()
+        return
+      }
+
+      if (password.length > 128) {
+        showAlert('Password maksimal 128 karakter.')
+        passwordInput.focus()
+        return
+      }
+
+      if (password !== confirmPassword) {
+        showAlert('Konfirmasi password tidak cocok.')
+        confirmPasswordInput.focus()
+        return
+      }
+
+      setLoading(true)
+
+      try {
+        const response = await fetch(
+          '/api/auth/register',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              username,
+              email,
+              password
+            })
+          }
+        )
+
+        let data
+
+        try {
+          data = await response.json()
+        } catch {
+          data = {
+            status: false,
+            message: 'Response server tidak valid'
+          }
+        }
+
+        if (!response.ok || !data.status) {
+          showAlert(
+            data.message ||
+            'Pendaftaran gagal.'
+          )
+          return
+        }
+
+        showAlert(
+          'Akun berhasil dibuat. Mengarahkan ke halaman login...',
+          'success'
+        )
+
+        form.reset()
+
+        setTimeout(() => {
+          window.location.href =
+            '/login.html?registered=1'
+        }, 1200)
+
+      } catch (error) {
+        showAlert(
+          'Tidak dapat terhubung ke server. Silakan coba lagi.'
+        )
+      } finally {
+        setLoading(false)
+      }
+    })
+  </script>
+
+</body>
+</html>

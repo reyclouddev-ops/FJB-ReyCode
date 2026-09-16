@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts Management - Admin ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 5% 0%, rgba(37,99,235,.14), transparent 28%),
+                radial-gradient(circle at 95% 10%, rgba(16,185,129,.08), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .input {
+            width: 100%;
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input:focus {
+            border-color: rgba(59,130,246,.5);
+            background: rgba(255,255,255,.05);
+        }
+
+        select.input option {
+            background: #0a0e16;
+            color: #fff;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .media-grid img,
+        .media-grid video {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #080b11;
+            border: 1px solid rgba(255,255,255,.05);
+        }
+
+        @media (max-width: 640px) {
+            .media-grid img,
+            .media-grid video {
+                height: 85px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/admin.html" class="flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-black text-white leading-none">
+                        ReyCode
+                    </div>
+                    <div class="text-[10px] text-gray-600 mt-1">
+                        Posts Management
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-1 sm:gap-2">
+
+                <a
+                    href="/admin.html"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="/admin-reports.html"
+                    class="hidden sm:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Reports
+                </a>
+
+                <a
+                    href="/admin-users.html"
+                    class="hidden sm:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Users
+                </a>
+
+                <a
+                    href="/admin-resellers.html"
+                    class="hidden md:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Resellers
+                </a>
+
+                <button
+                    id="logoutButton"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/[.05] transition"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+    <div
+        id="loading"
+        class="glass rounded-2xl p-12 text-center"
+    >
+        <div class="w-9 h-9 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat Posts Management...
+        </p>
+    </div>
+
+    <div
+        id="accessDenied"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl">
+            🔒
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Akses Ditolak
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Halaman ini hanya dapat diakses oleh Admin atau Developer.
+        </p>
+
+        <a
+            href="/"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Kembali
+        </a>
+    </div>
+
+    <div
+        id="page"
+        class="hidden fade"
+    >
+
+        <section class="mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+                <div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-wider">
+                        <span>◈</span>
+                        Moderation
+                    </div>
+
+                    <h1 class="mt-4 text-2xl sm:text-3xl font-black text-white">
+                        Posts Management
+                    </h1>
+
+                    <p class="mt-2 text-sm text-gray-500">
+                        Pantau dan kelola post serta produk yang dibuat pengguna.
+                    </p>
+
+                </div>
+
+                <button
+                    id="refreshButton"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Total
+                </p>
+                <p id="totalPosts" class="mt-2 text-2xl font-black text-white">
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Active
+                </p>
+                <p id="activePosts" class="mt-2 text-2xl font-black text-blue-400">
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Hidden
+                </p>
+                <p id="hiddenPosts" class="mt-2 text-2xl font-black text-yellow-400">
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Pending
+                </p>
+                <p id="pendingPosts" class="mt-2 text-2xl font-black text-orange-400">
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Rejected
+                </p>
+                <p id="rejectedPosts" class="mt-2 text-2xl font-black text-red-400">
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Deleted
+                </p>
+                <p id="deletedPosts" class="mt-2 text-2xl font-black text-gray-500">
+                    0
+                </p>
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl p-4 mb-5">
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
+
+                <div class="lg:col-span-2">
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Search
+                    </label>
+
+                    <input
+                        id="searchInput"
+                        type="search"
+                        maxlength="200"
+                        placeholder="Cari judul, isi, username..."
+                        class="input rounded-xl px-4 py-3 text-sm"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Status
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua</option>
+                        <option value="active">Active</option>
+                        <option value="hidden">Hidden</option>
+                        <option value="pending">Pending</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="deleted">Deleted</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Type
+                    </label>
+
+                    <select
+                        id="typeFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua</option>
+                        <option value="post">Post</option>
+                        <option value="product">Product</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Visibility
+                    </label>
+
+                    <select
+                        id="visibilityFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua</option>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end">
+                    <button
+                        id="filterButton"
+                        class="w-full px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition"
+                    >
+                        Filter
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Category
+                    </label>
+
+                    <input
+                        id="categoryInput"
+                        type="text"
+                        maxlength="100"
+                        placeholder="Contoh: hosting"
+                        class="input rounded-xl px-4 py-3 text-sm"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Subcategory
+                    </label>
+
+                    <input
+                        id="subcategoryInput"
+                        type="text"
+                        maxlength="100"
+                        placeholder="Contoh: pterodactyl"
+                        class="input rounded-xl px-4 py-3 text-sm"
+                    >
+                </div>
+
+                <div class="flex items-end">
+                    <button
+                        id="resetButton"
+                        class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                    >
+                        Reset
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl overflow-hidden">
+
+            <div class="p-5 border-b border-white/[.06]">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <div>
+                        <h2 class="font-black text-white">
+                            Semua Posts
+                        </h2>
+
+                        <p
+                            id="resultInfo"
+                            class="mt-1 text-xs text-gray-600"
+                        >
+                            -
+                        </p>
+                    </div>
+
+                    <span
+                        id="pageInfo"
+                        class="text-[10px] text-gray-600"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div
+                id="posts"
+                class="p-4 sm:p-5 space-y-3"
+            ></div>
+
+            <div
+                id="empty"
+                class="hidden p-10 text-center"
+            >
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-xl">
+                    ◌
+                </div>
+
+                <h3 class="mt-4 text-sm font-bold text-white">
+                    Tidak ada post
+                </h3>
+
+                <p class="mt-2 text-xs text-gray-600">
+                    Tidak ada post yang cocok dengan filter.
+                </p>
+            </div>
+
+            <div
+                id="pagination"
+                class="hidden p-4 border-t border-white/[.06] flex items-center justify-between gap-3"
+            >
+
+                <button
+                    id="prevButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    ← Sebelumnya
+                </button>
+
+                <span
+                    id="paginationText"
+                    class="text-[10px] text-gray-600"
+                >
+                    -
+                </span>
+
+                <button
+                    id="nextButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    Berikutnya →
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<div
+    id="modal"
+    class="hidden fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm p-4 overflow-y-auto"
+>
+    <div class="min-h-full flex items-center justify-center">
+
+        <div class="glass rounded-2xl w-full max-w-3xl p-5 sm:p-6 fade">
+
+            <div class="flex items-start justify-between gap-4">
+
+                <div class="min-w-0">
+                    <p class="text-[10px] uppercase tracking-wider text-blue-400 font-black">
+                        Post Details
+                    </p>
+
+                    <h2
+                        id="modalTitle"
+                        class="mt-2 text-xl font-black text-white break-words"
+                    >
+                        -
+                    </h2>
+
+                    <p
+                        id="modalSubtitle"
+                        class="mt-2 text-xs text-gray-500"
+                    >
+                        -
+                    </p>
+                </div>
+
+                <button
+                    id="closeModal"
+                    class="w-9 h-9 rounded-xl bg-white/[.04] text-gray-500 hover:text-white hover:bg-white/[.07] transition shrink-0"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            <div
+                id="modalContent"
+                class="mt-6"
+            ></div>
+
+            <div
+                id="modalError"
+                class="hidden mt-5 rounded-xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-400"
+            ></div>
+
+            <div class="mt-6 flex flex-col sm:flex-row sm:justify-end gap-2">
+
+                <button
+                    id="closeModalButton"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white transition"
+                >
+                    Tutup
+                </button>
+
+                <a
+                    id="openPostButton"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black text-center transition"
+                >
+                    Buka Post
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[200] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    posts: [],
+    page: 1,
+    limit: 20,
+    total: 0,
+    pages: 1,
+    loading: false,
+    selectedPost: null
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date =
+        new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return date.toLocaleString(
+        'id-ID',
+        {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        }
+    )
+}
+
+function getId(value) {
+    if (!value) {
+        return null
+    }
+
+    if (typeof value === 'string') {
+        return value
+    }
+
+    return value._id ||
+        value.id ||
+        null
+}
+
+function getUsername(user) {
+    if (!user) {
+        return 'unknown'
+    }
+
+    if (typeof user === 'string') {
+        return user
+    }
+
+    return user.username ||
+        user.name ||
+        'unknown'
+}
+
+function getInitial(user) {
+    const username =
+        getUsername(user)
+
+    return username
+        .charAt(0)
+        .toUpperCase()
+}
+
+function statusClass(status) {
+    if (status === 'active') {
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/10'
+    }
+
+    if (status === 'hidden') {
+        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/10'
+    }
+
+    if (status === 'pending') {
+        return 'bg-orange-500/10 text-orange-400 border-orange-500/10'
+    }
+
+    if (status === 'rejected') {
+        return 'bg-red-500/10 text-red-400 border-red-500/10'
+    }
+
+    if (status === 'deleted') {
+        return 'bg-white/[.04] text-gray-500 border-white/[.06]'
+    }
+
+    return 'bg-white/[.04] text-gray-500 border-white/[.06]'
+}
+
+function typeClass(type) {
+    if (type === 'product') {
+        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/10'
+    }
+
+    return 'bg-white/[.04] text-gray-400 border-white/[.06]'
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(
+        window.toastTimer
+    )
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function getSummary(data) {
+    if (
+        data &&
+        typeof data.summary === 'object'
+    ) {
+        return data.summary
+    }
+
+    if (
+        data &&
+        typeof data.stats === 'object'
+    ) {
+        return data.stats
+    }
+
+    return {}
+}
+
+function renderSummary(data) {
+    const summary =
+        getSummary(data)
+
+    const total =
+        summary.total ??
+        summary.totalPosts ??
+        0
+
+    const active =
+        summary.active ??
+        summary.activePosts ??
+        0
+
+    const hidden =
+        summary.hidden ??
+        summary.hiddenPosts ??
+        0
+
+    const pending =
+        summary.pending ??
+        summary.pendingPosts ??
+        0
+
+    const rejected =
+        summary.rejected ??
+        summary.rejectedPosts ??
+        0
+
+    const deleted =
+        summary.deleted ??
+        summary.deletedPosts ??
+        0
+
+    $('totalPosts').textContent =
+        formatNumber(total)
+
+    $('activePosts').textContent =
+        formatNumber(active)
+
+    $('hiddenPosts').textContent =
+        formatNumber(hidden)
+
+    $('pendingPosts').textContent =
+        formatNumber(pending)
+
+    $('rejectedPosts').textContent =
+        formatNumber(rejected)
+
+    $('deletedPosts').textContent =
+        formatNumber(deleted)
+}
+
+function normalizeImages(post) {
+    if (!Array.isArray(post.images)) {
+        return []
+    }
+
+    return post.images
+        .map(item => {
+            if (typeof item === 'string') {
+                return {
+                    url: item,
+                    type: 'image'
+                }
+            }
+
+            return {
+                url: item?.url || '',
+                type: item?.type || 'image'
+            }
+        })
+        .filter(item => {
+            return /^https?:\/\//i.test(
+                item.url
+            )
+        })
+        .slice(0, 10)
+}
+
+function renderMedia(post) {
+    const images =
+        normalizeImages(post)
+
+    if (!images.length) {
+        return ''
+    }
+
+    return `
+        <div class="mt-4 media-grid">
+            ${images.map(item => {
+                if (item.type === 'video') {
+                    return `
+                        <video
+                            src="${escapeHtml(item.url)}"
+                            controls
+                            preload="metadata"
+                            playsinline
+                        ></video>
+                    `
+                }
+
+                return `
+                    <img
+                        src="${escapeHtml(item.url)}"
+                        alt="Media"
+                        loading="lazy"
+                        onerror="this.style.display='none'"
+                    >
+                `
+            }).join('')}
+        </div>
+    `
+}
+
+function renderPost(post) {
+    const author =
+        post.author ||
+        {}
+
+    const username =
+        getUsername(author)
+
+    const postId =
+        getId(post)
+
+    const status =
+        post.status ||
+        'active'
+
+    const type =
+        post.type ||
+        'post'
+
+    const visibility =
+        post.visibility ||
+        'public'
+
+    const title =
+        post.title ||
+        (type === 'product'
+            ? 'Produk tanpa judul'
+            : 'Post')
+
+    const content =
+        post.content ||
+        ''
+
+    const category =
+        post.category ||
+        '-'
+
+    const subcategory =
+        post.subcategory ||
+        '-'
+
+    return `
+        <article class="rounded-2xl bg-white/[.025] border border-white/[.05] p-4 sm:p-5">
+
+            <div class="flex flex-col lg:flex-row gap-5">
+
+                <div class="min-w-0 flex-1">
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black uppercase ${statusClass(status)}">
+                            ${escapeHtml(status)}
+                        </span>
+
+                        <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black uppercase ${typeClass(type)}">
+                            ${escapeHtml(type)}
+                        </span>
+
+                        <span class="px-2.5 py-1 rounded-lg border border-white/[.05] bg-white/[.02] text-[9px] font-black uppercase text-gray-500">
+                            ${escapeHtml(visibility)}
+                        </span>
+
+                        <span class="text-[10px] text-gray-600">
+                            ${escapeHtml(formatDate(post.createdAt))}
+                        </span>
+
+                    </div>
+
+                    <h3 class="mt-4 text-lg font-black text-white break-words">
+                        ${escapeHtml(title)}
+                    </h3>
+
+                    <div class="mt-2 flex items-center gap-2">
+
+                        <div class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/10 flex items-center justify-center text-[10px] font-black text-blue-400">
+                            ${escapeHtml(getInitial(author))}
+                        </div>
+
+                        <a
+                            href="/profile.html?username=${encodeURIComponent(username)}"
+                            class="text-xs font-bold text-blue-400 hover:text-blue-300 transition"
+                        >
+                            @${escapeHtml(username)}
+                        </a>
+
+                        ${
+                            author.verified
+                                ? `
+                                    <span
+                                        class="text-blue-400 text-xs"
+                                        title="Verified"
+                                    >
+                                        ✓
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                    </div>
+
+                    ${
+                        content
+                            ? `
+                                <p class="mt-4 text-sm text-gray-400 leading-6 whitespace-pre-wrap break-words line-clamp-5">
+                                    ${escapeHtml(content)}
+                                </p>
+                            `
+                            : ''
+                    }
+
+                    ${renderMedia(post)}
+
+                    <div class="mt-4 flex flex-wrap gap-2">
+
+                        <span class="px-2.5 py-1.5 rounded-lg bg-white/[.025] border border-white/[.04] text-[10px] text-gray-500">
+                            ${escapeHtml(category)}
+                        </span>
+
+                        <span class="px-2.5 py-1.5 rounded-lg bg-white/[.025] border border-white/[.04] text-[10px] text-gray-500">
+                            ${escapeHtml(subcategory)}
+                        </span>
+
+                        ${
+                            type === 'product' && post.price !== null && post.price !== undefined
+                                ? `
+                                    <span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/10 text-[10px] text-emerald-400">
+                                        ${escapeHtml(post.currency || 'IDR')} ${formatNumber(post.price)}
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+
+                        <div class="rounded-xl bg-black/20 border border-white/[.04] p-3">
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Likes
+                            </p>
+                            <p class="mt-1 text-xs font-bold text-gray-300">
+                                ${formatNumber(post.likesCount)}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl bg-black/20 border border-white/[.04] p-3">
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Comments
+                            </p>
+                            <p class="mt-1 text-xs font-bold text-gray-300">
+                                ${formatNumber(post.commentsCount)}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl bg-black/20 border border-white/[.04] p-3">
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Ratings
+                            </p>
+                            <p class="mt-1 text-xs font-bold text-gray-300">
+                                ${formatNumber(post.ratingsCount)}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl bg-black/20 border border-white/[.04] p-3">
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Rating
+                            </p>
+                            <p class="mt-1 text-xs font-bold text-gray-300">
+                                ${Number(post.ratingAverage || 0).toFixed(1)}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    ${
+                        post.moderationReason
+                            ? `
+                                <div class="mt-4 rounded-xl bg-red-500/5 border border-red-500/10 p-3">
+                                    <p class="text-[9px] uppercase tracking-wider text-red-500/70">
+                                        Moderation
+                                    </p>
+
+                                    <p class="mt-2 text-xs text-red-400 whitespace-pre-wrap break-words">
+                                        ${escapeHtml(post.moderationReason)}
+                                    </p>
+                                </div>
+                            `
+                            : ''
+                    }
+
+                    <p class="mt-4 text-[9px] text-gray-700 break-all">
+                        ID: ${escapeHtml(postId || '-')}
+                    </p>
+
+                </div>
+
+                <div class="flex lg:flex-col gap-2 shrink-0">
+
+                    <button
+                        onclick="openPostModal('${escapeHtml(postId || '')}')"
+                        class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black text-white transition"
+                    >
+                        Detail
+                    </button>
+
+                    ${
+                        postId
+                            ? `
+                                <a
+                                    href="/post.html?id=${encodeURIComponent(postId)}"
+                                    target="_blank"
+                                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white text-center transition"
+                                >
+                                    Buka
+                                </a>
+                            `
+                            : ''
+                    }
+
+                </div>
+
+            </div>
+
+        </article>
+    `
+}
+
+function renderPosts() {
+    if (!state.posts.length) {
+        $('posts').innerHTML = ''
+
+        $('posts').classList.add(
+            'hidden'
+        )
+
+        $('empty').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    $('empty').classList.add(
+        'hidden'
+    )
+
+    $('posts').classList.remove(
+        'hidden'
+    )
+
+    $('posts').innerHTML =
+        state.posts.map(
+            renderPost
+        ).join('')
+}
+
+function renderPagination() {
+    const visible =
+        state.pages > 1
+
+    $('pagination').classList.toggle(
+        'hidden',
+        !visible
+    )
+
+    $('prevButton').disabled =
+        state.page <= 1
+
+    $('nextButton').disabled =
+        state.page >= state.pages
+
+    $('paginationText').textContent =
+        `Halaman ${state.page} dari ${state.pages}`
+
+    $('pageInfo').textContent =
+        `Halaman ${state.page}/${state.pages}`
+
+    $('resultInfo').textContent =
+        `${formatNumber(state.total)} post ditemukan`
+}
+
+async function loadPosts() {
+    if (state.loading) {
+        return
+    }
+
+    state.loading =
+        true
+
+    $('refreshButton').disabled =
+        true
+
+    $('refreshButton').textContent =
+        'Memuat...'
+
+    const params =
+        new URLSearchParams()
+
+    params.set(
+        'page',
+        state.page
+    )
+
+    params.set(
+        'limit',
+        state.limit
+    )
+
+    const search =
+        $('searchInput').value.trim()
+
+    const status =
+        $('statusFilter').value
+
+    const type =
+        $('typeFilter').value
+
+    const visibility =
+        $('visibilityFilter').value
+
+    const category =
+        $('categoryInput').value.trim()
+
+    const subcategory =
+        $('subcategoryInput').value.trim()
+
+    if (search) {
+        params.set(
+            'search',
+            search
+        )
+    }
+
+    if (status) {
+        params.set(
+            'status',
+            status
+        )
+    }
+
+    if (type) {
+        params.set(
+            'type',
+            type
+        )
+    }
+
+    if (visibility) {
+        params.set(
+            'visibility',
+            visibility
+        )
+    }
+
+    if (category) {
+        params.set(
+            'category',
+            category
+        )
+    }
+
+    if (subcategory) {
+        params.set(
+            'subcategory',
+            subcategory
+        )
+    }
+
+    try {
+        const response =
+            await fetch(
+                `/api/admin/posts?${params.toString()}`,
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('page').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal memuat posts.'
+            )
+        }
+
+        state.posts =
+            Array.isArray(
+                data.posts
+            )
+                ? data.posts
+                : Array.isArray(data.data)
+                    ? data.data
+                    : []
+
+        const pagination =
+            data.pagination ||
+            {}
+
+        state.page =
+            Number(
+                pagination.page ||
+                data.page ||
+                state.page
+            )
+
+        state.limit =
+            Number(
+                pagination.limit ||
+                data.limit ||
+                state.limit
+            )
+
+        state.total =
+            Number(
+                pagination.total ??
+                data.total ??
+                state.posts.length
+            )
+
+        state.pages =
+            Number(
+                pagination.pages ||
+                data.pages ||
+                Math.max(
+                    1,
+                    Math.ceil(
+                        state.total /
+                        state.limit
+                    )
+                )
+            )
+
+        renderSummary(data)
+        renderPosts()
+        renderPagination()
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('page').classList.remove(
+            'hidden'
+        )
+
+    } catch (error) {
+        showToast(
+            error.message ||
+            'Gagal memuat posts.'
+        )
+
+    } finally {
+        state.loading =
+            false
+
+        $('refreshButton').disabled =
+            false
+
+        $('refreshButton').textContent =
+            'Refresh'
+    }
+}
+
+function openPostModal(postId) {
+    const post =
+        state.posts.find(
+            item =>
+                String(
+                    getId(item)
+                ) ===
+                String(postId)
+        )
+
+    if (!post) {
+        showToast(
+            'Post tidak ditemukan.'
+        )
+
+        return
+    }
+
+    state.selectedPost =
+        post
+
+    const author =
+        post.author ||
+        {}
+
+    const username =
+        getUsername(author)
+
+    const type =
+        post.type ||
+        'post'
+
+    const status =
+        post.status ||
+        'active'
+
+    $('modalTitle').textContent =
+        post.title ||
+        (type === 'product'
+            ? 'Produk'
+            : 'Post')
+
+    $('modalSubtitle').textContent =
+        `@${username} · ${type} · ${status} · ${formatDate(post.createdAt)}`
+
+    $('modalContent').innerHTML = `
+        <div class="space-y-4">
+
+            <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/10 flex items-center justify-center text-sm font-black text-blue-400">
+                        ${escapeHtml(getInitial(author))}
+                    </div>
+
+                    <div class="min-w-0">
+
+                        <a
+                            href="/profile.html?username=${encodeURIComponent(username)}"
+                            class="text-sm font-black text-white hover:text-blue-400 transition"
+                        >
+                            @${escapeHtml(username)}
+                        </a>
+
+                        <div class="mt-1 flex flex-wrap gap-2">
+
+                            <span class="px-2 py-1 rounded-md border text-[9px] font-black uppercase ${statusClass(status)}">
+                                ${escapeHtml(status)}
+                            </span>
+
+                            <span class="px-2 py-1 rounded-md border text-[9px] font-black uppercase ${typeClass(type)}">
+                                ${escapeHtml(type)}
+                            </span>
+
+                            <span class="px-2 py-1 rounded-md border border-white/[.05] text-[9px] font-black uppercase text-gray-500">
+                                ${escapeHtml(post.visibility || 'public')}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            ${
+                post.content
+                    ? `
+                        <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Content
+                            </p>
+
+                            <p class="mt-3 text-sm text-gray-300 leading-7 whitespace-pre-wrap break-words">
+                                ${escapeHtml(post.content)}
+                            </p>
+
+                        </div>
+                    `
+                    : ''
+            }
+
+            ${
+                renderMedia(post)
+                    ? `
+                        <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Media
+                            </p>
+
+                            ${renderMedia(post)}
+
+                        </div>
+                    `
+                    : ''
+            }
+
+            <div class="grid sm:grid-cols-2 gap-3">
+
+                <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                    <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                        Category
+                    </p>
+
+                    <p class="mt-2 text-sm font-bold text-gray-300">
+                        ${escapeHtml(post.category || '-')}
+                    </p>
+
+                </div>
+
+                <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                    <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                        Subcategory
+                    </p>
+
+                    <p class="mt-2 text-sm font-bold text-gray-300">
+                        ${escapeHtml(post.subcategory || '-')}
+                    </p>
+
+                </div>
+
+            </div>
+
+            ${
+                type === 'product'
+                    ? `
+                        <div class="grid sm:grid-cols-3 gap-3">
+
+                            <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                                <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                    Price
+                                </p>
+
+                                <p class="mt-2 text-sm font-black text-emerald-400">
+                                    ${escapeHtml(post.currency || 'IDR')} ${formatNumber(post.price)}
+                                </p>
+
+                            </div>
+
+                            <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                                <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                    Stock
+                                </p>
+
+                                <p class="mt-2 text-sm font-black text-gray-300">
+                                    ${
+                                        post.stock === null ||
+                                        post.stock === undefined
+                                            ? '∞'
+                                            : formatNumber(post.stock)
+                                    }
+                                </p>
+
+                            </div>
+
+                            <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                                <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                    Rating
+                                </p>
+
+                                <p class="mt-2 text-sm font-black text-gray-300">
+                                    ${Number(post.ratingAverage || 0).toFixed(1)} / 5
+                                </p>
+
+                            </div>
+
+                        </div>
+                    `
+                    : ''
+            }
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+                <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+                    <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                        Likes
+                    </p>
+                    <p class="mt-2 text-sm font-black text-gray-300">
+                        ${formatNumber(post.likesCount)}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+                    <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                        Comments
+                    </p>
+                    <p class="mt-2 text-sm font-black text-gray-300">
+                        ${formatNumber(post.commentsCount)}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+                    <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                        Ratings
+                    </p>
+                    <p class="mt-2 text-sm font-black text-gray-300">
+                        ${formatNumber(post.ratingsCount)}
+                    </p>
+                </div>
+
+                <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+                    <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                        Visibility
+                    </p>
+                    <p class="mt-2 text-sm font-black text-gray-300">
+                        ${escapeHtml(post.visibility || 'public')}
+                    </p>
+                </div>
+
+            </div>
+
+            ${
+                post.moderationReason
+                    ? `
+                        <div class="rounded-2xl bg-red-500/5 border border-red-500/10 p-4">
+
+                            <p class="text-[9px] uppercase tracking-wider text-red-500/70">
+                                Moderation Reason
+                            </p>
+
+                            <p class="mt-3 text-sm text-red-400 whitespace-pre-wrap break-words">
+                                ${escapeHtml(post.moderationReason)}
+                            </p>
+
+                        </div>
+                    `
+                    : ''
+            }
+
+            <div class="rounded-2xl bg-black/20 border border-white/[.05] p-4">
+
+                <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                    Post ID
+                </p>
+
+                <p class="mt-2 text-xs text-gray-500 break-all">
+                    ${escapeHtml(getId(post) || '-')}
+                </p>
+
+            </div>
+
+        </div>
+    `
+
+    const id =
+        getId(post)
+
+    $('openPostButton').href =
+        id
+            ? `/post.html?id=${encodeURIComponent(id)}`
+            : '#'
+
+    $('modalError').classList.add(
+        'hidden'
+    )
+
+    $('modal').classList.remove(
+        'hidden'
+    )
+
+    document.body.classList.add(
+        'overflow-hidden'
+    )
+}
+
+function closeModal() {
+    state.selectedPost =
+        null
+
+    $('modal').classList.add(
+        'hidden'
+    )
+
+    document.body.classList.remove(
+        'overflow-hidden'
+    )
+}
+
+$('filterButton').addEventListener(
+    'click',
+    () => {
+        state.page =
+            1
+
+        loadPosts()
+    }
+)
+
+$('resetButton').addEventListener(
+    'click',
+    () => {
+        $('searchInput').value =
+            ''
+
+        $('statusFilter').value =
+            ''
+
+        $('typeFilter').value =
+            ''
+
+        $('visibilityFilter').value =
+            ''
+
+        $('categoryInput').value =
+            ''
+
+        $('subcategoryInput').value =
+            ''
+
+        state.page =
+            1
+
+        loadPosts()
+    }
+)
+
+$('searchInput').addEventListener(
+    'keydown',
+    event => {
+        if (
+            event.key === 'Enter'
+        ) {
+            state.page =
+                1
+
+            loadPosts()
+        }
+    }
+)
+
+$('refreshButton').addEventListener(
+    'click',
+    loadPosts
+)
+
+$('prevButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page <= 1
+        ) {
+            return
+        }
+
+        state.page--
+
+        loadPosts()
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('nextButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page >= state.pages
+        ) {
+            return
+        }
+
+        state.page++
+
+        loadPosts()
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('closeModal').addEventListener(
+    'click',
+    closeModal
+)
+
+$('closeModalButton').addEventListener(
+    'click',
+    closeModal
+)
+
+$('modal').addEventListener(
+    'click',
+    event => {
+        if (
+            event.target ===
+            $('modal')
+        ) {
+            closeModal()
+        }
+    }
+)
+
+$('logoutButton').addEventListener(
+    'click',
+    async () => {
+        $('logoutButton').disabled =
+            true
+
+        try {
+            await fetch(
+                '/api/auth/logout',
+                {
+                    method: 'POST',
+                    credentials: 'include'
+                }
+            )
+        } catch {}
+
+        window.location.href =
+            '/login.html'
+    }
+)
+
+async function checkAdmin() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success ||
+            !data?.user
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        const user =
+            data.user
+
+        if (
+            user.role !== 'admin' &&
+            user.role !== 'developer'
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        state.user =
+            user
+
+        return true
+
+    } catch {
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.remove(
+            'hidden'
+        )
+
+        return false
+    }
+}
+
+async function init() {
+    const allowed =
+        await checkAdmin()
+
+    if (!allowed) {
+        return
+    }
+
+    await loadPosts()
+}
+
+init()
+</script>
+
+</body>
+</html>

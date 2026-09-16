@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Admin ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 5% 0%, rgba(37,99,235,.13), transparent 28%),
+                radial-gradient(circle at 95% 5%, rgba(239,68,68,.07), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .input {
+            width: 100%;
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input:focus {
+            border-color: rgba(59,130,246,.5);
+            background: rgba(255,255,255,.05);
+        }
+
+        select.input option {
+            background: #0a0e16;
+            color: #fff;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/admin.html" class="flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-black text-white leading-none">
+                        ReyCode
+                    </div>
+
+                    <div class="text-[10px] text-gray-600 mt-1">
+                        Report Center
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+
+                <a
+                    href="/admin.html"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    id="profileLink"
+                    href="/"
+                    class="hidden sm:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Profile
+                </a>
+
+                <button
+                    id="logoutButton"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/[.05] transition"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+    <div
+        id="loading"
+        class="glass rounded-2xl p-12 text-center"
+    >
+        <div class="w-9 h-9 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat Report Center...
+        </p>
+    </div>
+
+    <div
+        id="accessDenied"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl">
+            🔒
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Akses Ditolak
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Halaman ini hanya dapat diakses oleh Admin atau Developer.
+        </p>
+
+        <a
+            href="/"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Kembali
+        </a>
+    </div>
+
+    <div
+        id="page"
+        class="hidden fade"
+    >
+
+        <section class="mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+                <div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/10 text-red-400 text-[10px] font-black uppercase tracking-wider">
+                        <span>⚠</span>
+                        Moderation
+                    </div>
+
+                    <h1 class="mt-4 text-2xl sm:text-3xl font-black text-white">
+                        Report Center
+                    </h1>
+
+                    <p class="mt-2 text-sm text-gray-500">
+                        Review laporan pengguna dan lakukan tindakan moderasi.
+                    </p>
+
+                </div>
+
+                <button
+                    id="refreshButton"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Total
+                </p>
+                <p
+                    id="totalReports"
+                    class="mt-2 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Pending
+                </p>
+                <p
+                    id="pendingReports"
+                    class="mt-2 text-2xl font-black text-yellow-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Resolved
+                </p>
+                <p
+                    id="resolvedReports"
+                    class="mt-2 text-2xl font-black text-emerald-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Rejected
+                </p>
+                <p
+                    id="rejectedReports"
+                    class="mt-2 text-2xl font-black text-red-400"
+                >
+                    0
+                </p>
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl p-4 mb-5">
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Status
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Target
+                    </label>
+
+                    <select
+                        id="targetFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua Target</option>
+                        <option value="user">User</option>
+                        <option value="post">Post</option>
+                        <option value="comment">Comment</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Alasan
+                    </label>
+
+                    <select
+                        id="reasonFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua Alasan</option>
+                        <option value="scam">Scam</option>
+                        <option value="spam">Spam</option>
+                        <option value="product_mismatch">Product Mismatch</option>
+                        <option value="rule_violation">Rule Violation</option>
+                        <option value="suspicious">Suspicious</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end">
+                    <button
+                        id="filterButton"
+                        class="w-full px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition"
+                    >
+                        Terapkan Filter
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl overflow-hidden">
+
+            <div class="p-5 border-b border-white/[.06]">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <div>
+                        <h2 class="font-black text-white">
+                            Daftar Laporan
+                        </h2>
+
+                        <p
+                            id="resultInfo"
+                            class="mt-1 text-xs text-gray-600"
+                        >
+                            -
+                        </p>
+                    </div>
+
+                    <span
+                        id="pageInfo"
+                        class="text-[10px] text-gray-600"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div
+                id="reports"
+                class="p-4 sm:p-5 space-y-3"
+            ></div>
+
+            <div
+                id="empty"
+                class="hidden p-10 text-center"
+            >
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-xl">
+                    ✓
+                </div>
+
+                <h3 class="mt-4 text-sm font-bold text-white">
+                    Tidak ada laporan
+                </h3>
+
+                <p class="mt-2 text-xs text-gray-600">
+                    Tidak ada data yang cocok dengan filter saat ini.
+                </p>
+            </div>
+
+            <div
+                id="pagination"
+                class="hidden p-4 border-t border-white/[.06] flex items-center justify-between gap-3"
+            >
+
+                <button
+                    id="prevButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    ← Sebelumnya
+                </button>
+
+                <span
+                    id="paginationText"
+                    class="text-[10px] text-gray-600"
+                >
+                    -
+                </span>
+
+                <button
+                    id="nextButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    Berikutnya →
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<div
+    id="modal"
+    class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+>
+
+    <div class="min-h-full flex items-center justify-center">
+
+        <div
+            id="modalBox"
+            class="glass rounded-2xl w-full max-w-xl p-5 sm:p-6 fade"
+        >
+
+            <div class="flex items-start justify-between gap-4">
+
+                <div>
+                    <p class="text-[10px] uppercase tracking-wider text-blue-400 font-black">
+                        Moderation Action
+                    </p>
+
+                    <h2
+                        id="modalTitle"
+                        class="mt-2 text-xl font-black text-white"
+                    >
+                        Review Report
+                    </h2>
+
+                    <p
+                        id="modalDescription"
+                        class="mt-2 text-xs text-gray-500"
+                    >
+                        -
+                    </p>
+                </div>
+
+                <button
+                    id="closeModal"
+                    class="w-9 h-9 rounded-xl bg-white/[.04] text-gray-500 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            <div class="mt-6">
+
+                <label class="block text-xs font-bold text-gray-400 mb-2">
+                    Tindakan
+                </label>
+
+                <select
+                    id="actionSelect"
+                    class="input rounded-xl px-4 py-3 text-sm"
+                >
+                    <option value="none">Reject / No Action</option>
+                    <option value="warning">Warning</option>
+                    <option value="hide_content">Hide Content</option>
+                    <option value="suspend_30d">Suspend 30 Hari</option>
+                    <option value="suspend_permanent">Suspend Permanen</option>
+                </select>
+
+            </div>
+
+            <div class="mt-5">
+
+                <label class="block text-xs font-bold text-gray-400 mb-2">
+                    Catatan Admin
+                </label>
+
+                <textarea
+                    id="actionNote"
+                    maxlength="3000"
+                    rows="5"
+                    placeholder="Tambahkan alasan atau catatan moderasi..."
+                    class="input rounded-xl px-4 py-3 text-sm resize-y"
+                ></textarea>
+
+                <div class="mt-2 text-right">
+                    <span
+                        id="noteCounter"
+                        class="text-[10px] text-gray-600"
+                    >
+                        0/3000
+                    </span>
+                </div>
+
+            </div>
+
+            <div
+                id="modalError"
+                class="hidden mt-5 rounded-xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-400"
+            ></div>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
+
+                <button
+                    id="cancelModal"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white transition"
+                >
+                    Batal
+                </button>
+
+                <button
+                    id="submitAction"
+                    class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Terapkan Tindakan
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[200] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    page: 1,
+    limit: 20,
+    total: 0,
+    pages: 1,
+    reports: [],
+    selectedReport: null,
+    loading: false,
+    actionLoading: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date =
+        new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return date.toLocaleString(
+        'id-ID',
+        {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        }
+    )
+}
+
+function getId(value) {
+    if (!value) {
+        return null
+    }
+
+    if (
+        typeof value === 'string'
+    ) {
+        return value
+    }
+
+    return (
+        value._id ||
+        value.id ||
+        null
+    )
+}
+
+function getUsername(value) {
+    if (!value) {
+        return 'unknown'
+    }
+
+    if (
+        typeof value === 'string'
+    ) {
+        return value
+    }
+
+    return (
+        value.username ||
+        value.name ||
+        'unknown'
+    )
+}
+
+function getReasonLabel(reason) {
+    const labels = {
+        scam: 'Scam',
+        spam: 'Spam',
+        product_mismatch: 'Product Mismatch',
+        rule_violation: 'Rule Violation',
+        suspicious: 'Suspicious',
+        other: 'Other'
+    }
+
+    return labels[reason] ||
+        reason ||
+        'Other'
+}
+
+function getTargetLabel(type) {
+    const labels = {
+        user: 'User',
+        post: 'Post',
+        comment: 'Comment'
+    }
+
+    return labels[type] ||
+        type ||
+        'Unknown'
+}
+
+function getStatusClass(status) {
+    if (status === 'pending') {
+        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/10'
+    }
+
+    if (status === 'resolved') {
+        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/10'
+    }
+
+    if (status === 'rejected') {
+        return 'bg-red-500/10 text-red-400 border-red-500/10'
+    }
+
+    return 'bg-white/[.04] text-gray-400 border-white/[.06]'
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(
+        window.toastTimer
+    )
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function getFilters() {
+    return {
+        status: $('statusFilter').value,
+        targetType: $('targetFilter').value,
+        reason: $('reasonFilter').value
+    }
+}
+
+function renderSummary(summary) {
+    const data =
+        summary ||
+        {}
+
+    $('totalReports').textContent =
+        formatNumber(
+            data.total
+        )
+
+    $('pendingReports').textContent =
+        formatNumber(
+            data.pending
+        )
+
+    $('resolvedReports').textContent =
+        formatNumber(
+            data.resolved
+        )
+
+    $('rejectedReports').textContent =
+        formatNumber(
+            data.rejected
+        )
+}
+
+function renderReportCard(report) {
+    const reporter =
+        report.reporter ||
+        report.user ||
+        {}
+
+    const target =
+        report.targetUser ||
+        report.targetPost ||
+        report.targetComment ||
+        report.target ||
+        {}
+
+    const targetId =
+        getId(target) ||
+        getId(
+            report.targetId
+        )
+
+    const reporterName =
+        getUsername(
+            reporter
+        )
+
+    const targetName =
+        getUsername(
+            target
+        )
+
+    const targetType =
+        report.targetType ||
+        'unknown'
+
+    const status =
+        report.status ||
+        'pending'
+
+    const createdAt =
+        formatDate(
+            report.createdAt ||
+            report.created_at
+        )
+
+    let targetPreview =
+        ''
+
+    if (
+        targetType === 'post'
+    ) {
+        targetPreview =
+            target.title ||
+            target.content ||
+            'Post'
+    } else if (
+        targetType === 'comment'
+    ) {
+        targetPreview =
+            target.content ||
+            'Comment'
+    } else if (
+        targetType === 'user'
+    ) {
+        targetPreview =
+            `@${targetName}`
+    } else {
+        targetPreview =
+            targetName
+    }
+
+    const canReview =
+        status === 'pending'
+
+    return `
+        <article class="rounded-2xl bg-white/[.025] border border-white/[.05] p-4 sm:p-5">
+
+            <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+
+                <div class="min-w-0 flex-1">
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black uppercase ${getStatusClass(status)}">
+                            ${escapeHtml(status)}
+                        </span>
+
+                        <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[9px] font-black">
+                            ${escapeHtml(getTargetLabel(targetType))}
+                        </span>
+
+                        <span class="px-2.5 py-1 rounded-lg bg-white/[.04] border border-white/[.05] text-gray-500 text-[9px] font-black">
+                            ${escapeHtml(getReasonLabel(report.reason))}
+                        </span>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <p class="text-sm text-gray-300 leading-6">
+                            Dilaporkan oleh
+                            <span class="font-bold text-white">
+                                @${escapeHtml(reporterName)}
+                            </span>
+                        </p>
+
+                        <p class="mt-1 text-xs text-gray-600">
+                            ${escapeHtml(createdAt)}
+                        </p>
+
+                    </div>
+
+                    <div class="mt-4 rounded-xl bg-black/20 border border-white/[.04] p-4">
+
+                        <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                            Target
+                        </p>
+
+                        <p class="mt-2 text-sm font-bold text-white break-words">
+                            ${escapeHtml(targetPreview)}
+                        </p>
+
+                        ${
+                            targetType === 'user'
+                                ? `
+                                    <p class="mt-1 text-[10px] text-gray-600">
+                                        @${escapeHtml(targetName)}
+                                    </p>
+                                `
+                                : ''
+                        }
+
+                        ${
+                            targetId
+                                ? `
+                                    <p class="mt-2 text-[9px] text-gray-700 break-all">
+                                        ID: ${escapeHtml(targetId)}
+                                    </p>
+                                `
+                                : ''
+                        }
+
+                    </div>
+
+                    ${
+                        report.details
+                            ? `
+                                <div class="mt-4">
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                        Detail Laporan
+                                    </p>
+
+                                    <p class="mt-2 text-xs text-gray-400 leading-6 whitespace-pre-wrap break-words">
+                                        ${escapeHtml(report.details)}
+                                    </p>
+                                </div>
+                            `
+                            : ''
+                    }
+
+                    ${
+                        report.action &&
+                        report.action !== 'none'
+                            ? `
+                                <div class="mt-4 rounded-xl border border-white/[.05] bg-white/[.02] p-3">
+
+                                    <div class="flex items-center justify-between gap-3">
+
+                                        <span class="text-[10px] text-gray-600">
+                                            Action
+                                        </span>
+
+                                        <span class="text-[10px] font-black text-white">
+                                            ${escapeHtml(report.action)}
+                                        </span>
+
+                                    </div>
+
+                                    ${
+                                        report.adminNote
+                                            ? `
+                                                <p class="mt-2 text-xs text-gray-500 leading-5">
+                                                    ${escapeHtml(report.adminNote)}
+                                                </p>
+                                            `
+                                            : ''
+                                    }
+
+                                </div>
+                            `
+                            : ''
+                    }
+
+                </div>
+
+                <div class="flex lg:flex-col gap-2 shrink-0">
+
+                    ${
+                        targetId
+                            ? `
+                                <button
+                                    onclick="openTarget('${escapeHtml(targetType)}','${escapeHtml(targetId)}')"
+                                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white transition"
+                                >
+                                    Lihat Target
+                                </button>
+                            `
+                            : ''
+                    }
+
+                    ${
+                        canReview
+                            ? `
+                                <button
+                                    onclick="openActionModal('${escapeHtml(String(getId(report) || ''))}')"
+                                    class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black text-white transition"
+                                >
+                                    Review
+                                </button>
+                            `
+                            : ''
+                    }
+
+                </div>
+
+            </div>
+
+        </article>
+    `
+}
+
+function renderReports() {
+    const reports =
+        state.reports
+
+    $('reports').innerHTML =
+        reports.map(
+            renderReportCard
+        ).join('')
+
+    if (!reports.length) {
+        $('reports').classList.add(
+            'hidden'
+        )
+
+        $('empty').classList.remove(
+            'hidden'
+        )
+    } else {
+        $('reports').classList.remove(
+            'hidden'
+        )
+
+        $('empty').classList.add(
+            'hidden'
+        )
+    }
+}
+
+function renderPagination() {
+    const hasPagination =
+        state.pages > 1
+
+    $('pagination').classList.toggle(
+        'hidden',
+        !hasPagination
+    )
+
+    $('prevButton').disabled =
+        state.page <= 1
+
+    $('nextButton').disabled =
+        state.page >= state.pages
+
+    $('paginationText').textContent =
+        `Halaman ${state.page} dari ${state.pages}`
+
+    $('pageInfo').textContent =
+        `Halaman ${state.page}/${state.pages}`
+
+    $('resultInfo').textContent =
+        `${formatNumber(state.total)} laporan ditemukan`
+}
+
+async function loadReports() {
+    if (state.loading) {
+        return
+    }
+
+    state.loading =
+        true
+
+    $('refreshButton').disabled =
+        true
+
+    $('refreshButton').textContent =
+        'Memuat...'
+
+    const filters =
+        getFilters()
+
+    const params =
+        new URLSearchParams()
+
+    params.set(
+        'page',
+        state.page
+    )
+
+    params.set(
+        'limit',
+        state.limit
+    )
+
+    if (filters.status) {
+        params.set(
+            'status',
+            filters.status
+        )
+    }
+
+    if (filters.targetType) {
+        params.set(
+            'targetType',
+            filters.targetType
+        )
+    }
+
+    if (filters.reason) {
+        params.set(
+            'reason',
+            filters.reason
+        )
+    }
+
+    try {
+        const response =
+            await fetch(
+                `/api/reports/list?${params.toString()}`,
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('page').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal memuat laporan.'
+            )
+        }
+
+        state.reports =
+            Array.isArray(data.reports)
+                ? data.reports
+                : Array.isArray(data.data)
+                    ? data.data
+                    : []
+
+        const pagination =
+            data.pagination ||
+            {}
+
+        state.page =
+            Number(
+                pagination.page ||
+                data.page ||
+                state.page
+            )
+
+        state.limit =
+            Number(
+                pagination.limit ||
+                data.limit ||
+                state.limit
+            )
+
+        state.total =
+            Number(
+                pagination.total ??
+                data.total ??
+                state.reports.length
+            )
+
+        state.pages =
+            Number(
+                pagination.pages ||
+                data.pages ||
+                Math.max(
+                    1,
+                    Math.ceil(
+                        state.total /
+                        state.limit
+                    )
+                )
+            )
+
+        renderSummary(
+            data.summary ||
+            data.stats ||
+            {}
+        )
+
+        renderReports()
+
+        renderPagination()
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('page').classList.remove(
+            'hidden'
+        )
+
+    } catch (error) {
+        showToast(
+            error.message ||
+            'Gagal memuat laporan.'
+        )
+
+    } finally {
+        state.loading =
+            false
+
+        $('refreshButton').disabled =
+            false
+
+        $('refreshButton').textContent =
+            'Refresh'
+    }
+}
+
+function openActionModal(reportId) {
+    const report =
+        state.reports.find(
+            item =>
+                String(
+                    getId(item)
+                ) ===
+                String(reportId)
+        )
+
+    if (!report) {
+        showToast(
+            'Data laporan tidak ditemukan.'
+        )
+        return
+    }
+
+    state.selectedReport =
+        report
+
+    const target =
+        report.targetUser ||
+        report.targetPost ||
+        report.targetComment ||
+        report.target ||
+        {}
+
+    $('modalTitle').textContent =
+        `Review ${getTargetLabel(report.targetType)}`
+
+    $('modalDescription').textContent =
+        `Laporan ${getReasonLabel(report.reason)} dari @${getUsername(report.reporter)}.`
+
+    $('actionSelect').value =
+        'none'
+
+    $('actionNote').value =
+        ''
+
+    $('noteCounter').textContent =
+        '0/3000'
+
+    $('modalError').classList.add(
+        'hidden'
+    )
+
+    $('modal').classList.remove(
+        'hidden'
+    )
+
+    document.body.classList.add(
+        'overflow-hidden'
+    )
+}
+
+function closeModal() {
+    if (state.actionLoading) {
+        return
+    }
+
+    state.selectedReport =
+        null
+
+    $('modal').classList.add(
+        'hidden'
+    )
+
+    document.body.classList.remove(
+        'overflow-hidden'
+    )
+}
+
+async function submitAction() {
+    if (
+        state.actionLoading ||
+        !state.selectedReport
+    ) {
+        return
+    }
+
+    const reportId =
+        getId(
+            state.selectedReport
+        )
+
+    if (!reportId) {
+        $('modalError').textContent =
+            'ID laporan tidak ditemukan.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    const action =
+        $('actionSelect').value
+
+    const note =
+        $('actionNote').value.trim()
+
+    if (note.length > 3000) {
+        $('modalError').textContent =
+            'Catatan maksimal 3000 karakter.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    state.actionLoading =
+        true
+
+    $('submitAction').disabled =
+        true
+
+    $('cancelModal').disabled =
+        true
+
+    $('submitAction').textContent =
+        'Memproses...'
+
+    $('modalError').classList.add(
+        'hidden'
+    )
+
+    try {
+        const response =
+            await fetch(
+                '/api/reports/action',
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: reportId,
+                        reportId,
+                        action,
+                        note,
+                        reason: note
+                    })
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal menerapkan tindakan.'
+            )
+        }
+
+        closeModal()
+
+        showToast(
+            data.message ||
+            'Tindakan berhasil diterapkan.'
+        )
+
+        await loadReports()
+
+    } catch (error) {
+        $('modalError').textContent =
+            error.message ||
+            'Terjadi kesalahan.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+    } finally {
+        state.actionLoading =
+            false
+
+        $('submitAction').disabled =
+            false
+
+        $('cancelModal').disabled =
+            false
+
+        $('submitAction').textContent =
+            'Terapkan Tindakan'
+    }
+}
+
+function openTarget(type, id) {
+    if (!id) {
+        return
+    }
+
+    if (type === 'post') {
+        window.location.href =
+            `/post.html?id=${encodeURIComponent(id)}`
+        return
+    }
+
+    if (type === 'user') {
+        window.location.href =
+            `/profile.html?userId=${encodeURIComponent(id)}`
+        return
+    }
+
+    if (type === 'comment') {
+        const report =
+            state.reports.find(
+                item =>
+                    String(
+                        getId(item)
+                    ) ===
+                    String(
+                        state.selectedReport
+                            ? getId(state.selectedReport)
+                            : ''
+                    )
+            )
+
+        const postId =
+            report?.targetComment?.post ||
+            report?.targetComment?.postId
+
+        if (postId) {
+            window.location.href =
+                `/post.html?id=${encodeURIComponent(getId(postId) || postId)}`
+            return
+        }
+
+        showToast(
+            'Comment berada pada postingan terkait.'
+        )
+    }
+}
+
+$('filterButton').addEventListener(
+    'click',
+    () => {
+        state.page =
+            1
+
+        loadReports()
+    }
+)
+
+$('refreshButton').addEventListener(
+    'click',
+    loadReports
+)
+
+$('prevButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page <= 1
+        ) {
+            return
+        }
+
+        state.page--
+        loadReports()
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('nextButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page >= state.pages
+        ) {
+            return
+        }
+
+        state.page++
+        loadReports()
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('closeModal').addEventListener(
+    'click',
+    closeModal
+)
+
+$('cancelModal').addEventListener(
+    'click',
+    closeModal
+)
+
+$('submitAction').addEventListener(
+    'click',
+    submitAction
+)
+
+$('actionNote').addEventListener(
+    'input',
+    () => {
+        $('noteCounter').textContent =
+            `${$('actionNote').value.length}/3000`
+    }
+)
+
+$('modal').addEventListener(
+    'click',
+    event => {
+        if (
+            event.target ===
+            $('modal')
+        ) {
+            closeModal()
+        }
+    }
+)
+
+$('logoutButton').addEventListener(
+    'click',
+    async () => {
+        $('logoutButton').disabled =
+            true
+
+        try {
+            await fetch(
+                '/api/auth/logout',
+                {
+                    method: 'POST',
+                    credentials: 'include'
+                }
+            )
+        } catch {}
+
+        window.location.href =
+            '/login.html'
+    }
+)
+
+async function checkAdmin() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success ||
+            !data?.user
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        const user =
+            data.user
+
+        if (
+            user.role !== 'admin' &&
+            user.role !== 'developer'
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        state.user =
+            user
+
+        if (user.username) {
+            $('profileLink').href =
+                `/profile.html?username=${encodeURIComponent(user.username)}`
+        }
+
+        return true
+
+    } catch {
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.remove(
+            'hidden'
+        )
+
+        return false
+    }
+}
+
+async function init() {
+    const allowed =
+        await checkAdmin()
+
+    if (!allowed) {
+        return
+    }
+
+    await loadReports()
+}
+
+init()
+</script>
+
+</body>
+</html>

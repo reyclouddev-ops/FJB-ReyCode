@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Admin ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 5% 0%, rgba(37,99,235,.13), transparent 28%),
+                radial-gradient(circle at 95% 5%, rgba(16,185,129,.06), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .input {
+            width: 100%;
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input:focus {
+            border-color: rgba(59,130,246,.5);
+            background: rgba(255,255,255,.05);
+        }
+
+        select.input option {
+            background: #0a0e16;
+            color: #fff;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/admin.html" class="flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-black text-white leading-none">
+                        ReyCode
+                    </div>
+                    <div class="text-[10px] text-gray-600 mt-1">
+                        User Management
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-1 sm:gap-2">
+
+                <a
+                    href="/admin.html"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="/admin-reports.html"
+                    class="hidden sm:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Reports
+                </a>
+
+                <button
+                    id="logoutButton"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/[.05] transition"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+    <div
+        id="loading"
+        class="glass rounded-2xl p-12 text-center"
+    >
+        <div class="w-9 h-9 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat User Management...
+        </p>
+    </div>
+
+    <div
+        id="accessDenied"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl">
+            🔒
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Akses Ditolak
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Halaman ini hanya dapat diakses oleh Admin atau Developer.
+        </p>
+
+        <a
+            href="/"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Kembali
+        </a>
+    </div>
+
+    <div
+        id="page"
+        class="hidden fade"
+    >
+
+        <section class="mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+                <div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-wider">
+                        <span>◉</span>
+                        User Management
+                    </div>
+
+                    <h1 class="mt-4 text-2xl sm:text-3xl font-black text-white">
+                        Users
+                    </h1>
+
+                    <p class="mt-2 text-sm text-gray-500">
+                        Monitoring akun, role, status, dan verifikasi pengguna.
+                    </p>
+
+                </div>
+
+                <button
+                    id="refreshButton"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Total
+                </p>
+                <p
+                    id="totalUsers"
+                    class="mt-2 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Active
+                </p>
+                <p
+                    id="activeUsers"
+                    class="mt-2 text-2xl font-black text-emerald-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Suspended
+                </p>
+                <p
+                    id="suspendedUsers"
+                    class="mt-2 text-2xl font-black text-red-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Verified
+                </p>
+                <p
+                    id="verifiedUsers"
+                    class="mt-2 text-2xl font-black text-blue-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Reseller
+                </p>
+                <p
+                    id="resellerUsers"
+                    class="mt-2 text-2xl font-black text-cyan-400"
+                >
+                    0
+                </p>
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl p-4 mb-5">
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
+
+                <div class="lg:col-span-2">
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Search
+                    </label>
+
+                    <input
+                        id="searchInput"
+                        type="search"
+                        maxlength="150"
+                        placeholder="Username atau email..."
+                        class="input rounded-xl px-4 py-3 text-sm"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Role
+                    </label>
+
+                    <select
+                        id="roleFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua Role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="developer">Developer</option>
+                        <option value="system">System</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Account
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua Status</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Reseller
+                    </label>
+
+                    <select
+                        id="resellerFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua</option>
+                        <option value="none">None</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Verified
+                    </label>
+
+                    <select
+                        id="verifiedFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua</option>
+                        <option value="true">Verified</option>
+                        <option value="false">Unverified</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="mt-3 flex justify-end">
+                <button
+                    id="filterButton"
+                    class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition"
+                >
+                    Terapkan Filter
+                </button>
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl overflow-hidden">
+
+            <div class="p-5 border-b border-white/[.06]">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <div>
+                        <h2 class="font-black text-white">
+                            Daftar Pengguna
+                        </h2>
+
+                        <p
+                            id="resultInfo"
+                            class="mt-1 text-xs text-gray-600"
+                        >
+                            -
+                        </p>
+                    </div>
+
+                    <span
+                        id="pageInfo"
+                        class="text-[10px] text-gray-600"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div
+                id="users"
+                class="p-4 sm:p-5 grid gap-3"
+            ></div>
+
+            <div
+                id="empty"
+                class="hidden p-10 text-center"
+            >
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-xl">
+                    ∅
+                </div>
+
+                <h3 class="mt-4 text-sm font-bold text-white">
+                    User tidak ditemukan
+                </h3>
+
+                <p class="mt-2 text-xs text-gray-600">
+                    Tidak ada pengguna yang cocok dengan filter.
+                </p>
+            </div>
+
+            <div
+                id="pagination"
+                class="hidden p-4 border-t border-white/[.06] flex items-center justify-between gap-3"
+            >
+
+                <button
+                    id="prevButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    ← Sebelumnya
+                </button>
+
+                <span
+                    id="paginationText"
+                    class="text-[10px] text-gray-600"
+                >
+                    -
+                </span>
+
+                <button
+                    id="nextButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    Berikutnya →
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[200] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    users: [],
+    page: 1,
+    limit: 20,
+    total: 0,
+    pages: 1,
+    loading: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date =
+        new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return date.toLocaleString(
+        'id-ID',
+        {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        }
+    )
+}
+
+function getId(value) {
+    if (!value) {
+        return null
+    }
+
+    if (typeof value === 'string') {
+        return value
+    }
+
+    return (
+        value._id ||
+        value.id ||
+        null
+    )
+}
+
+function getInitial(username) {
+    const value =
+        String(username || 'U')
+            .trim()
+
+    return (
+        value.charAt(0)
+            .toUpperCase() ||
+        'U'
+    )
+}
+
+function roleLabel(role) {
+    const labels = {
+        user: 'User',
+        admin: 'Admin',
+        developer: 'Developer',
+        system: 'System'
+    }
+
+    return labels[role] ||
+        role ||
+        'User'
+}
+
+function resellerLabel(status) {
+    const labels = {
+        none: 'None',
+        pending: 'Pending',
+        approved: 'Approved',
+        rejected: 'Rejected',
+        suspended: 'Suspended'
+    }
+
+    return labels[status] ||
+        status ||
+        'None'
+}
+
+function roleClass(role) {
+    if (role === 'developer') {
+        return 'bg-black text-white border-white/10'
+    }
+
+    if (role === 'admin') {
+        return 'bg-red-500/10 text-red-400 border-red-500/10'
+    }
+
+    if (role === 'system') {
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/10'
+    }
+
+    return 'bg-white/[.04] text-gray-400 border-white/[.06]'
+}
+
+function accountClass(status) {
+    if (status === 'suspended') {
+        return 'bg-red-500/10 text-red-400 border-red-500/10'
+    }
+
+    return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/10'
+}
+
+function resellerClass(status) {
+    if (status === 'approved') {
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/10'
+    }
+
+    if (status === 'suspended') {
+        return 'bg-red-500/10 text-red-400 border-red-500/10'
+    }
+
+    if (status === 'pending') {
+        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/10'
+    }
+
+    if (status === 'rejected') {
+        return 'bg-orange-500/10 text-orange-400 border-orange-500/10'
+    }
+
+    return 'bg-white/[.04] text-gray-500 border-white/[.06]'
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(
+        window.toastTimer
+    )
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function renderSummary(summary) {
+    const data =
+        summary ||
+        {}
+
+    const total =
+        data.total ??
+        data.totalUsers ??
+        data.users ??
+        0
+
+    const active =
+        data.active ??
+        data.activeUsers ??
+        0
+
+    const suspended =
+        data.suspended ??
+        data.suspendedUsers ??
+        0
+
+    const verified =
+        data.verified ??
+        data.verifiedUsers ??
+        0
+
+    const reseller =
+        data.reseller ??
+        data.resellers ??
+        data.approvedResellers ??
+        0
+
+    $('totalUsers').textContent =
+        formatNumber(total)
+
+    $('activeUsers').textContent =
+        formatNumber(active)
+
+    $('suspendedUsers').textContent =
+        formatNumber(suspended)
+
+    $('verifiedUsers').textContent =
+        formatNumber(verified)
+
+    $('resellerUsers').textContent =
+        formatNumber(reseller)
+}
+
+function normalizeSummary(data) {
+    if (
+        data &&
+        typeof data.summary === 'object'
+    ) {
+        return data.summary
+    }
+
+    if (
+        data &&
+        typeof data.stats === 'object'
+    ) {
+        return data.stats
+    }
+
+    return {}
+}
+
+function renderUser(user) {
+    const username =
+        user.username ||
+        'unknown'
+
+    const email =
+        user.email ||
+        '-'
+
+    const role =
+        user.role ||
+        'user'
+
+    const accountStatus =
+        user.accountStatus ||
+        'active'
+
+    const resellerStatus =
+        user.resellerStatus ||
+        'none'
+
+    const verified =
+        Boolean(
+            user.verified
+        )
+
+    const avatar =
+        user.avatar
+
+    const avatarHtml =
+        avatar
+            ? `
+                <img
+                    src="${escapeHtml(avatar)}"
+                    alt="${escapeHtml(username)}"
+                    class="w-12 h-12 rounded-2xl object-cover border border-white/[.07]"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                >
+                <div class="hidden w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/10 items-center justify-center text-blue-400 font-black">
+                    ${escapeHtml(getInitial(username))}
+                </div>
+            `
+            : `
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/10 flex items-center justify-center text-blue-400 font-black">
+                    ${escapeHtml(getInitial(username))}
+                </div>
+            `
+
+    return `
+        <article class="rounded-2xl bg-white/[.025] border border-white/[.05] p-4 sm:p-5">
+
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+
+                <div class="flex items-start gap-3 min-w-0">
+
+                    <div class="shrink-0">
+                        ${avatarHtml}
+                    </div>
+
+                    <div class="min-w-0">
+
+                        <div class="flex flex-wrap items-center gap-2">
+
+                            <a
+                                href="/profile.html?username=${encodeURIComponent(username)}"
+                                class="font-black text-white hover:text-blue-400 transition truncate"
+                            >
+                                @${escapeHtml(username)}
+                            </a>
+
+                            ${
+                                verified
+                                    ? `
+                                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-[10px] font-black">
+                                            ✓
+                                        </span>
+                                    `
+                                    : ''
+                            }
+
+                        </div>
+
+                        <p class="mt-1 text-xs text-gray-600 break-all">
+                            ${escapeHtml(email)}
+                        </p>
+
+                        <div class="mt-3 flex flex-wrap gap-1.5">
+
+                            <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black ${roleClass(role)}">
+                                ${escapeHtml(roleLabel(role))}
+                            </span>
+
+                            <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black ${accountClass(accountStatus)}">
+                                ${escapeHtml(accountStatus)}
+                            </span>
+
+                            <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black ${resellerClass(resellerStatus)}">
+                                Reseller: ${escapeHtml(resellerLabel(resellerStatus))}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
+
+                    <div class="rounded-xl bg-black/20 border border-white/[.04] px-3 py-2.5 min-w-[75px]">
+                        <p class="text-[9px] text-gray-600">
+                            Posts
+                        </p>
+                        <p class="mt-1 text-sm font-black text-white">
+                            ${formatNumber(user.postsCount)}
+                        </p>
+                    </div>
+
+                    <div class="rounded-xl bg-black/20 border border-white/[.04] px-3 py-2.5 min-w-[75px]">
+                        <p class="text-[9px] text-gray-600">
+                            Followers
+                        </p>
+                        <p class="mt-1 text-sm font-black text-white">
+                            ${formatNumber(user.followersCount)}
+                        </p>
+                    </div>
+
+                    <div class="rounded-xl bg-black/20 border border-white/[.04] px-3 py-2.5 min-w-[75px]">
+                        <p class="text-[9px] text-gray-600">
+                            Following
+                        </p>
+                        <p class="mt-1 text-sm font-black text-white">
+                            ${formatNumber(user.followingCount)}
+                        </p>
+                    </div>
+
+                    <div class="rounded-xl bg-black/20 border border-white/[.04] px-3 py-2.5 min-w-[75px]">
+                        <p class="text-[9px] text-gray-600">
+                            Login
+                        </p>
+                        <p class="mt-1 text-[10px] font-bold text-gray-400">
+                            ${escapeHtml(formatDate(user.lastLoginAt))}
+                        </p>
+                    </div>
+
+                    <a
+                        href="/profile.html?username=${encodeURIComponent(username)}"
+                        class="rounded-xl bg-blue-600/10 border border-blue-500/10 px-3 py-2.5 min-w-[75px] flex flex-col justify-center hover:bg-blue-600/20 transition"
+                    >
+                        <p class="text-[9px] text-blue-400">
+                            Profile
+                        </p>
+                        <p class="mt-1 text-[10px] font-black text-white">
+                            Buka →
+                        </p>
+                    </a>
+
+                </div>
+
+            </div>
+
+            ${
+                accountStatus === 'suspended'
+                    ? `
+                        <div class="mt-4 rounded-xl bg-red-500/[.04] border border-red-500/10 px-4 py-3">
+
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-wider text-red-400 font-black">
+                                        Account Suspended
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        ${escapeHtml(user.suspensionReason || 'Tidak ada alasan yang tersedia.')}
+                                    </p>
+                                </div>
+
+                                ${
+                                    user.suspensionType
+                                        ? `
+                                            <span class="text-[9px] font-black text-red-400">
+                                                ${escapeHtml(user.suspensionType)}
+                                            </span>
+                                        `
+                                        : ''
+                                }
+
+                            </div>
+
+                        </div>
+                    `
+                    : ''
+            }
+
+            ${
+                user.bio
+                    ? `
+                        <div class="mt-4 pt-4 border-t border-white/[.04]">
+                            <p class="text-xs text-gray-500 leading-5">
+                                ${escapeHtml(user.bio)}
+                            </p>
+                        </div>
+                    `
+                    : ''
+            }
+
+        </article>
+    `
+}
+
+function renderUsers() {
+    if (!state.users.length) {
+        $('users').innerHTML = ''
+
+        $('users').classList.add(
+            'hidden'
+        )
+
+        $('empty').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    $('empty').classList.add(
+        'hidden'
+    )
+
+    $('users').classList.remove(
+        'hidden'
+    )
+
+    $('users').innerHTML =
+        state.users.map(
+            renderUser
+        ).join('')
+}
+
+function renderPagination() {
+    const visible =
+        state.pages > 1
+
+    $('pagination').classList.toggle(
+        'hidden',
+        !visible
+    )
+
+    $('prevButton').disabled =
+        state.page <= 1
+
+    $('nextButton').disabled =
+        state.page >= state.pages
+
+    $('paginationText').textContent =
+        `Halaman ${state.page} dari ${state.pages}`
+
+    $('pageInfo').textContent =
+        `Halaman ${state.page}/${state.pages}`
+
+    $('resultInfo').textContent =
+        `${formatNumber(state.total)} pengguna ditemukan`
+}
+
+async function loadUsers() {
+    if (state.loading) {
+        return
+    }
+
+    state.loading =
+        true
+
+    $('refreshButton').disabled =
+        true
+
+    $('refreshButton').textContent =
+        'Memuat...'
+
+    const params =
+        new URLSearchParams()
+
+    params.set(
+        'page',
+        state.page
+    )
+
+    params.set(
+        'limit',
+        state.limit
+    )
+
+    const search =
+        $('searchInput')
+            .value
+            .trim()
+
+    const role =
+        $('roleFilter').value
+
+    const accountStatus =
+        $('statusFilter').value
+
+    const resellerStatus =
+        $('resellerFilter').value
+
+    const verified =
+        $('verifiedFilter').value
+
+    if (search) {
+        params.set(
+            'search',
+            search
+        )
+    }
+
+    if (role) {
+        params.set(
+            'role',
+            role
+        )
+    }
+
+    if (accountStatus) {
+        params.set(
+            'accountStatus',
+            accountStatus
+        )
+    }
+
+    if (resellerStatus) {
+        params.set(
+            'resellerStatus',
+            resellerStatus
+        )
+    }
+
+    if (verified) {
+        params.set(
+            'verified',
+            verified
+        )
+    }
+
+    try {
+        const response =
+            await fetch(
+                `/api/admin/users?${params.toString()}`,
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('page').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal memuat pengguna.'
+            )
+        }
+
+        state.users =
+            Array.isArray(data.users)
+                ? data.users
+                : Array.isArray(data.data)
+                    ? data.data
+                    : []
+
+        const pagination =
+            data.pagination ||
+            {}
+
+        state.page =
+            Number(
+                pagination.page ||
+                data.page ||
+                state.page
+            )
+
+        state.limit =
+            Number(
+                pagination.limit ||
+                data.limit ||
+                state.limit
+            )
+
+        state.total =
+            Number(
+                pagination.total ??
+                data.total ??
+                state.users.length
+            )
+
+        state.pages =
+            Number(
+                pagination.pages ||
+                data.pages ||
+                Math.max(
+                    1,
+                    Math.ceil(
+                        state.total /
+                        state.limit
+                    )
+                )
+            )
+
+        renderSummary(
+            normalizeSummary(data)
+        )
+
+        renderUsers()
+        renderPagination()
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('page').classList.remove(
+            'hidden'
+        )
+
+    } catch (error) {
+        showToast(
+            error.message ||
+            'Gagal memuat pengguna.'
+        )
+
+    } finally {
+        state.loading =
+            false
+
+        $('refreshButton').disabled =
+            false
+
+        $('refreshButton').textContent =
+            'Refresh'
+    }
+}
+
+$('filterButton').addEventListener(
+    'click',
+    () => {
+        state.page =
+            1
+
+        loadUsers()
+    }
+)
+
+$('refreshButton').addEventListener(
+    'click',
+    loadUsers
+)
+
+$('searchInput').addEventListener(
+    'keydown',
+    event => {
+        if (
+            event.key === 'Enter'
+        ) {
+            state.page =
+                1
+
+            loadUsers()
+        }
+    }
+)
+
+$('prevButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page <= 1
+        ) {
+            return
+        }
+
+        state.page--
+
+        loadUsers()
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('nextButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page >= state.pages
+        ) {
+            return
+        }
+
+        state.page++
+
+        loadUsers()
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('logoutButton').addEventListener(
+    'click',
+    async () => {
+        $('logoutButton').disabled =
+            true
+
+        try {
+            await fetch(
+                '/api/auth/logout',
+                {
+                    method: 'POST',
+                    credentials: 'include'
+                }
+            )
+        } catch {}
+
+        window.location.href =
+            '/login.html'
+    }
+)
+
+async function checkAdmin() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success ||
+            !data?.user
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        const user =
+            data.user
+
+        if (
+            user.role !== 'admin' &&
+            user.role !== 'developer'
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        state.user =
+            user
+
+        return true
+
+    } catch {
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.remove(
+            'hidden'
+        )
+
+        return false
+    }
+}
+
+async function init() {
+    const allowed =
+        await checkAdmin()
+
+    if (!allowed) {
+        return
+    }
+
+    await loadUsers()
+}
+
+init()
+</script>
+
+</body>
+</html>

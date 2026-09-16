@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="Forum FJB ReyCode">
+  <title>Forum FJB ReyCode</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-screen bg-[#050505] text-white antialiased">
+
+  <header class="sticky top-0 z-50 border-b border-zinc-900 bg-[#050505]/90 backdrop-blur-xl">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+
+      <a href="/" class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-black">
+          R
+        </div>
+
+        <div class="hidden sm:block">
+          <div class="text-sm font-bold tracking-tight">
+            Forum FJB ReyCode
+          </div>
+
+          <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+            Community Marketplace
+          </div>
+        </div>
+      </a>
+
+      <nav class="hidden items-center gap-1 md:flex">
+        <a
+          href="/"
+          class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white"
+        >
+          Home
+        </a>
+
+        <a
+          href="#products"
+          class="rounded-xl px-4 py-2 text-sm text-zinc-500 transition hover:bg-zinc-900 hover:text-white"
+        >
+          Jual/Beli
+        </a>
+
+        <a
+          href="#categories"
+          class="rounded-xl px-4 py-2 text-sm text-zinc-500 transition hover:bg-zinc-900 hover:text-white"
+        >
+          Kategori
+        </a>
+
+        <a
+          href="#forum"
+          class="rounded-xl px-4 py-2 text-sm text-zinc-500 transition hover:bg-zinc-900 hover:text-white"
+        >
+          Forum
+        </a>
+      </nav>
+
+      <div id="headerActions" class="flex items-center gap-2">
+        <a
+          href="/login.html"
+          id="loginButton"
+          class="rounded-xl border border-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-zinc-600 hover:text-white"
+        >
+          Login
+        </a>
+
+        <a
+          href="/register.html"
+          id="registerButton"
+          class="rounded-xl bg-white px-4 py-2 text-sm font-bold text-black transition hover:bg-zinc-200"
+        >
+          Daftar
+        </a>
+
+        <button
+          id="profileButton"
+          type="button"
+          class="hidden items-center gap-2 rounded-xl border border-zinc-800 px-2 py-1.5 transition hover:border-zinc-600"
+        >
+          <div
+            id="headerAvatar"
+            class="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-800 text-xs font-bold"
+          >
+            ?
+          </div>
+
+          <span
+            id="headerUsername"
+            class="hidden max-w-24 truncate text-sm font-medium sm:block"
+          >
+            User
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+
+    <section class="relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 sm:p-10">
+
+      <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/[0.03] blur-3xl"></div>
+      <div class="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-white/[0.02] blur-3xl"></div>
+
+      <div class="relative max-w-3xl">
+
+        <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-black px-3 py-1.5 text-xs text-zinc-500">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          FJB ReyCode Online
+        </div>
+
+        <h1 class="text-4xl font-black tracking-tight sm:text-6xl">
+          Tempat bertemu
+          <span class="text-zinc-500">developer.</span>
+        </h1>
+
+        <p class="mt-5 max-w-2xl text-sm leading-7 text-zinc-500 sm:text-base">
+          Forum komunitas dan marketplace digital untuk berbagi,
+          berdiskusi, menjual, membeli, dan membangun project bersama.
+        </p>
+
+        <div class="mt-7 flex flex-wrap gap-3">
+
+          <a
+            href="#products"
+            class="rounded-2xl bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-zinc-200"
+          >
+            Jelajahi FJB
+          </a>
+
+          <a
+            href="#forum"
+            class="rounded-2xl border border-zinc-800 px-5 py-3 text-sm font-medium text-zinc-300 transition hover:border-zinc-600 hover:text-white"
+          >
+            Buka Forum
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section id="userSection" class="mt-6 hidden">
+
+      <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5 sm:p-6">
+
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+
+          <div class="flex items-center gap-4">
+
+            <div
+              id="profileAvatar"
+              class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-zinc-800 text-xl font-black"
+            >
+              ?
+            </div>
+
+            <div class="min-w-0">
+
+              <div class="flex flex-wrap items-center gap-2">
+
+                <h2
+                  id="profileUsername"
+                  class="truncate text-lg font-bold"
+                >
+                  User
+                </h2>
+
+                <span
+                  id="profileBadge"
+                  class="hidden rounded-full px-2 py-0.5 text-[10px] font-bold"
+                ></span>
+
+              </div>
+
+              <p
+                id="profileEmail"
+                class="mt-1 truncate text-sm text-zinc-600"
+              >
+                email@example.com
+              </p>
+
+              <p
+                id="profileBio"
+                class="mt-2 hidden max-w-xl text-sm text-zinc-500"
+              ></p>
+
+            </div>
+
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 sm:min-w-[300px]">
+
+            <div class="rounded-2xl border border-zinc-900 bg-black p-3 text-center">
+              <div
+                id="followersCount"
+                class="text-lg font-bold"
+              >
+                0
+              </div>
+
+              <div class="text-[10px] uppercase tracking-wider text-zinc-600">
+                Followers
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-zinc-900 bg-black p-3 text-center">
+              <div
+                id="followingCount"
+                class="text-lg font-bold"
+              >
+                0
+              </div>
+
+              <div class="text-[10px] uppercase tracking-wider text-zinc-600">
+                Following
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-zinc-900 bg-black p-3 text-center">
+              <div
+                id="postsCount"
+                class="text-lg font-bold"
+              >
+                0
+              </div>
+
+              <div class="text-[10px] uppercase tracking-wider text-zinc-600">
+                Posts
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="mt-5 flex flex-wrap gap-2">
+
+          <button
+            id="createPostButton"
+            type="button"
+            class="rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-black transition hover:bg-zinc-200"
+          >
+            + Buat Post
+          </button>
+
+          <button
+            id="logoutButton"
+            type="button"
+            class="rounded-xl border border-zinc-800 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-red-900 hover:text-red-400"
+          >
+            Logout
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section id="guestSection" class="mt-6">
+
+      <div class="grid gap-4 sm:grid-cols-3">
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900">
+            🛒
+          </div>
+
+          <h3 class="font-bold">
+            Marketplace
+          </h3>
+
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            Temukan source code, website, API, bot, hosting, dan produk digital.
+          </p>
+        </div>
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900">
+            💬
+          </div>
+
+          <h3 class="font-bold">
+            Forum Komunitas
+          </h3>
+
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            Bagikan project, bertanya, berdiskusi, dan terhubung dengan developer lain.
+          </p>
+        </div>
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900">
+            🛡️
+          </div>
+
+          <h3 class="font-bold">
+            Security
+          </h3>
+
+          <p class="mt-2 text-sm leading-6 text-zinc-600">
+            Sistem laporan, verifikasi reseller, dan moderasi untuk menjaga komunitas.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section id="products" class="mt-12">
+
+      <div class="mb-5 flex items-end justify-between gap-4">
+
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-700">
+            Marketplace
+          </p>
+
+          <h2 class="mt-1 text-2xl font-bold">
+            Produk Terbaru
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          class="rounded-xl border border-zinc-800 px-3 py-2 text-xs text-zinc-500 transition hover:border-zinc-600 hover:text-white"
+        >
+          Lihat Semua
+        </button>
+
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="flex aspect-video items-center justify-center rounded-2xl bg-black text-3xl">
+            💻
+          </div>
+
+          <div class="mt-4">
+            <span class="text-[10px] uppercase tracking-wider text-zinc-600">
+              Source Code
+            </span>
+
+            <h3 class="mt-1 font-bold">
+              Coming Soon
+            </h3>
+
+            <p class="mt-2 text-xs leading-5 text-zinc-600">
+              Produk marketplace akan muncul setelah sistem post aktif.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="flex aspect-video items-center justify-center rounded-2xl bg-black text-3xl">
+            🤖
+          </div>
+
+          <div class="mt-4">
+            <span class="text-[10px] uppercase tracking-wider text-zinc-600">
+              WhatsApp
+            </span>
+
+            <h3 class="mt-1 font-bold">
+              Coming Soon
+            </h3>
+
+            <p class="mt-2 text-xs leading-5 text-zinc-600">
+              Produk bot dan automation akan tersedia di FJB.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="flex aspect-video items-center justify-center rounded-2xl bg-black text-3xl">
+            🌐
+          </div>
+
+          <div class="mt-4">
+            <span class="text-[10px] uppercase tracking-wider text-zinc-600">
+              Website
+            </span>
+
+            <h3 class="mt-1 font-bold">
+              Coming Soon
+            </h3>
+
+            <p class="mt-2 text-xs leading-5 text-zinc-600">
+              Website, template, dashboard, dan SaaS akan tersedia.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-5">
+          <div class="flex aspect-video items-center justify-center rounded-2xl bg-black text-3xl">
+            ⚡
+          </div>
+
+          <div class="mt-4">
+            <span class="text-[10px] uppercase tracking-wider text-zinc-600">
+              API
+            </span>
+
+            <h3 class="mt-1 font-bold">
+              Coming Soon
+            </h3>
+
+            <p class="mt-2 text-xs leading-5 text-zinc-600">
+              API dan developer tools akan tersedia di marketplace.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section id="categories" class="mt-12">
+
+      <div class="mb-5">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-700">
+          Explore
+        </p>
+
+        <h2 class="mt-1 text-2xl font-bold">
+          Kategori
+        </h2>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Programming
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Website
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          AI
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Mobile App
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          WhatsApp
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Telegram
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Hosting & Server
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          API & Tools
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Design
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Game
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Digital Product
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Jasa Developer
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Edukasi
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Security
+        </button>
+
+        <button class="rounded-xl border border-zinc-900 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-zinc-700 hover:text-white">
+          Lainnya
+        </button>
+
+      </div>
+
+    </section>
+
+    <section id="forum" class="mt-12">
+
+      <div class="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 sm:p-8">
+
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-700">
+              Community
+            </p>
+
+            <h2 class="mt-1 text-2xl font-bold">
+              Forum ReyCode
+            </h2>
+
+            <p class="mt-2 max-w-xl text-sm leading-6 text-zinc-600">
+              Tempat berdiskusi tentang programming, project,
+              server, API, bot, AI, dan teknologi.
+            </p>
+          </div>
+
+          <button
+            id="forumButton"
+            type="button"
+            class="rounded-2xl bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-zinc-200"
+          >
+            Mulai Diskusi
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer class="mt-16 border-t border-zinc-900 py-8">
+
+      <div class="flex flex-col gap-3 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+
+        <div>
+          <p class="text-sm font-bold">
+            Forum FJB ReyCode
+          </p>
+
+          <p class="mt-1 text-xs text-zinc-700">
+            Community Marketplace & Developer Forum
+          </p>
+        </div>
+
+        <p class="text-xs text-zinc-700">
+          Build. Code. Create.
+        </p>
+
+      </div>
+
+    </footer>
+
+  </main>
+
+  <div
+    id="toast"
+    class="pointer-events-none fixed bottom-5 left-1/2 z-[100] hidden -translate-x-1/2 rounded-2xl border border-zinc-800 bg-zinc-950 px-5 py-3 text-sm text-zinc-300 shadow-2xl"
+  ></div>
+
+  <script>
+    const userSection = document.getElementById('userSection')
+    const guestSection = document.getElementById('guestSection')
+
+    const loginButton = document.getElementById('loginButton')
+    const registerButton = document.getElementById('registerButton')
+
+    const profileButton = document.getElementById('profileButton')
+    const headerAvatar = document.getElementById('headerAvatar')
+    const headerUsername = document.getElementById('headerUsername')
+
+    const profileAvatar = document.getElementById('profileAvatar')
+    const profileUsername = document.getElementById('profileUsername')
+    const profileEmail = document.getElementById('profileEmail')
+    const profileBio = document.getElementById('profileBio')
+    const profileBadge = document.getElementById('profileBadge')
+
+    const followersCount = document.getElementById('followersCount')
+    const followingCount = document.getElementById('followingCount')
+    const postsCount = document.getElementById('postsCount')
+
+    const logoutButton = document.getElementById('logoutButton')
+    const createPostButton = document.getElementById('createPostButton')
+    const forumButton = document.getElementById('forumButton')
+
+    const toast = document.getElementById('toast')
+
+    function showToast(message) {
+      toast.textContent = message
+      toast.classList.remove('hidden')
+
+      clearTimeout(window.toastTimer)
+
+      window.toastTimer = setTimeout(() => {
+        toast.classList.add('hidden')
+      }, 2500)
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+    }
+
+    function getBadge(user) {
+      if (user.role === 'developer') {
+        return {
+          text: 'DEVELOPER',
+          className: 'bg-zinc-800 text-zinc-200'
+        }
+      }
+
+      if (
+        user.resellerStatus === 'approved' &&
+        user.verified === true
+      ) {
+        return {
+          text: 'RESELLER',
+          className: 'bg-blue-500/10 text-blue-400'
+        }
+      }
+
+      if (user.role === 'admin') {
+        return {
+          text: 'ADMIN',
+          className: 'bg-zinc-800 text-zinc-200'
+        }
+      }
+
+      if (user.role === 'system') {
+        return {
+          text: 'SECURITY',
+          className: 'bg-blue-500/10 text-blue-400'
+        }
+      }
+
+      return null
+    }
+
+    function renderUser(user) {
+      const username =
+        escapeHtml(user.username)
+
+      const avatar =
+        escapeHtml(
+          user.avatar ||
+          user.username?.charAt(0)?.toUpperCase() ||
+          '?'
+        )
+
+      headerAvatar.textContent =
+        user.avatar ||
+        user.username?.charAt(0)?.toUpperCase() ||
+        '?'
+
+      headerUsername.textContent =
+        user.username
+
+      profileAvatar.textContent =
+        user.avatar ||
+        user.username?.charAt(0)?.toUpperCase() ||
+        '?'
+
+      profileUsername.textContent =
+        user.username
+
+      profileEmail.textContent =
+        user.email
+
+      if (user.bio) {
+        profileBio.textContent =
+          user.bio
+
+        profileBio.classList.remove('hidden')
+      } else {
+        profileBio.textContent = ''
+        profileBio.classList.add('hidden')
+      }
+
+      followersCount.textContent =
+        user.followersCount || 0
+
+      followingCount.textContent =
+        user.followingCount || 0
+
+      postsCount.textContent =
+        user.postsCount || 0
+
+      const badge =
+        getBadge(user)
+
+      profileBadge.className =
+        'hidden rounded-full px-2 py-0.5 text-[10px] font-bold'
+
+      if (badge) {
+        profileBadge.textContent =
+          badge.text
+
+        profileBadge.classList.add(
+          ...badge.className.split(' ')
+        )
+
+        profileBadge.classList.remove('hidden')
+      }
+
+      userSection.classList.remove('hidden')
+      guestSection.classList.add('hidden')
+
+      loginButton.classList.add('hidden')
+      registerButton.classList.add('hidden')
+
+      profileButton.classList.remove('hidden')
+      profileButton.classList.add('flex')
+
+      profileButton.dataset.username =
+        username
+    }
+
+    async function checkSession() {
+      try {
+        const response = await fetch(
+          '/api/auth/me',
+          {
+            method: 'GET',
+            credentials: 'include',
+            cache: 'no-store'
+          }
+        )
+
+        const data =
+          await response.json()
+
+        if (
+          response.ok &&
+          data.status &&
+          data.loggedIn &&
+          data.user
+        ) {
+          renderUser(data.user)
+          return
+        }
+
+        userSection.classList.add('hidden')
+        guestSection.classList.remove('hidden')
+
+      } catch (error) {
+        userSection.classList.add('hidden')
+        guestSection.classList.remove('hidden')
+      }
+    }
+
+    async function logout() {
+      logoutButton.disabled = true
+
+      try {
+        const response = await fetch(
+          '/api/auth/logout',
+          {
+            method: 'POST',
+            credentials: 'include'
+          }
+        )
+
+        const data =
+          await response.json()
+
+        if (response.ok && data.status) {
+          showToast('Logout berhasil')
+
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 500)
+
+          return
+        }
+
+        showToast(
+          data.message ||
+          'Logout gagal'
+        )
+      } catch {
+        showToast(
+          'Tidak dapat terhubung ke server'
+        )
+      } finally {
+        logoutButton.disabled = false
+      }
+    }
+
+    function requireLogin() {
+      fetch(
+        '/api/auth/me',
+        {
+          credentials: 'include',
+          cache: 'no-store'
+        }
+      )
+        .then(response => {
+          if (response.ok) {
+            return
+          }
+
+          window.location.href =
+            '/login.html'
+        })
+        .catch(() => {
+          window.location.href =
+            '/login.html'
+        })
+    }
+
+    profileButton.addEventListener(
+      'click',
+      () => {
+        const username =
+          profileButton.dataset.username
+
+        if (username) {
+          window.location.href =
+            `/profile.html?username=${encodeURIComponent(username)}`
+        }
+      }
+    )
+
+    logoutButton.addEventListener(
+      'click',
+      logout
+    )
+
+    createPostButton.addEventListener(
+      'click',
+      () => {
+        requireLogin()
+      }
+    )
+
+    forumButton.addEventListener(
+      'click',
+      () => {
+        requireLogin()
+      }
+    )
+
+    checkSession()
+  </script>
+
+</body>
+</html>

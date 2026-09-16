@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reseller - Forum FJB ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(37,99,235,.14), transparent 30%),
+                radial-gradient(circle at 90% 10%, rgba(14,165,233,.09), transparent 28%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .input {
+            width: 100%;
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input:focus {
+            border-color: rgba(59,130,246,.5);
+            background: rgba(255,255,255,.05);
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-bold text-white leading-none">
+                        ReyCode
+                    </div>
+
+                    <div class="text-[11px] text-gray-500 mt-1">
+                        Reseller Center
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+
+                <a
+                    href="/"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Home
+                </a>
+
+                <a
+                    id="profileLink"
+                    href="/"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Profile
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+    <div
+        id="loading"
+        class="glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-8 h-8 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat data reseller...
+        </p>
+    </div>
+
+    <div
+        id="loginRequired"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 flex items-center justify-center text-2xl">
+            🔐
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Login diperlukan
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Login terlebih dahulu untuk mengakses Reseller Center.
+        </p>
+
+        <a
+            href="/login.html"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Login
+        </a>
+    </div>
+
+    <div
+        id="page"
+        class="hidden"
+    >
+
+        <section class="mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+                <div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-wider">
+                        <span>◆</span>
+                        Reseller Center
+                    </div>
+
+                    <h1 class="mt-4 text-2xl sm:text-3xl font-black text-white">
+                        Program Reseller ReyCode
+                    </h1>
+
+                    <p class="mt-2 max-w-2xl text-sm text-gray-500 leading-6">
+                        Ajukan verifikasi reseller agar profil kamu memiliki status reseller terverifikasi.
+                    </p>
+
+                </div>
+
+                <a
+                    id="profileButton"
+                    href="/"
+                    class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-300 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    Lihat Profil
+                </a>
+
+            </div>
+
+        </section>
+
+        <div
+            id="alert"
+            class="hidden mb-5 rounded-xl px-4 py-3 text-sm"
+        ></div>
+
+        <section class="grid lg:grid-cols-[1fr_340px] gap-5">
+
+            <div class="space-y-5">
+
+                <section class="glass rounded-2xl p-5 sm:p-7">
+
+                    <div class="flex items-start justify-between gap-4">
+
+                        <div>
+                            <h2 class="text-lg font-black text-white">
+                                Status Pengajuan
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Status verifikasi reseller akun kamu.
+                            </p>
+                        </div>
+
+                        <div
+                            id="statusBadge"
+                            class="px-3 py-1.5 rounded-lg text-[10px] font-black"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                    <div class="mt-6 grid sm:grid-cols-2 gap-3">
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+
+                            <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                Status Akun
+                            </p>
+
+                            <p
+                                id="accountStatus"
+                                class="mt-2 text-sm font-bold text-white"
+                            >
+                                -
+                            </p>
+
+                        </div>
+
+                        <div class="rounded-xl bg-white/[.03] border border-white/[.05] p-4">
+
+                            <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                Status Reseller
+                            </p>
+
+                            <p
+                                id="resellerStatus"
+                                class="mt-2 text-sm font-bold text-white"
+                            >
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="applicationInfo"
+                        class="hidden mt-5 rounded-xl bg-white/[.025] border border-white/[.05] p-4"
+                    ></div>
+
+                </section>
+
+                <section
+                    id="applicationSection"
+                    class="glass rounded-2xl p-5 sm:p-7"
+                >
+
+                    <div>
+
+                        <h2 class="text-lg font-black text-white">
+                            Ajukan Verifikasi
+                        </h2>
+
+                        <p class="mt-1 text-xs text-gray-600">
+                            Lengkapi informasi usaha atau layanan yang kamu tawarkan.
+                        </p>
+
+                    </div>
+
+                    <form
+                        id="applicationForm"
+                        class="mt-6 space-y-5"
+                    >
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Nama Bisnis
+                            </label>
+
+                            <input
+                                id="businessName"
+                                type="text"
+                                maxlength="150"
+                                required
+                                placeholder="Contoh: ReyStore"
+                                class="input rounded-xl px-4 py-3 text-sm"
+                            >
+
+                            <div class="mt-2 flex justify-end">
+                                <span
+                                    id="businessCounter"
+                                    class="text-[10px] text-gray-600"
+                                >
+                                    0/150
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Deskripsi
+                            </label>
+
+                            <textarea
+                                id="description"
+                                maxlength="3000"
+                                rows="6"
+                                required
+                                placeholder="Jelaskan bisnis, produk, atau layanan yang kamu jual..."
+                                class="input rounded-xl px-4 py-3 text-sm resize-y"
+                            ></textarea>
+
+                            <div class="mt-2 flex justify-end">
+                                <span
+                                    id="descriptionCounter"
+                                    class="text-[10px] text-gray-600"
+                                >
+                                    0/3000
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Kontak
+                            </label>
+
+                            <input
+                                id="contact"
+                                type="text"
+                                maxlength="150"
+                                required
+                                placeholder="Nomor WhatsApp, Telegram, atau kontak bisnis"
+                                class="input rounded-xl px-4 py-3 text-sm"
+                            >
+
+                            <p class="mt-2 text-[10px] text-gray-600">
+                                Gunakan kontak yang dapat digunakan untuk proses verifikasi.
+                            </p>
+
+                        </div>
+
+                        <div>
+
+                            <label class="block text-xs font-bold text-gray-400 mb-2">
+                                Bukti / Evidence
+                            </label>
+
+                            <textarea
+                                id="evidence"
+                                maxlength="1000"
+                                rows="4"
+                                placeholder="Masukkan URL bukti toko, katalog, website, atau informasi pendukung lainnya..."
+                                class="input rounded-xl px-4 py-3 text-sm resize-y"
+                            ></textarea>
+
+                            <div class="mt-2 flex justify-end">
+                                <span
+                                    id="evidenceCounter"
+                                    class="text-[10px] text-gray-600"
+                                >
+                                    0/1000
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div
+                            id="formError"
+                            class="hidden rounded-xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-400"
+                        ></div>
+
+                        <div
+                            id="formSuccess"
+                            class="hidden rounded-xl border border-emerald-500/10 bg-emerald-500/5 px-4 py-3 text-xs text-emerald-400"
+                        ></div>
+
+                        <button
+                            id="submitButton"
+                            type="submit"
+                            class="w-full px-5 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Ajukan Verifikasi Reseller
+                        </button>
+
+                    </form>
+
+                </section>
+
+                <section
+                    id="approvedSection"
+                    class="hidden glass rounded-2xl p-5 sm:p-7"
+                >
+
+                    <div class="flex items-start gap-4">
+
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/10 flex items-center justify-center text-blue-400">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <h2 class="text-lg font-black text-white">
+                                Reseller Terverifikasi
+                            </h2>
+
+                            <p class="mt-2 text-sm text-gray-500 leading-6">
+                                Akun kamu telah memiliki status reseller terverifikasi.
+                                Badge reseller dapat ditampilkan pada profil dan postingan.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-5 rounded-xl border border-blue-500/10 bg-blue-500/5 p-4">
+
+                        <p class="text-xs text-blue-300 leading-6">
+                            Status terverifikasi bukan jaminan bahwa setiap transaksi aman.
+                            Tetap lakukan pengecekan sebelum melakukan transaksi.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="space-y-5">
+
+                <section class="glass rounded-2xl p-5">
+
+                    <h2 class="font-black text-white">
+                        Akun Kamu
+                    </h2>
+
+                    <div class="mt-5 flex items-center gap-3">
+
+                        <div
+                            id="avatar"
+                            class="w-12 h-12 rounded-full bg-blue-600/10 border border-blue-500/20 flex items-center justify-center font-black text-blue-300 overflow-hidden"
+                        >
+                            R
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <div
+                                id="username"
+                                class="font-bold text-white truncate"
+                            >
+                                -
+                            </div>
+
+                            <div
+                                id="email"
+                                class="mt-1 text-[11px] text-gray-600 truncate"
+                            >
+                                -
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-5 pt-5 border-t border-white/[.06]">
+
+                        <div class="flex items-center justify-between py-2">
+
+                            <span class="text-xs text-gray-500">
+                                Postingan
+                            </span>
+
+                            <span
+                                id="postsCount"
+                                class="text-xs font-bold text-white"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="flex items-center justify-between py-2">
+
+                            <span class="text-xs text-gray-500">
+                                Followers
+                            </span>
+
+                            <span
+                                id="followersCount"
+                                class="text-xs font-bold text-white"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="flex items-center justify-between py-2">
+
+                            <span class="text-xs text-gray-500">
+                                Following
+                            </span>
+
+                            <span
+                                id="followingCount"
+                                class="text-xs font-bold text-white"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5">
+
+                    <h2 class="font-black text-white">
+                        Proses Verifikasi
+                    </h2>
+
+                    <div class="mt-5 space-y-5">
+
+                        <div class="flex gap-3">
+
+                            <div class="w-7 h-7 shrink-0 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-black">
+                                1
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-bold text-white">
+                                    Kirim pengajuan
+                                </p>
+
+                                <p class="mt-1 text-xs text-gray-600 leading-5">
+                                    Isi data bisnis dan bukti pendukung.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="flex gap-3">
+
+                            <div class="w-7 h-7 shrink-0 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-black">
+                                2
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-bold text-white">
+                                    Review admin
+                                </p>
+
+                                <p class="mt-1 text-xs text-gray-600 leading-5">
+                                    Pengajuan diperiksa secara manual.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="flex gap-3">
+
+                            <div class="w-7 h-7 shrink-0 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-black">
+                                3
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-bold text-white">
+                                    Hasil verifikasi
+                                </p>
+
+                                <p class="mt-1 text-xs text-gray-600 leading-5">
+                                    Status dapat disetujui, ditolak, atau ditangguhkan.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="rounded-2xl border border-yellow-500/10 bg-yellow-500/[.03] p-5">
+
+                    <div class="flex gap-3">
+
+                        <div class="text-yellow-400">
+                            ⚠
+                        </div>
+
+                        <div>
+
+                            <h3 class="text-sm font-bold text-yellow-300">
+                                Perhatian
+                            </h3>
+
+                            <p class="mt-2 text-xs text-gray-500 leading-5">
+                                Jangan mengirim informasi sensitif seperti password akun,
+                                OTP, token, atau data rahasia lainnya pada formulir ini.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </section>
+
+    </div>
+
+</main>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[100] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    application: null,
+    submitting: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function avatarContent(user) {
+    const avatar =
+        user?.avatar ||
+        user?.username?.charAt(0)?.toUpperCase() ||
+        'R'
+
+    if (
+        typeof avatar === 'string' &&
+        /^https?:\/\//i.test(avatar)
+    ) {
+        return `
+            <img
+                src="${escapeHtml(avatar)}"
+                alt=""
+                class="w-full h-full object-cover"
+                onerror="this.style.display='none'"
+            >
+        `
+    }
+
+    return escapeHtml(
+        String(avatar).charAt(0).toUpperCase()
+    )
+}
+
+function showAlert(message, type = 'error') {
+    const alert = $('alert')
+
+    alert.textContent =
+        message
+
+    alert.className =
+        'mb-5 rounded-xl px-4 py-3 text-sm'
+
+    if (type === 'success') {
+        alert.classList.add(
+            'border',
+            'border-emerald-500/10',
+            'bg-emerald-500/5',
+            'text-emerald-400'
+        )
+    } else if (type === 'warning') {
+        alert.classList.add(
+            'border',
+            'border-yellow-500/10',
+            'bg-yellow-500/5',
+            'text-yellow-400'
+        )
+    } else {
+        alert.classList.add(
+            'border',
+            'border-red-500/10',
+            'bg-red-500/5',
+            'text-red-400'
+        )
+    }
+
+    alert.classList.remove(
+        'hidden'
+    )
+}
+
+function hideAlert() {
+    $('alert').classList.add(
+        'hidden'
+    )
+}
+
+function showFormError(message) {
+    $('formSuccess').classList.add(
+        'hidden'
+    )
+
+    $('formError').textContent =
+        message
+
+    $('formError').classList.remove(
+        'hidden'
+    )
+}
+
+function showFormSuccess(message) {
+    $('formError').classList.add(
+        'hidden'
+    )
+
+    $('formSuccess').textContent =
+        message
+
+    $('formSuccess').classList.remove(
+        'hidden'
+    )
+}
+
+function clearFormMessages() {
+    $('formError').classList.add(
+        'hidden'
+    )
+
+    $('formSuccess').classList.add(
+        'hidden'
+    )
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(
+        window.toastTimer
+    )
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function getStatusData(status) {
+    const map = {
+        none: {
+            label: 'Belum Mengajukan',
+            className: 'bg-gray-500/10 text-gray-400 border border-gray-500/10'
+        },
+        pending: {
+            label: 'Sedang Ditinjau',
+            className: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/10'
+        },
+        approved: {
+            label: 'Disetujui',
+            className: 'bg-blue-500/10 text-blue-400 border border-blue-500/10'
+        },
+        rejected: {
+            label: 'Ditolak',
+            className: 'bg-red-500/10 text-red-400 border border-red-500/10'
+        },
+        suspended: {
+            label: 'Ditangguhkan',
+            className: 'bg-orange-500/10 text-orange-400 border border-orange-500/10'
+        }
+    }
+
+    return map[status] ||
+        map.none
+}
+
+function renderUser(user) {
+    state.user =
+        user
+
+    const username =
+        user.username ||
+        ''
+
+    $('username').textContent =
+        `@${username}`
+
+    $('email').textContent =
+        user.email ||
+        ''
+
+    $('avatar').innerHTML =
+        avatarContent(user)
+
+    $('postsCount').textContent =
+        formatNumber(
+            user.postsCount
+        )
+
+    $('followersCount').textContent =
+        formatNumber(
+            user.followersCount
+        )
+
+    $('followingCount').textContent =
+        formatNumber(
+            user.followingCount
+        )
+
+    const profileUrl =
+        `/profile.html?username=${encodeURIComponent(username)}`
+
+    $('profileLink').href =
+        profileUrl
+
+    $('profileButton').href =
+        profileUrl
+
+    $('accountStatus').textContent =
+        user.accountStatus === 'suspended'
+            ? 'Suspended'
+            : 'Active'
+
+    $('accountStatus').className =
+        user.accountStatus === 'suspended'
+            ? 'mt-2 text-sm font-bold text-red-400'
+            : 'mt-2 text-sm font-bold text-emerald-400'
+
+    const resellerStatus =
+        user.resellerStatus ||
+        'none'
+
+    const status =
+        getStatusData(
+            resellerStatus
+        )
+
+    $('resellerStatus').textContent =
+        status.label
+
+    $('resellerStatus').className =
+        `mt-2 text-sm font-bold ${
+            resellerStatus === 'approved'
+                ? 'text-blue-400'
+                : resellerStatus === 'pending'
+                    ? 'text-yellow-400'
+                    : resellerStatus === 'rejected'
+                        ? 'text-red-400'
+                        : resellerStatus === 'suspended'
+                            ? 'text-orange-400'
+                            : 'text-gray-500'
+        }`
+
+    $('statusBadge').textContent =
+        status.label
+
+    $('statusBadge').className =
+        `px-3 py-1.5 rounded-lg text-[10px] font-black ${status.className}`
+
+    if (
+        resellerStatus === 'approved'
+    ) {
+        $('approvedSection').classList.remove(
+            'hidden'
+        )
+
+        $('applicationSection').classList.add(
+            'hidden'
+        )
+    } else if (
+        resellerStatus === 'pending'
+    ) {
+        $('approvedSection').classList.add(
+            'hidden'
+        )
+
+        $('applicationSection').classList.add(
+            'hidden'
+        )
+
+        showAlert(
+            'Pengajuan reseller kamu sedang dalam proses review admin.',
+            'warning'
+        )
+    } else if (
+        resellerStatus === 'suspended'
+    ) {
+        $('approvedSection').classList.add(
+            'hidden'
+        )
+
+        $('applicationSection').classList.add(
+            'hidden'
+        )
+
+        showAlert(
+            'Status reseller kamu sedang ditangguhkan. Hubungi admin untuk informasi lebih lanjut.',
+            'warning'
+        )
+    } else {
+        $('approvedSection').classList.add(
+            'hidden'
+        )
+
+        $('applicationSection').classList.remove(
+            'hidden'
+        )
+    }
+}
+
+function renderApplication(application) {
+    if (!application) {
+        return
+    }
+
+    state.application =
+        application
+
+    const status =
+        application.status ||
+        'pending'
+
+    const statusData =
+        getStatusData(status)
+
+    $('applicationInfo').classList.remove(
+        'hidden'
+    )
+
+    const createdAt =
+        application.createdAt
+            ? new Date(
+                application.createdAt
+            ).toLocaleString(
+                'id-ID',
+                {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                }
+            )
+            : '-'
+
+    const reviewedAt =
+        application.reviewedAt
+            ? new Date(
+                application.reviewedAt
+            ).toLocaleString(
+                'id-ID',
+                {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                }
+            )
+            : null
+
+    $('applicationInfo').innerHTML = `
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <p class="text-xs font-bold text-white">
+                    ${escapeHtml(application.businessName || 'Pengajuan Reseller')}
+                </p>
+                <p class="mt-1 text-[10px] text-gray-600">
+                    Dikirim ${escapeHtml(createdAt)}
+                </p>
+            </div>
+
+            <span class="shrink-0 px-2.5 py-1 rounded-lg text-[9px] font-black ${statusData.className}">
+                ${escapeHtml(statusData.label)}
+            </span>
+        </div>
+
+        ${
+            application.adminNote
+                ? `
+                    <div class="mt-4 pt-4 border-t border-white/[.05]">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                            Catatan Review
+                        </p>
+                        <p class="mt-2 text-xs text-gray-400 leading-5">
+                            ${escapeHtml(application.adminNote)}
+                        </p>
+                    </div>
+                `
+                : ''
+        }
+
+        ${
+            application.suspensionReason
+                ? `
+                    <div class="mt-4 pt-4 border-t border-white/[.05]">
+                        <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                            Alasan Penangguhan
+                        </p>
+                        <p class="mt-2 text-xs text-orange-400 leading-5">
+                            ${escapeHtml(application.suspensionReason)}
+                        </p>
+                    </div>
+                `
+                : ''
+        }
+
+        ${
+            reviewedAt
+                ? `
+                    <div class="mt-4 text-[10px] text-gray-600">
+                        Terakhir ditinjau: ${escapeHtml(reviewedAt)}
+                    </div>
+                `
+                : ''
+        }
+    `
+}
+
+async function loadApplication() {
+    try {
+        const response =
+            await fetch(
+                '/api/reseller/list?page=1&limit=20',
+                {
+                    credentials: 'include'
+                }
+            )
+
+        if (!response.ok) {
+            return
+        }
+
+        const data =
+            await response.json()
+
+        const applications =
+            Array.isArray(data.applications)
+                ? data.applications
+                : Array.isArray(data.data)
+                    ? data.data
+                    : []
+
+        const ownApplication =
+            applications.find(item => {
+                const userId =
+                    item.user?._id ||
+                    item.user?.id ||
+                    item.userId ||
+                    item.user
+
+                return String(userId || '') ===
+                    String(state.user?._id || state.user?.id || '')
+            })
+
+        if (ownApplication) {
+            renderApplication(
+                ownApplication
+            )
+        }
+
+    } catch {}
+}
+
+function updateCounters() {
+    $('businessCounter').textContent =
+        `${$('businessName').value.length}/150`
+
+    $('descriptionCounter').textContent =
+        `${$('description').value.length}/3000`
+
+    $('evidenceCounter').textContent =
+        `${$('evidence').value.length}/1000`
+}
+
+function setSubmitting(value) {
+    state.submitting =
+        value
+
+    $('submitButton').disabled =
+        value
+
+    if (value) {
+        $('submitButton').innerHTML = `
+            <span class="inline-flex items-center justify-center gap-2">
+                <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full spin"></span>
+                Mengirim Pengajuan...
+            </span>
+        `
+    } else {
+        $('submitButton').textContent =
+            'Ajukan Verifikasi Reseller'
+    }
+}
+
+function isValidUrl(value) {
+    if (!value) {
+        return true
+    }
+
+    try {
+        const url =
+            new URL(value)
+
+        return (
+            url.protocol === 'http:' ||
+            url.protocol === 'https:'
+        )
+    } catch {
+        return false
+    }
+}
+
+async function submitApplication(event) {
+    event.preventDefault()
+
+    if (state.submitting) {
+        return
+    }
+
+    clearFormMessages()
+
+    const businessName =
+        $('businessName').value.trim()
+
+    const description =
+        $('description').value.trim()
+
+    const contact =
+        $('contact').value.trim()
+
+    const evidence =
+        $('evidence').value.trim()
+
+    if (
+        !businessName ||
+        businessName.length > 150
+    ) {
+        showFormError(
+            'Nama bisnis wajib diisi dan maksimal 150 karakter.'
+        )
+        return
+    }
+
+    if (
+        !description ||
+        description.length > 3000
+    ) {
+        showFormError(
+            'Deskripsi wajib diisi dan maksimal 3000 karakter.'
+        )
+        return
+    }
+
+    if (
+        !contact ||
+        contact.length > 150
+    ) {
+        showFormError(
+            'Kontak wajib diisi dan maksimal 150 karakter.'
+        )
+        return
+    }
+
+    if (evidence.length > 1000) {
+        showFormError(
+            'Evidence maksimal 1000 karakter.'
+        )
+        return
+    }
+
+    if (
+        evidence &&
+        !isValidUrl(evidence)
+    ) {
+        showFormError(
+            'Evidence harus berupa URL http:// atau https:// yang valid.'
+        )
+        return
+    }
+
+    setSubmitting(true)
+
+    try {
+        const response =
+            await fetch(
+                '/api/reseller/apply',
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        businessName,
+                        description,
+                        contact,
+                        evidence
+                    })
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal mengirim pengajuan reseller.'
+            )
+        }
+
+        showFormSuccess(
+            data.message ||
+            'Pengajuan reseller berhasil dikirim.'
+        )
+
+        showToast(
+            'Pengajuan berhasil dikirim.'
+        )
+
+        $('applicationForm')
+            .querySelectorAll(
+                'input, textarea, button'
+            )
+            .forEach(element => {
+                element.disabled = true
+            })
+
+        await loadSession()
+
+    } catch (error) {
+        showFormError(
+            error.message ||
+            'Terjadi kesalahan saat mengirim pengajuan.'
+        )
+    } finally {
+        setSubmitting(false)
+
+        if (
+            state.user?.resellerStatus !== 'none'
+        ) {
+            $('submitButton').disabled = true
+        }
+    }
+}
+
+async function loadSession() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success ||
+            !data?.user
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('loginRequired').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        renderUser(
+            data.user
+        )
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('page').classList.remove(
+            'hidden'
+        )
+
+        if (
+            data.user.resellerStatus ===
+            'pending'
+        ) {
+            await loadApplication()
+        }
+
+    } catch {
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('loginRequired').classList.remove(
+            'hidden'
+        )
+    }
+}
+
+$('applicationForm').addEventListener(
+    'submit',
+    submitApplication
+)
+
+$('businessName').addEventListener(
+    'input',
+    updateCounters
+)
+
+$('description').addEventListener(
+    'input',
+    updateCounters
+)
+
+$('evidence').addEventListener(
+    'input',
+    updateCounters
+)
+
+updateCounters()
+loadSession()
+</script>
+
+</body>
+</html>

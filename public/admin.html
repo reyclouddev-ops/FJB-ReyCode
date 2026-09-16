@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Forum FJB ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 5% 0%, rgba(37,99,235,.13), transparent 28%),
+                radial-gradient(circle at 95% 5%, rgba(14,165,233,.08), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .nav-item {
+            transition: .2s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: rgba(37,99,235,.12);
+            color: #60a5fa;
+            border-color: rgba(37,99,235,.15);
+        }
+
+        .stat-card {
+            transition: .2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,.11);
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/" class="flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-black text-white leading-none">
+                        ReyCode
+                    </div>
+
+                    <div class="text-[10px] text-gray-600 mt-1">
+                        Admin Panel
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+
+                <span
+                    id="roleBadge"
+                    class="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[9px] font-black uppercase"
+                >
+                    ADMIN
+                </span>
+
+                <a
+                    id="profileLink"
+                    href="/"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Profile
+                </a>
+
+                <button
+                    id="logoutButton"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/[.05] transition"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+    <div
+        id="loading"
+        class="glass rounded-2xl p-12 text-center"
+    >
+        <div class="w-9 h-9 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat dashboard admin...
+        </p>
+    </div>
+
+    <div
+        id="accessDenied"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl">
+            🔒
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Akses Ditolak
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Halaman ini hanya dapat diakses oleh Admin atau Developer.
+        </p>
+
+        <a
+            href="/"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Kembali ke Home
+        </a>
+    </div>
+
+    <div
+        id="dashboard"
+        class="hidden fade"
+    >
+
+        <section class="mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+                <div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-wider">
+                        <span>◆</span>
+                        Administration
+                    </div>
+
+                    <h1 class="mt-4 text-2xl sm:text-3xl font-black text-white">
+                        Admin Dashboard
+                    </h1>
+
+                    <p class="mt-2 text-sm text-gray-500">
+                        Pantau aktivitas dan statistik Forum FJB ReyCode.
+                    </p>
+
+                </div>
+
+                <div class="flex items-center gap-2">
+
+                    <span
+                        id="lastUpdated"
+                        class="text-[10px] text-gray-600"
+                    >
+                        -
+                    </span>
+
+                    <button
+                        id="refreshButton"
+                        class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+
+                <div class="flex items-center justify-between">
+
+                    <span class="text-xs text-gray-500">
+                        Users
+                    </span>
+
+                    <span class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                        👥
+                    </span>
+
+                </div>
+
+                <p
+                    id="statUsers"
+                    class="mt-4 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+
+                <div class="flex items-center justify-between">
+
+                    <span class="text-xs text-gray-500">
+                        Posts
+                    </span>
+
+                    <span class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                        📝
+                    </span>
+
+                </div>
+
+                <p
+                    id="statPosts"
+                    class="mt-4 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+
+                <div class="flex items-center justify-between">
+
+                    <span class="text-xs text-gray-500">
+                        Comments
+                    </span>
+
+                    <span class="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                        💬
+                    </span>
+
+                </div>
+
+                <p
+                    id="statComments"
+                    class="mt-4 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+            <div class="stat-card glass rounded-2xl p-4 sm:p-5">
+
+                <div class="flex items-center justify-between">
+
+                    <span class="text-xs text-gray-500">
+                        Reports
+                    </span>
+
+                    <span class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center">
+                        ⚠
+                    </span>
+
+                </div>
+
+                <p
+                    id="statReports"
+                    class="mt-4 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+
+            <div class="glass rounded-2xl p-4">
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        Ratings
+                    </span>
+                    <span class="text-sm">
+                        ⭐
+                    </span>
+                </div>
+
+                <p
+                    id="statRatings"
+                    class="mt-3 text-xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        Follows
+                    </span>
+                    <span class="text-sm">
+                        🔗
+                    </span>
+                </div>
+
+                <p
+                    id="statFollows"
+                    class="mt-3 text-xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        Likes
+                    </span>
+                    <span class="text-sm">
+                        ❤️
+                    </span>
+                </div>
+
+                <p
+                    id="statLikes"
+                    class="mt-3 text-xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        Reseller
+                    </span>
+                    <span class="text-sm">
+                        ◆
+                    </span>
+                </div>
+
+                <p
+                    id="statResellers"
+                    class="mt-3 text-xl font-black text-white"
+                >
+                    0
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="grid lg:grid-cols-[1fr_330px] gap-5">
+
+            <div class="space-y-5">
+
+                <section class="glass rounded-2xl p-5">
+
+                    <div class="flex items-center justify-between gap-3">
+
+                        <div>
+                            <h2 class="font-black text-white">
+                                Statistik Detail
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Distribusi status data utama.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="detailStats"
+                        class="mt-5 grid sm:grid-cols-2 gap-3"
+                    ></div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5">
+
+                    <div class="flex items-center justify-between gap-3">
+
+                        <div>
+                            <h2 class="font-black text-white">
+                                User Terbaru
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Akun yang baru terdaftar.
+                            </p>
+                        </div>
+
+                        <a
+                            href="/admin-users.html"
+                            class="text-xs font-bold text-blue-400 hover:text-blue-300"
+                        >
+                            Lihat Semua
+                        </a>
+
+                    </div>
+
+                    <div
+                        id="recentUsers"
+                        class="mt-5 space-y-2"
+                    ></div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5">
+
+                    <div class="flex items-center justify-between gap-3">
+
+                        <div>
+                            <h2 class="font-black text-white">
+                                Postingan Terbaru
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Aktivitas posting terbaru.
+                            </p>
+                        </div>
+
+                        <a
+                            href="/admin-posts.html"
+                            class="text-xs font-bold text-blue-400 hover:text-blue-300"
+                        >
+                            Lihat Semua
+                        </a>
+
+                    </div>
+
+                    <div
+                        id="recentPosts"
+                        class="mt-5 space-y-2"
+                    ></div>
+
+                </section>
+
+            </div>
+
+            <aside class="space-y-5">
+
+                <section class="glass rounded-2xl p-5">
+
+                    <h2 class="font-black text-white">
+                        Admin Tools
+                    </h2>
+
+                    <div class="mt-4 space-y-2">
+
+                        <a
+                            href="/admin-reports.html"
+                            class="nav-item flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm text-gray-400"
+                        >
+                            <span class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+                                ⚠
+                            </span>
+                            <span>
+                                <span class="block font-bold text-white">
+                                    Reports
+                                </span>
+                                <span class="block text-[10px] text-gray-600 mt-0.5">
+                                    Review laporan pengguna
+                                </span>
+                            </span>
+                        </a>
+
+                        <a
+                            href="/admin-users.html"
+                            class="nav-item flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm text-gray-400"
+                        >
+                            <span class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                                👥
+                            </span>
+                            <span>
+                                <span class="block font-bold text-white">
+                                    Users
+                                </span>
+                                <span class="block text-[10px] text-gray-600 mt-0.5">
+                                    Kelola akun pengguna
+                                </span>
+                            </span>
+                        </a>
+
+                        <a
+                            href="/admin-resellers.html"
+                            class="nav-item flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm text-gray-400"
+                        >
+                            <span class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                ◆
+                            </span>
+                            <span>
+                                <span class="block font-bold text-white">
+                                    Resellers
+                                </span>
+                                <span class="block text-[10px] text-gray-600 mt-0.5">
+                                    Verifikasi reseller
+                                </span>
+                            </span>
+                        </a>
+
+                        <a
+                            href="/admin-posts.html"
+                            class="nav-item flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm text-gray-400"
+                        >
+                            <span class="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                                📝
+                            </span>
+                            <span>
+                                <span class="block font-bold text-white">
+                                    Posts
+                                </span>
+                                <span class="block text-[10px] text-gray-600 mt-0.5">
+                                    Moderasi postingan
+                                </span>
+                            </span>
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5">
+
+                    <div class="flex items-center justify-between gap-3">
+
+                        <div>
+                            <h2 class="font-black text-white">
+                                Reports
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Ringkasan laporan.
+                            </p>
+                        </div>
+
+                        <span class="text-lg">
+                            ⚠
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="reportSummary"
+                        class="mt-5 space-y-3"
+                    ></div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5">
+
+                    <div class="flex items-center justify-between gap-3">
+
+                        <div>
+                            <h2 class="font-black text-white">
+                                Aktivitas
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-600">
+                                Aktivitas sistem terbaru.
+                            </p>
+                        </div>
+
+                        <span class="text-lg">
+                            ◷
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="activities"
+                        class="mt-5 space-y-2 max-h-[420px] overflow-auto scrollbar"
+                    ></div>
+
+                </section>
+
+            </aside>
+
+        </section>
+
+    </div>
+
+</main>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[100] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    dashboard: null,
+    loading: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date =
+        new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return date.toLocaleString(
+        'id-ID',
+        {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        }
+    )
+}
+
+function shortDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date =
+        new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return date.toLocaleDateString(
+        'id-ID',
+        {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }
+    )
+}
+
+function avatarContent(user) {
+    const avatar =
+        user?.avatar ||
+        user?.username?.charAt(0)?.toUpperCase() ||
+        'R'
+
+    if (
+        typeof avatar === 'string' &&
+        /^https?:\/\//i.test(avatar)
+    ) {
+        return `
+            <img
+                src="${escapeHtml(avatar)}"
+                alt=""
+                class="w-full h-full object-cover"
+                onerror="this.style.display='none'"
+            >
+        `
+    }
+
+    return escapeHtml(
+        String(avatar).charAt(0).toUpperCase()
+    )
+}
+
+function getRoleLabel(role) {
+    const roles = {
+        developer: 'Developer',
+        admin: 'Admin',
+        system: 'System',
+        user: 'User'
+    }
+
+    return roles[role] ||
+        role ||
+        'User'
+}
+
+function getStatusClass(status) {
+    if (
+        status === 'active' ||
+        status === 'approved' ||
+        status === 'resolved'
+    ) {
+        return 'text-emerald-400'
+    }
+
+    if (
+        status === 'pending'
+    ) {
+        return 'text-yellow-400'
+    }
+
+    if (
+        status === 'suspended' ||
+        status === 'rejected' ||
+        status === 'hidden'
+    ) {
+        return 'text-red-400'
+    }
+
+    return 'text-gray-400'
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(
+        window.toastTimer
+    )
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function renderUser(user) {
+    state.user =
+        user
+
+    const username =
+        user.username ||
+        ''
+
+    $('profileLink').href =
+        `/profile.html?username=${encodeURIComponent(username)}`
+
+    $('roleBadge').textContent =
+        getRoleLabel(
+            user.role
+        ).toUpperCase()
+}
+
+function getStatsObject(data) {
+    return (
+        data?.stats ||
+        data?.statistics ||
+        data?.summary ||
+        {}
+    )
+}
+
+function getValue(object, keys) {
+    for (const key of keys) {
+        if (
+            object &&
+            object[key] !== undefined &&
+            object[key] !== null
+        ) {
+            return object[key]
+        }
+    }
+
+    return 0
+}
+
+function renderMainStats(data) {
+    const stats =
+        getStatsObject(data)
+
+    const users =
+        getValue(
+            stats.users,
+            ['total']
+        ) ||
+        getValue(
+            stats,
+            ['users', 'totalUsers']
+        )
+
+    const posts =
+        getValue(
+            stats.posts,
+            ['total']
+        ) ||
+        getValue(
+            stats,
+            ['posts', 'totalPosts']
+        )
+
+    const comments =
+        getValue(
+            stats.comments,
+            ['total']
+        ) ||
+        getValue(
+            stats,
+            ['comments', 'totalComments']
+        )
+
+    const reports =
+        getValue(
+            stats.reports,
+            ['total', 'pending']
+        ) ||
+        getValue(
+            stats,
+            ['reports', 'totalReports', 'pendingReports']
+        )
+
+    const ratings =
+        getValue(
+            stats.ratings,
+            ['total']
+        ) ||
+        getValue(
+            stats,
+            ['ratings', 'totalRatings']
+        )
+
+    const follows =
+        getValue(
+            stats.follows,
+            ['total']
+        ) ||
+        getValue(
+            stats,
+            ['follows', 'totalFollows']
+        )
+
+    const likes =
+        getValue(
+            stats.likes,
+            ['total']
+        ) ||
+        getValue(
+            stats,
+            ['likes', 'totalLikes']
+        )
+
+    const resellers =
+        getValue(
+            stats.resellers,
+            ['total', 'pending']
+        ) ||
+        getValue(
+            stats,
+            ['resellers', 'totalResellers', 'pendingResellers']
+        )
+
+    $('statUsers').textContent =
+        formatNumber(users)
+
+    $('statPosts').textContent =
+        formatNumber(posts)
+
+    $('statComments').textContent =
+        formatNumber(comments)
+
+    $('statReports').textContent =
+        formatNumber(reports)
+
+    $('statRatings').textContent =
+        formatNumber(ratings)
+
+    $('statFollows').textContent =
+        formatNumber(follows)
+
+    $('statLikes').textContent =
+        formatNumber(likes)
+
+    $('statResellers').textContent =
+        formatNumber(resellers)
+}
+
+function renderDetailStats(data) {
+    const stats =
+        getStatsObject(data)
+
+    const items = []
+
+    const userStats =
+        stats.users ||
+        {}
+
+    const postStats =
+        stats.posts ||
+        {}
+
+    const commentStats =
+        stats.comments ||
+        {}
+
+    const reportStats =
+        stats.reports ||
+        {}
+
+    const resellerStats =
+        stats.resellers ||
+        {}
+
+    if (
+        Object.keys(userStats).length
+    ) {
+        for (
+            const [key, value]
+            of Object.entries(userStats)
+        ) {
+            if (
+                typeof value !== 'number'
+            ) {
+                continue
+            }
+
+            items.push({
+                group: 'Users',
+                label: key,
+                value
+            })
+        }
+    }
+
+    if (
+        Object.keys(postStats).length
+    ) {
+        for (
+            const [key, value]
+            of Object.entries(postStats)
+        ) {
+            if (
+                typeof value !== 'number'
+            ) {
+                continue
+            }
+
+            items.push({
+                group: 'Posts',
+                label: key,
+                value
+            })
+        }
+    }
+
+    if (
+        Object.keys(commentStats).length
+    ) {
+        for (
+            const [key, value]
+            of Object.entries(commentStats)
+        ) {
+            if (
+                typeof value !== 'number'
+            ) {
+                continue
+            }
+
+            items.push({
+                group: 'Comments',
+                label: key,
+                value
+            })
+        }
+    }
+
+    if (
+        Object.keys(reportStats).length
+    ) {
+        for (
+            const [key, value]
+            of Object.entries(reportStats)
+        ) {
+            if (
+                typeof value !== 'number'
+            ) {
+                continue
+            }
+
+            items.push({
+                group: 'Reports',
+                label: key,
+                value
+            })
+        }
+    }
+
+    if (
+        Object.keys(resellerStats).length
+    ) {
+        for (
+            const [key, value]
+            of Object.entries(resellerStats)
+        ) {
+            if (
+                typeof value !== 'number'
+            ) {
+                continue
+            }
+
+            items.push({
+                group: 'Reseller',
+                label: key,
+                value
+            })
+        }
+    }
+
+    const unique =
+        items.slice(0, 12)
+
+    if (!unique.length) {
+        $('detailStats').innerHTML = `
+            <div class="sm:col-span-2 rounded-xl bg-white/[.025] border border-white/[.05] p-5 text-center text-xs text-gray-600">
+                Tidak ada statistik detail.
+            </div>
+        `
+        return
+    }
+
+    $('detailStats').innerHTML =
+        unique.map(item => `
+            <div class="rounded-xl bg-white/[.025] border border-white/[.05] p-4">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <div>
+                        <p class="text-[10px] text-gray-600 uppercase tracking-wider">
+                            ${escapeHtml(item.group)}
+                        </p>
+
+                        <p class="mt-1 text-xs font-bold text-gray-400">
+                            ${escapeHtml(
+                                String(item.label)
+                                    .replace(/([A-Z])/g, ' $1')
+                            )}
+                        </p>
+                    </div>
+
+                    <span class="text-lg font-black text-white">
+                        ${formatNumber(item.value)}
+                    </span>
+
+                </div>
+
+            </div>
+        `).join('')
+}
+
+function extractArray(data, keys) {
+    for (const key of keys) {
+        if (
+            Array.isArray(data?.[key])
+        ) {
+            return data[key]
+        }
+    }
+
+    return []
+}
+
+function renderRecentUsers(data) {
+    const users =
+        extractArray(
+            data,
+            [
+                'recentUsers',
+                'users',
+                'latestUsers'
+            ]
+        )
+
+    if (!users.length) {
+        $('recentUsers').innerHTML = `
+            <div class="rounded-xl bg-white/[.025] border border-white/[.05] p-5 text-center text-xs text-gray-600">
+                Belum ada user terbaru.
+            </div>
+        `
+        return
+    }
+
+    $('recentUsers').innerHTML =
+        users.slice(0, 8).map(user => {
+
+            const username =
+                user.username ||
+                'unknown'
+
+            const profileUrl =
+                `/profile.html?username=${encodeURIComponent(username)}`
+
+            return `
+                <a
+                    href="${profileUrl}"
+                    class="flex items-center gap-3 p-3 rounded-xl bg-white/[.025] hover:bg-white/[.05] transition"
+                >
+
+                    <div class="w-9 h-9 shrink-0 rounded-full bg-blue-600/10 border border-blue-500/10 flex items-center justify-center overflow-hidden text-xs font-black text-blue-300">
+                        ${avatarContent(user)}
+                    </div>
+
+                    <div class="min-w-0 flex-1">
+
+                        <div class="flex items-center gap-2">
+
+                            <p class="text-sm font-bold text-white truncate">
+                                @${escapeHtml(username)}
+                            </p>
+
+                            ${
+                                user.verified
+                                    ? '<span class="text-blue-400 text-[10px]">✓</span>'
+                                    : ''
+                            }
+
+                        </div>
+
+                        <p class="mt-1 text-[10px] text-gray-600">
+                            ${escapeHtml(
+                                getRoleLabel(user.role)
+                            )}
+                        </p>
+
+                    </div>
+
+                    <span class="text-[10px] text-gray-600">
+                        ${escapeHtml(
+                            shortDate(
+                                user.createdAt ||
+                                user.created_at
+                            )
+                        )}
+                    </span>
+
+                </a>
+            `
+        }).join('')
+}
+
+function renderRecentPosts(data) {
+    const posts =
+        extractArray(
+            data,
+            [
+                'recentPosts',
+                'posts',
+                'latestPosts'
+            ]
+        )
+
+    if (!posts.length) {
+        $('recentPosts').innerHTML = `
+            <div class="rounded-xl bg-white/[.025] border border-white/[.05] p-5 text-center text-xs text-gray-600">
+                Belum ada postingan terbaru.
+            </div>
+        `
+        return
+    }
+
+    $('recentPosts').innerHTML =
+        posts.slice(0, 8).map(post => {
+
+            const id =
+                post._id ||
+                post.id ||
+                post.postId
+
+            const author =
+                post.author ||
+                {}
+
+            const username =
+                author.username ||
+                post.username ||
+                'unknown'
+
+            return `
+                <a
+                    href="${id ? `/post.html?id=${encodeURIComponent(id)}` : '/admin-posts.html'}"
+                    class="block p-3 rounded-xl bg-white/[.025] hover:bg-white/[.05] transition"
+                >
+
+                    <div class="flex items-start justify-between gap-3">
+
+                        <div class="min-w-0 flex-1">
+
+                            <p class="text-sm font-bold text-white truncate">
+                                ${escapeHtml(
+                                    post.title ||
+                                    post.content ||
+                                    'Untitled Post'
+                                )}
+                            </p>
+
+                            <p class="mt-1 text-[10px] text-gray-600 truncate">
+                                @${escapeHtml(username)}
+                                ${post.category ? ` · ${escapeHtml(post.category)}` : ''}
+                            </p>
+
+                        </div>
+
+                        <span class="shrink-0 text-[9px] font-black px-2 py-1 rounded-lg bg-white/[.04] ${getStatusClass(post.status)}">
+                            ${escapeHtml(
+                                post.status ||
+                                'active'
+                            )}
+                        </span>
+
+                    </div>
+
+                    <div class="mt-2 text-[10px] text-gray-600">
+                        ${escapeHtml(
+                            shortDate(
+                                post.createdAt ||
+                                post.created_at
+                            )
+                        )}
+                    </div>
+
+                </a>
+            `
+        }).join('')
+}
+
+function renderReportSummary(data) {
+    const stats =
+        getStatsObject(data)
+
+    const reports =
+        stats.reports ||
+        data?.reportSummary ||
+        {}
+
+    const pending =
+        getValue(
+            reports,
+            ['pending']
+        )
+
+    const resolved =
+        getValue(
+            reports,
+            ['resolved']
+        )
+
+    const rejected =
+        getValue(
+            reports,
+            ['rejected']
+        )
+
+    $('reportSummary').innerHTML = `
+        <div class="flex items-center justify-between">
+
+            <span class="text-xs text-gray-500">
+                Pending
+            </span>
+
+            <span class="text-sm font-black text-yellow-400">
+                ${formatNumber(pending)}
+            </span>
+
+        </div>
+
+        <div class="flex items-center justify-between">
+
+            <span class="text-xs text-gray-500">
+                Resolved
+            </span>
+
+            <span class="text-sm font-black text-emerald-400">
+                ${formatNumber(resolved)}
+            </span>
+
+        </div>
+
+        <div class="flex items-center justify-between">
+
+            <span class="text-xs text-gray-500">
+                Rejected
+            </span>
+
+            <span class="text-sm font-black text-red-400">
+                ${formatNumber(rejected)}
+            </span>
+
+        </div>
+
+        <a
+            href="/admin-reports.html"
+            class="block mt-4 text-center px-4 py-2.5 rounded-xl bg-white/[.04] hover:bg-white/[.07] text-xs font-bold text-gray-400 hover:text-white transition"
+        >
+            Buka Report Center
+        </a>
+    `
+}
+
+function getActivityAction(activity) {
+    return (
+        activity.action ||
+        activity.type ||
+        'activity'
+    )
+}
+
+function getActivityTarget(activity) {
+    const target =
+        activity.targetType ||
+        activity.target_type
+
+    if (!target) {
+        return ''
+    }
+
+    return target
+}
+
+function renderActivities(data) {
+    const activities =
+        extractArray(
+            data,
+            [
+                'recentActivities',
+                'activities',
+                'latestActivities'
+            ]
+        )
+
+    if (!activities.length) {
+        $('activities').innerHTML = `
+            <div class="rounded-xl bg-white/[.025] border border-white/[.05] p-5 text-center text-xs text-gray-600">
+                Belum ada aktivitas.
+            </div>
+        `
+        return
+    }
+
+    $('activities').innerHTML =
+        activities.slice(0, 20).map(activity => {
+
+            const action =
+                getActivityAction(
+                    activity
+                )
+
+            const target =
+                getActivityTarget(
+                    activity
+                )
+
+            const actor =
+                activity.actor ||
+                activity.user ||
+                {}
+
+            const username =
+                actor.username ||
+                activity.username ||
+                'system'
+
+            return `
+                <div class="p-3 rounded-xl bg-white/[.025] border border-white/[.04]">
+
+                    <div class="flex items-start gap-3">
+
+                        <div class="w-8 h-8 shrink-0 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs">
+                            ◷
+                        </div>
+
+                        <div class="min-w-0 flex-1">
+
+                            <p class="text-xs text-gray-300 leading-5">
+                                <span class="font-bold text-white">
+                                    @${escapeHtml(username)}
+                                </span>
+                                melakukan
+                                <span class="font-bold text-blue-400">
+                                    ${escapeHtml(action)}
+                                </span>
+                                ${
+                                    target
+                                        ? ` pada ${escapeHtml(target)}`
+                                        : ''
+                                }
+                            </p>
+
+                            <p class="mt-1 text-[9px] text-gray-600">
+                                ${escapeHtml(
+                                    formatDate(
+                                        activity.createdAt ||
+                                        activity.created_at
+                                    )
+                                )}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `
+        }).join('')
+}
+
+function renderDashboard(data) {
+    state.dashboard =
+        data
+
+    renderMainStats(
+        data
+    )
+
+    renderDetailStats(
+        data
+    )
+
+    renderRecentUsers(
+        data
+    )
+
+    renderRecentPosts(
+        data
+    )
+
+    renderReportSummary(
+        data
+    )
+
+    renderActivities(
+        data
+    )
+
+    $('lastUpdated').textContent =
+        `Diperbarui ${formatDate(new Date())}`
+}
+
+async function loadDashboard() {
+    if (state.loading) {
+        return
+    }
+
+    state.loading =
+        true
+
+    $('refreshButton').disabled =
+        true
+
+    $('refreshButton').textContent =
+        'Memuat...'
+
+    try {
+        const response =
+            await fetch(
+                '/api/admin/dashboard',
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('dashboard').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal memuat dashboard admin.'
+            )
+        }
+
+        renderDashboard(
+            data
+        )
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.add(
+            'hidden'
+        )
+
+        $('dashboard').classList.remove(
+            'hidden'
+        )
+
+    } catch (error) {
+        showToast(
+            error.message ||
+            'Gagal memuat dashboard.'
+        )
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.remove(
+            'hidden'
+        )
+
+    } finally {
+        state.loading =
+            false
+
+        $('refreshButton').disabled =
+            false
+
+        $('refreshButton').textContent =
+            'Refresh'
+    }
+}
+
+async function loadSession() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success ||
+            !data?.user
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        const user =
+            data.user
+
+        if (
+            user.role !== 'admin' &&
+            user.role !== 'developer'
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        renderUser(
+            user
+        )
+
+        return true
+
+    } catch {
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.remove(
+            'hidden'
+        )
+
+        return false
+    }
+}
+
+async function logout() {
+    try {
+        $('logoutButton').disabled =
+            true
+
+        $('logoutButton').textContent =
+            'Logout...'
+
+        await fetch(
+            '/api/auth/logout',
+            {
+                method: 'POST',
+                credentials: 'include'
+            }
+        )
+    } catch {}
+
+    window.location.href =
+        '/login.html'
+}
+
+$('refreshButton').addEventListener(
+    'click',
+    loadDashboard
+)
+
+$('logoutButton').addEventListener(
+    'click',
+    logout
+)
+
+async function init() {
+    const authorized =
+        await loadSession()
+
+    if (!authorized) {
+        return
+    }
+
+    await loadDashboard()
+}
+
+init()
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resellers - Admin ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 5% 0%, rgba(37,99,235,.13), transparent 28%),
+                radial-gradient(circle at 95% 5%, rgba(16,185,129,.07), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .input {
+            width: 100%;
+            background: rgba(255,255,255,.035);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            outline: none;
+            transition: .2s ease;
+        }
+
+        .input:focus {
+            border-color: rgba(59,130,246,.5);
+            background: rgba(255,255,255,.05);
+        }
+
+        select.input option {
+            background: #0a0e16;
+            color: #fff;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-3">
+
+            <a href="/admin.html" class="flex items-center gap-3 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-black text-white leading-none">
+                        ReyCode
+                    </div>
+                    <div class="text-[10px] text-gray-600 mt-1">
+                        Reseller Management
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-1 sm:gap-2">
+
+                <a
+                    href="/admin.html"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Dashboard
+                </a>
+
+                <a
+                    href="/admin-reports.html"
+                    class="hidden sm:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Reports
+                </a>
+
+                <a
+                    href="/admin-users.html"
+                    class="hidden sm:block px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Users
+                </a>
+
+                <button
+                    id="logoutButton"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/[.05] transition"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+    <div
+        id="loading"
+        class="glass rounded-2xl p-12 text-center"
+    >
+        <div class="w-9 h-9 border-2 border-white/10 border-t-blue-500 rounded-full spin mx-auto"></div>
+
+        <p class="mt-4 text-sm text-gray-500">
+            Memuat Reseller Management...
+        </p>
+    </div>
+
+    <div
+        id="accessDenied"
+        class="hidden glass rounded-2xl p-10 text-center"
+    >
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl">
+            🔒
+        </div>
+
+        <h1 class="mt-5 text-xl font-black text-white">
+            Akses Ditolak
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Halaman ini hanya dapat diakses oleh Admin atau Developer.
+        </p>
+
+        <a
+            href="/"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+        >
+            Kembali
+        </a>
+    </div>
+
+    <div
+        id="page"
+        class="hidden fade"
+    >
+
+        <section class="mb-6">
+
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+
+                <div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-wider">
+                        <span>✓</span>
+                        Verification
+                    </div>
+
+                    <h1 class="mt-4 text-2xl sm:text-3xl font-black text-white">
+                        Reseller Management
+                    </h1>
+
+                    <p class="mt-2 text-sm text-gray-500">
+                        Kelola pengajuan verifikasi reseller dan status verifikasi.
+                    </p>
+
+                </div>
+
+                <button
+                    id="refreshButton"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Total
+                </p>
+                <p
+                    id="totalApplications"
+                    class="mt-2 text-2xl font-black text-white"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Pending
+                </p>
+                <p
+                    id="pendingApplications"
+                    class="mt-2 text-2xl font-black text-yellow-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Approved
+                </p>
+                <p
+                    id="approvedApplications"
+                    class="mt-2 text-2xl font-black text-blue-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Rejected
+                </p>
+                <p
+                    id="rejectedApplications"
+                    class="mt-2 text-2xl font-black text-orange-400"
+                >
+                    0
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                    Suspended
+                </p>
+                <p
+                    id="suspendedApplications"
+                    class="mt-2 text-2xl font-black text-red-400"
+                >
+                    0
+                </p>
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl p-4 mb-5">
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-600 mb-2">
+                        Status
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        class="input rounded-xl px-3 py-3 text-sm"
+                    >
+                        <option value="">Semua Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+
+                <div class="lg:col-span-2 flex items-end">
+                    <button
+                        id="filterButton"
+                        class="w-full px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition"
+                    >
+                        Terapkan Filter
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="glass rounded-2xl overflow-hidden">
+
+            <div class="p-5 border-b border-white/[.06]">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <div>
+                        <h2 class="font-black text-white">
+                            Pengajuan Reseller
+                        </h2>
+
+                        <p
+                            id="resultInfo"
+                            class="mt-1 text-xs text-gray-600"
+                        >
+                            -
+                        </p>
+                    </div>
+
+                    <span
+                        id="pageInfo"
+                        class="text-[10px] text-gray-600"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div
+                id="applications"
+                class="p-4 sm:p-5 space-y-3"
+            ></div>
+
+            <div
+                id="empty"
+                class="hidden p-10 text-center"
+            >
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-xl">
+                    ✓
+                </div>
+
+                <h3 class="mt-4 text-sm font-bold text-white">
+                    Tidak ada pengajuan
+                </h3>
+
+                <p class="mt-2 text-xs text-gray-600">
+                    Tidak ada pengajuan reseller yang cocok dengan filter.
+                </p>
+            </div>
+
+            <div
+                id="pagination"
+                class="hidden p-4 border-t border-white/[.06] flex items-center justify-between gap-3"
+            >
+
+                <button
+                    id="prevButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    ← Sebelumnya
+                </button>
+
+                <span
+                    id="paginationText"
+                    class="text-[10px] text-gray-600"
+                >
+                    -
+                </span>
+
+                <button
+                    id="nextButton"
+                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition"
+                >
+                    Berikutnya →
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<div
+    id="modal"
+    class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+>
+    <div class="min-h-full flex items-center justify-center">
+
+        <div class="glass rounded-2xl w-full max-w-xl p-5 sm:p-6 fade">
+
+            <div class="flex items-start justify-between gap-4">
+
+                <div>
+                    <p class="text-[10px] uppercase tracking-wider text-blue-400 font-black">
+                        Reseller Verification
+                    </p>
+
+                    <h2
+                        id="modalTitle"
+                        class="mt-2 text-xl font-black text-white"
+                    >
+                        Review Pengajuan
+                    </h2>
+
+                    <p
+                        id="modalDescription"
+                        class="mt-2 text-xs text-gray-500"
+                    >
+                        -
+                    </p>
+                </div>
+
+                <button
+                    id="closeModal"
+                    class="w-9 h-9 rounded-xl bg-white/[.04] text-gray-500 hover:text-white hover:bg-white/[.07] transition"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            <div
+                id="applicationPreview"
+                class="mt-6 rounded-2xl bg-black/20 border border-white/[.05] p-4"
+            ></div>
+
+            <div class="mt-5">
+
+                <label class="block text-xs font-bold text-gray-400 mb-2">
+                    Tindakan
+                </label>
+
+                <select
+                    id="actionSelect"
+                    class="input rounded-xl px-4 py-3 text-sm"
+                >
+                    <option value="approve">Approve</option>
+                    <option value="reject">Reject</option>
+                    <option value="suspend">Suspend</option>
+                    <option value="reinstate">Reinstate</option>
+                </select>
+
+            </div>
+
+            <div class="mt-5">
+
+                <label class="block text-xs font-bold text-gray-400 mb-2">
+                    Catatan Admin
+                </label>
+
+                <textarea
+                    id="actionNote"
+                    maxlength="3000"
+                    rows="5"
+                    placeholder="Tambahkan alasan atau catatan verifikasi..."
+                    class="input rounded-xl px-4 py-3 text-sm resize-y"
+                ></textarea>
+
+                <div class="mt-2 text-right">
+                    <span
+                        id="noteCounter"
+                        class="text-[10px] text-gray-600"
+                    >
+                        0/3000
+                    </span>
+                </div>
+
+            </div>
+
+            <div
+                id="modalError"
+                class="hidden mt-5 rounded-xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-400"
+            ></div>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
+
+                <button
+                    id="cancelModal"
+                    class="px-5 py-3 rounded-xl bg-white/[.04] border border-white/[.06] text-sm font-bold text-gray-400 hover:text-white transition"
+                >
+                    Batal
+                </button>
+
+                <button
+                    id="submitAction"
+                    class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Terapkan
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[200] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    user: null,
+    applications: [],
+    page: 1,
+    limit: 20,
+    total: 0,
+    pages: 1,
+    loading: false,
+    actionLoading: false,
+    selectedApplication: null
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date =
+        new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return date.toLocaleString(
+        'id-ID',
+        {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        }
+    )
+}
+
+function getId(value) {
+    if (!value) {
+        return null
+    }
+
+    if (typeof value === 'string') {
+        return value
+    }
+
+    return (
+        value._id ||
+        value.id ||
+        null
+    )
+}
+
+function getUsername(value) {
+    if (!value) {
+        return 'unknown'
+    }
+
+    if (typeof value === 'string') {
+        return value
+    }
+
+    return (
+        value.username ||
+        value.name ||
+        'unknown'
+    )
+}
+
+function statusClass(status) {
+    if (status === 'approved') {
+        return 'bg-blue-500/10 text-blue-400 border-blue-500/10'
+    }
+
+    if (status === 'pending') {
+        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/10'
+    }
+
+    if (status === 'rejected') {
+        return 'bg-orange-500/10 text-orange-400 border-orange-500/10'
+    }
+
+    if (status === 'suspended') {
+        return 'bg-red-500/10 text-red-400 border-red-500/10'
+    }
+
+    return 'bg-white/[.04] text-gray-500 border-white/[.06]'
+}
+
+function showToast(message) {
+    $('toastMessage').textContent =
+        message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(
+        window.toastTimer
+    )
+
+    window.toastTimer =
+        setTimeout(() => {
+            $('toast').classList.add(
+                'translate-y-20',
+                'opacity-0'
+            )
+
+            $('toast').classList.remove(
+                'translate-y-0',
+                'opacity-100'
+            )
+        }, 2500)
+}
+
+function renderSummary(summary) {
+    const data =
+        summary ||
+        {}
+
+    const total =
+        data.total ??
+        data.totalApplications ??
+        0
+
+    const pending =
+        data.pending ??
+        data.pendingApplications ??
+        0
+
+    const approved =
+        data.approved ??
+        data.approvedApplications ??
+        0
+
+    const rejected =
+        data.rejected ??
+        data.rejectedApplications ??
+        0
+
+    const suspended =
+        data.suspended ??
+        data.suspendedApplications ??
+        0
+
+    $('totalApplications').textContent =
+        formatNumber(total)
+
+    $('pendingApplications').textContent =
+        formatNumber(pending)
+
+    $('approvedApplications').textContent =
+        formatNumber(approved)
+
+    $('rejectedApplications').textContent =
+        formatNumber(rejected)
+
+    $('suspendedApplications').textContent =
+        formatNumber(suspended)
+}
+
+function getSummary(data) {
+    if (
+        data &&
+        typeof data.summary === 'object'
+    ) {
+        return data.summary
+    }
+
+    if (
+        data &&
+        typeof data.stats === 'object'
+    ) {
+        return data.stats
+    }
+
+    return {}
+}
+
+function renderApplication(application) {
+    const user =
+        application.user ||
+        {}
+
+    const username =
+        getUsername(user)
+
+    const businessName =
+        application.businessName ||
+        'Tanpa nama bisnis'
+
+    const description =
+        application.description ||
+        ''
+
+    const contact =
+        application.contact ||
+        ''
+
+    const evidence =
+        Array.isArray(
+            application.evidence
+        )
+            ? application.evidence
+            : application.evidence
+                ? [application.evidence]
+                : []
+
+    const status =
+        application.status ||
+        'pending'
+
+    const createdAt =
+        formatDate(
+            application.createdAt
+        )
+
+    const reviewedAt =
+        formatDate(
+            application.reviewedAt
+        )
+
+    const applicationId =
+        getId(application)
+
+    const admin =
+        application.admin ||
+        {}
+
+    return `
+        <article class="rounded-2xl bg-white/[.025] border border-white/[.05] p-4 sm:p-5">
+
+            <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-5">
+
+                <div class="min-w-0 flex-1">
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black uppercase ${statusClass(status)}">
+                            ${escapeHtml(status)}
+                        </span>
+
+                        <span class="text-[10px] text-gray-600">
+                            ${escapeHtml(createdAt)}
+                        </span>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <h3 class="text-lg font-black text-white">
+                            ${escapeHtml(businessName)}
+                        </h3>
+
+                        <p class="mt-1 text-xs text-blue-400 font-bold">
+                            @${escapeHtml(username)}
+                        </p>
+
+                    </div>
+
+                    ${
+                        description
+                            ? `
+                                <div class="mt-4">
+
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                        Deskripsi
+                                    </p>
+
+                                    <p class="mt-2 text-xs text-gray-400 leading-6 whitespace-pre-wrap break-words">
+                                        ${escapeHtml(description)}
+                                    </p>
+
+                                </div>
+                            `
+                            : ''
+                    }
+
+                    <div class="mt-4 grid sm:grid-cols-2 gap-3">
+
+                        <div class="rounded-xl bg-black/20 border border-white/[.04] p-3">
+
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Contact
+                            </p>
+
+                            <p class="mt-2 text-xs text-gray-300 break-words">
+                                ${escapeHtml(contact || '-')}
+                            </p>
+
+                        </div>
+
+                        <div class="rounded-xl bg-black/20 border border-white/[.04] p-3">
+
+                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                Evidence
+                            </p>
+
+                            <p class="mt-2 text-xs text-gray-300">
+                                ${formatNumber(evidence.length)} bukti
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    ${
+                        evidence.length
+                            ? `
+                                <div class="mt-4">
+
+                                    <p class="text-[10px] uppercase tracking-wider text-gray-600">
+                                        Evidence URL
+                                    </p>
+
+                                    <div class="mt-2 space-y-2">
+
+                                        ${evidence.map((url, index) => `
+                                            <a
+                                                href="${escapeHtml(url)}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="block rounded-xl bg-white/[.025] border border-white/[.04] px-3 py-2.5 text-xs text-blue-400 hover:text-blue-300 hover:bg-white/[.05] transition break-all"
+                                            >
+                                                Bukti ${index + 1}: ${escapeHtml(url)}
+                                            </a>
+                                        `).join('')}
+
+                                    </div>
+
+                                </div>
+                            `
+                            : ''
+                    }
+
+                    ${
+                        status !== 'pending'
+                            ? `
+                                <div class="mt-4 rounded-xl bg-white/[.02] border border-white/[.04] p-3">
+
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+
+                                        <div>
+                                            <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                                                Review
+                                            </p>
+
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                ${escapeHtml(reviewedAt)}
+                                            </p>
+                                        </div>
+
+                                        ${
+                                            getUsername(admin) !== 'unknown'
+                                                ? `
+                                                    <span class="text-[10px] text-gray-600">
+                                                        Reviewed by @${escapeHtml(getUsername(admin))}
+                                                    </span>
+                                                `
+                                                : ''
+                                        }
+
+                                    </div>
+
+                                    ${
+                                        application.adminNote
+                                            ? `
+                                                <p class="mt-3 text-xs text-gray-400 leading-5 whitespace-pre-wrap">
+                                                    ${escapeHtml(application.adminNote)}
+                                                </p>
+                                            `
+                                            : ''
+                                    }
+
+                                    ${
+                                        application.suspensionReason
+                                            ? `
+                                                <p class="mt-3 text-xs text-red-400 leading-5">
+                                                    ${escapeHtml(application.suspensionReason)}
+                                                </p>
+                                            `
+                                            : ''
+                                    }
+
+                                </div>
+                            `
+                            : ''
+                    }
+
+                    ${
+                        applicationId
+                            ? `
+                                <p class="mt-4 text-[9px] text-gray-700 break-all">
+                                    ID: ${escapeHtml(applicationId)}
+                                </p>
+                            `
+                            : ''
+                    }
+
+                </div>
+
+                <div class="flex lg:flex-col gap-2 shrink-0">
+
+                    ${
+                        status === 'pending'
+                            ? `
+                                <button
+                                    onclick="openActionModal('${escapeHtml(applicationId || '')}','approve')"
+                                    class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black text-white transition"
+                                >
+                                    Approve
+                                </button>
+
+                                <button
+                                    onclick="openActionModal('${escapeHtml(applicationId || '')}','reject')"
+                                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.06] text-xs font-bold text-orange-400 hover:bg-orange-500/10 transition"
+                                >
+                                    Reject
+                                </button>
+                            `
+                            : ''
+                    }
+
+                    ${
+                        status === 'approved'
+                            ? `
+                                <button
+                                    onclick="openActionModal('${escapeHtml(applicationId || '')}','suspend')"
+                                    class="px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/10 text-xs font-black text-red-400 hover:bg-red-500/15 transition"
+                                >
+                                    Suspend
+                                </button>
+                            `
+                            : ''
+                    }
+
+                    ${
+                        status === 'suspended'
+                            ? `
+                                <button
+                                    onclick="openActionModal('${escapeHtml(applicationId || '')}','reinstate')"
+                                    class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black text-white transition"
+                                >
+                                    Reinstate
+                                </button>
+                            `
+                            : ''
+                    }
+
+                </div>
+
+            </div>
+
+        </article>
+    `
+}
+
+function renderApplications() {
+    if (!state.applications.length) {
+        $('applications').innerHTML = ''
+
+        $('applications').classList.add(
+            'hidden'
+        )
+
+        $('empty').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    $('empty').classList.add(
+        'hidden'
+    )
+
+    $('applications').classList.remove(
+        'hidden'
+    )
+
+    $('applications').innerHTML =
+        state.applications.map(
+            renderApplication
+        ).join('')
+}
+
+function renderPagination() {
+    const visible =
+        state.pages > 1
+
+    $('pagination').classList.toggle(
+        'hidden',
+        !visible
+    )
+
+    $('prevButton').disabled =
+        state.page <= 1
+
+    $('nextButton').disabled =
+        state.page >= state.pages
+
+    $('paginationText').textContent =
+        `Halaman ${state.page} dari ${state.pages}`
+
+    $('pageInfo').textContent =
+        `Halaman ${state.page}/${state.pages}`
+
+    $('resultInfo').textContent =
+        `${formatNumber(state.total)} pengajuan ditemukan`
+}
+
+async function loadApplications() {
+    if (state.loading) {
+        return
+    }
+
+    state.loading =
+        true
+
+    $('refreshButton').disabled =
+        true
+
+    $('refreshButton').textContent =
+        'Memuat...'
+
+    const params =
+        new URLSearchParams()
+
+    params.set(
+        'page',
+        state.page
+    )
+
+    params.set(
+        'limit',
+        state.limit
+    )
+
+    const status =
+        $('statusFilter').value
+
+    if (status) {
+        params.set(
+            'status',
+            status
+        )
+    }
+
+    try {
+        const response =
+            await fetch(
+                `/api/reseller/list?${params.toString()}`,
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('page').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal memuat pengajuan reseller.'
+            )
+        }
+
+        state.applications =
+            Array.isArray(
+                data.applications
+            )
+                ? data.applications
+                : Array.isArray(data.data)
+                    ? data.data
+                    : []
+
+        const pagination =
+            data.pagination ||
+            {}
+
+        state.page =
+            Number(
+                pagination.page ||
+                data.page ||
+                state.page
+            )
+
+        state.limit =
+            Number(
+                pagination.limit ||
+                data.limit ||
+                state.limit
+            )
+
+        state.total =
+            Number(
+                pagination.total ??
+                data.total ??
+                state.applications.length
+            )
+
+        state.pages =
+            Number(
+                pagination.pages ||
+                data.pages ||
+                Math.max(
+                    1,
+                    Math.ceil(
+                        state.total /
+                        state.limit
+                    )
+                )
+            )
+
+        renderSummary(
+            getSummary(data)
+        )
+
+        renderApplications()
+        renderPagination()
+
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('page').classList.remove(
+            'hidden'
+        )
+
+    } catch (error) {
+        showToast(
+            error.message ||
+            'Gagal memuat pengajuan.'
+        )
+
+    } finally {
+        state.loading =
+            false
+
+        $('refreshButton').disabled =
+            false
+
+        $('refreshButton').textContent =
+            'Refresh'
+    }
+}
+
+function openActionModal(applicationId, action) {
+    const application =
+        state.applications.find(
+            item =>
+                String(
+                    getId(item)
+                ) ===
+                String(applicationId)
+        )
+
+    if (!application) {
+        showToast(
+            'Pengajuan tidak ditemukan.'
+        )
+
+        return
+    }
+
+    state.selectedApplication =
+        application
+
+    $('actionSelect').value =
+        action ||
+        'approve'
+
+    const username =
+        getUsername(
+            application.user
+        )
+
+    $('modalTitle').textContent =
+        'Review Pengajuan'
+
+    $('modalDescription').textContent =
+        `Kelola pengajuan reseller @${username}.`
+
+    $('applicationPreview').innerHTML = `
+        <div class="flex items-center justify-between gap-3">
+
+            <div class="min-w-0">
+
+                <p class="text-[9px] uppercase tracking-wider text-gray-600">
+                    Business
+                </p>
+
+                <p class="mt-1 text-sm font-black text-white truncate">
+                    ${escapeHtml(application.businessName || 'Tanpa nama bisnis')}
+                </p>
+
+                <p class="mt-1 text-xs text-blue-400">
+                    @${escapeHtml(username)}
+                </p>
+
+            </div>
+
+            <span class="px-2.5 py-1 rounded-lg border text-[9px] font-black uppercase ${statusClass(application.status)}">
+                ${escapeHtml(application.status || 'pending')}
+            </span>
+
+        </div>
+    `
+
+    $('actionNote').value =
+        ''
+
+    $('noteCounter').textContent =
+        '0/3000'
+
+    $('modalError').classList.add(
+        'hidden'
+    )
+
+    $('modal').classList.remove(
+        'hidden'
+    )
+
+    document.body.classList.add(
+        'overflow-hidden'
+    )
+}
+
+function closeModal() {
+    if (state.actionLoading) {
+        return
+    }
+
+    state.selectedApplication =
+        null
+
+    $('modal').classList.add(
+        'hidden'
+    )
+
+    document.body.classList.remove(
+        'overflow-hidden'
+    )
+}
+
+async function submitAction() {
+    if (
+        state.actionLoading ||
+        !state.selectedApplication
+    ) {
+        return
+    }
+
+    const applicationId =
+        getId(
+            state.selectedApplication
+        )
+
+    if (!applicationId) {
+        $('modalError').textContent =
+            'ID pengajuan tidak ditemukan.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    const action =
+        $('actionSelect').value
+
+    const note =
+        $('actionNote').value.trim()
+
+    if (!action) {
+        $('modalError').textContent =
+            'Pilih tindakan terlebih dahulu.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    if (note.length > 3000) {
+        $('modalError').textContent =
+            'Catatan maksimal 3000 karakter.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+        return
+    }
+
+    state.actionLoading =
+        true
+
+    $('submitAction').disabled =
+        true
+
+    $('cancelModal').disabled =
+        true
+
+    $('submitAction').textContent =
+        'Memproses...'
+
+    $('modalError').classList.add(
+        'hidden'
+    )
+
+    try {
+        const response =
+            await fetch(
+                '/api/reseller/action',
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: applicationId,
+                        applicationId,
+                        action,
+                        note,
+                        reason: note
+                    })
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success
+        ) {
+            throw new Error(
+                data?.message ||
+                'Gagal menerapkan tindakan.'
+            )
+        }
+
+        closeModal()
+
+        showToast(
+            data.message ||
+            'Tindakan berhasil diterapkan.'
+        )
+
+        await loadApplications()
+
+    } catch (error) {
+        $('modalError').textContent =
+            error.message ||
+            'Terjadi kesalahan.'
+
+        $('modalError').classList.remove(
+            'hidden'
+        )
+
+    } finally {
+        state.actionLoading =
+            false
+
+        $('submitAction').disabled =
+            false
+
+        $('cancelModal').disabled =
+            false
+
+        $('submitAction').textContent =
+            'Terapkan'
+    }
+}
+
+$('filterButton').addEventListener(
+    'click',
+    () => {
+        state.page =
+            1
+
+        loadApplications()
+    }
+)
+
+$('refreshButton').addEventListener(
+    'click',
+    loadApplications
+)
+
+$('prevButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page <= 1
+        ) {
+            return
+        }
+
+        state.page--
+
+        loadApplications()
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('nextButton').addEventListener(
+    'click',
+    () => {
+        if (
+            state.page >= state.pages
+        ) {
+            return
+        }
+
+        state.page++
+
+        loadApplications()
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+)
+
+$('closeModal').addEventListener(
+    'click',
+    closeModal
+)
+
+$('cancelModal').addEventListener(
+    'click',
+    closeModal
+)
+
+$('submitAction').addEventListener(
+    'click',
+    submitAction
+)
+
+$('actionNote').addEventListener(
+    'input',
+    () => {
+        $('noteCounter').textContent =
+            `${$('actionNote').value.length}/3000`
+    }
+)
+
+$('modal').addEventListener(
+    'click',
+    event => {
+        if (
+            event.target ===
+            $('modal')
+        ) {
+            closeModal()
+        }
+    }
+)
+
+$('logoutButton').addEventListener(
+    'click',
+    async () => {
+        $('logoutButton').disabled =
+            true
+
+        try {
+            await fetch(
+                '/api/auth/logout',
+                {
+                    method: 'POST',
+                    credentials: 'include'
+                }
+            )
+        } catch {}
+
+        window.location.href =
+            '/login.html'
+    }
+)
+
+async function checkAdmin() {
+    try {
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    credentials: 'include',
+                    cache: 'no-store'
+                }
+            )
+
+        let data = null
+
+        try {
+            data =
+                await response.json()
+        } catch {
+            data = null
+        }
+
+        if (
+            !response.ok ||
+            !data?.success ||
+            !data?.user
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        const user =
+            data.user
+
+        if (
+            user.role !== 'admin' &&
+            user.role !== 'developer'
+        ) {
+            $('loading').classList.add(
+                'hidden'
+            )
+
+            $('accessDenied').classList.remove(
+                'hidden'
+            )
+
+            return false
+        }
+
+        state.user =
+            user
+
+        return true
+
+    } catch {
+        $('loading').classList.add(
+            'hidden'
+        )
+
+        $('accessDenied').classList.remove(
+            'hidden'
+        )
+
+        return false
+    }
+}
+
+async function init() {
+    const allowed =
+        await checkAdmin()
+
+    if (!allowed) {
+        return
+    }
+
+    await loadApplications()
+}
+
+init()
+</script>
+
+</body>
+</html>

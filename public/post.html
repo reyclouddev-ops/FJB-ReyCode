@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post - Forum FJB ReyCode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(59,130,246,.12), transparent 30%),
+                radial-gradient(circle at 90% 15%, rgba(14,165,233,.08), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+        }
+
+        .glass {
+            background: rgba(10,14,22,.78);
+            border: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .media-view {
+            background: #020409;
+        }
+
+        .comment-card {
+            transition: border-color .2s ease, background .2s ease;
+        }
+
+        .comment-card:hover {
+            border-color: rgba(255,255,255,.1);
+            background: rgba(255,255,255,.025);
+        }
+
+        .rating-star {
+            cursor: pointer;
+            transition: transform .15s ease, color .15s ease;
+        }
+
+        .rating-star:hover {
+            transform: scale(1.12);
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.12);
+            border-radius: 999px;
+        }
+
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,.04),
+                rgba(255,255,255,.08),
+                rgba(255,255,255,.04)
+            );
+            background-size: 200% 100%;
+            animation: skeleton 1.4s infinite;
+        }
+
+        @keyframes skeleton {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .fade {
+            animation: fade .3s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="sticky top-0 z-50 border-b border-white/[.06] bg-[#05070b]/90 backdrop-blur-xl">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-4">
+
+            <a href="/" class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+
+                <div class="hidden sm:block">
+                    <div class="font-bold text-white leading-none">
+                        ReyCode
+                    </div>
+
+                    <div class="text-[11px] text-gray-500 mt-1">
+                        Forum FJB
+                    </div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <a
+                    href="/forum.html"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Forum
+                </a>
+
+                <a
+                    href="/"
+                    class="px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition"
+                >
+                    Home
+                </a>
+
+                <a
+                    id="loginButton"
+                    href="/login.html"
+                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition"
+                >
+                    Login
+                </a>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+    <div id="loadingState" class="space-y-5">
+
+        <div class="glass rounded-2xl p-5 sm:p-7">
+            <div class="flex gap-3">
+                <div class="w-11 h-11 rounded-full skeleton shrink-0"></div>
+
+                <div class="flex-1">
+                    <div class="w-40 h-4 rounded skeleton"></div>
+                    <div class="w-24 h-3 rounded skeleton mt-2"></div>
+                </div>
+            </div>
+
+            <div class="w-3/4 h-7 rounded skeleton mt-7"></div>
+            <div class="w-full h-4 rounded skeleton mt-4"></div>
+            <div class="w-5/6 h-4 rounded skeleton mt-2"></div>
+            <div class="w-2/3 h-4 rounded skeleton mt-2"></div>
+        </div>
+
+    </div>
+
+    <section id="errorState" class="hidden glass rounded-2xl p-10 text-center">
+
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl">
+            ⚠️
+        </div>
+
+        <h2 id="errorTitle" class="mt-5 text-xl font-bold text-white">
+            Post tidak ditemukan
+        </h2>
+
+        <p id="errorMessage" class="mt-2 text-sm text-gray-500">
+            Postingan tidak tersedia.
+        </p>
+
+        <a
+            href="/forum.html"
+            class="inline-flex mt-6 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm font-bold text-white"
+        >
+            Kembali ke Forum
+        </a>
+
+    </section>
+
+    <section id="postSection" class="hidden">
+
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-5">
+
+            <div class="space-y-5">
+
+                <article class="glass rounded-2xl overflow-hidden">
+
+                    <div class="p-5 sm:p-7">
+
+                        <div class="flex items-start gap-3">
+
+                            <a
+                                id="authorAvatar"
+                                href="#"
+                                class="w-11 h-11 rounded-full bg-blue-600/15 border border-blue-500/10 flex items-center justify-center text-sm font-black text-blue-300 shrink-0 overflow-hidden"
+                            >
+                                U
+                            </a>
+
+                            <div class="flex-1 min-w-0">
+
+                                <div class="flex flex-wrap items-center gap-2">
+
+                                    <a
+                                        id="authorName"
+                                        href="#"
+                                        class="font-bold text-white hover:text-blue-400 transition"
+                                    >
+                                        User
+                                    </a>
+
+                                    <span
+                                        id="verifiedBadge"
+                                        class="hidden text-blue-400 text-xs"
+                                    >
+                                        ✓
+                                    </span>
+
+                                    <span
+                                        id="roleBadge"
+                                        class="hidden px-2 py-0.5 rounded-md text-[9px] font-bold uppercase"
+                                    ></span>
+
+                                </div>
+
+                                <div class="mt-1 text-xs text-gray-600">
+                                    <span id="postDate">-</span>
+                                </div>
+
+                            </div>
+
+                            <button
+                                id="reportButton"
+                                class="px-3 py-2 rounded-xl text-xs text-gray-500 hover:text-red-400 hover:bg-red-500/5 transition"
+                            >
+                                Report
+                            </button>
+
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2 mt-6">
+
+                            <span
+                                id="typeBadge"
+                                class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[11px] font-semibold"
+                            >
+                                Post
+                            </span>
+
+                            <span
+                                id="categoryBadge"
+                                class="px-2.5 py-1 rounded-lg bg-white/[.05] text-gray-400 text-[11px] font-semibold"
+                            >
+                                general
+                            </span>
+
+                            <span
+                                id="subcategoryBadge"
+                                class="px-2.5 py-1 rounded-lg bg-white/[.05] text-gray-500 text-[11px] font-semibold"
+                            >
+                                -
+                            </span>
+
+                            <span
+                                id="visibilityBadge"
+                                class="hidden px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 text-[11px] font-semibold"
+                            >
+                                🔒 Private
+                            </span>
+
+                            <span
+                                id="statusBadge"
+                                class="hidden px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 text-[11px] font-semibold uppercase"
+                            ></span>
+
+                        </div>
+
+                        <h1
+                            id="postTitle"
+                            class="hidden mt-5 text-2xl sm:text-3xl font-black text-white leading-tight"
+                        ></h1>
+
+                        <div
+                            id="productPrice"
+                            class="hidden mt-4 text-2xl font-black text-white"
+                        ></div>
+
+                        <div
+                            id="productStock"
+                            class="hidden mt-1 text-sm text-gray-500"
+                        ></div>
+
+                        <div
+                            id="postContent"
+                            class="mt-5 text-sm sm:text-base text-gray-300 leading-7 whitespace-pre-wrap break-words"
+                        ></div>
+
+                        <div
+                            id="mediaGrid"
+                            class="hidden mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3"
+                        ></div>
+
+                        <div class="mt-7 pt-5 border-t border-white/[.06]">
+
+                            <div class="flex flex-wrap items-center gap-2">
+
+                                <button
+                                    id="likeButton"
+                                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.07] hover:bg-white/[.08] text-sm font-semibold transition"
+                                >
+                                    ❤️ <span id="likeText">Like</span>
+                                </button>
+
+                                <button
+                                    id="commentScrollButton"
+                                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.07] hover:bg-white/[.08] text-sm font-semibold transition"
+                                >
+                                    💬 <span id="commentCount">0</span>
+                                </button>
+
+                                <button
+                                    id="ratingScrollButton"
+                                    class="px-4 py-2.5 rounded-xl bg-white/[.04] border border-white/[.07] hover:bg-white/[.08] text-sm font-semibold transition"
+                                >
+                                    ⭐ <span id="ratingAverage">0.0</span>
+                                </button>
+
+                                <span class="ml-auto text-xs text-gray-600">
+                                    <span id="ratingCount">0</span> rating
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <section id="commentsSection" class="glass rounded-2xl p-5 sm:p-7">
+
+                    <div class="flex items-center justify-between gap-4">
+
+                        <div>
+                            <h2 class="text-lg font-bold text-white">
+                                Komentar
+                            </h2>
+
+                            <p class="mt-1 text-xs text-gray-500">
+                                Diskusi pada postingan ini.
+                            </p>
+                        </div>
+
+                        <span
+                            id="commentsTotal"
+                            class="text-xs text-gray-600"
+                        >
+                            0 komentar
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="commentLoginNotice"
+                        class="hidden mt-5 rounded-xl border border-blue-500/10 bg-blue-500/5 p-4"
+                    >
+                        <p class="text-sm text-gray-400">
+                            Login untuk ikut berkomentar.
+                        </p>
+
+                        <a
+                            href="/login.html"
+                            class="inline-flex mt-3 text-xs font-bold text-blue-400 hover:text-blue-300"
+                        >
+                            Login sekarang →
+                        </a>
+                    </div>
+
+                    <form
+                        id="commentForm"
+                        class="hidden mt-5"
+                    >
+
+                        <textarea
+                            id="commentInput"
+                            maxlength="3000"
+                            rows="4"
+                            required
+                            placeholder="Tulis komentar..."
+                            class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none resize-y text-sm text-white placeholder-gray-600 focus:border-blue-500/50"
+                        ></textarea>
+
+                        <div class="flex items-center justify-between gap-3 mt-2">
+
+                            <span
+                                id="commentLength"
+                                class="text-[11px] text-gray-600"
+                            >
+                                0/3000
+                            </span>
+
+                            <button
+                                id="commentSubmit"
+                                type="submit"
+                                class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-sm font-bold text-white transition"
+                            >
+                                Kirim
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <div
+                        id="commentsLoading"
+                        class="mt-6 space-y-3"
+                    >
+                        <div class="h-24 rounded-xl skeleton"></div>
+                        <div class="h-20 rounded-xl skeleton"></div>
+                    </div>
+
+                    <div
+                        id="commentsContainer"
+                        class="hidden mt-6 space-y-3"
+                    ></div>
+
+                    <div
+                        id="commentsEmpty"
+                        class="hidden py-12 text-center"
+                    >
+                        <div class="text-2xl">
+                            💬
+                        </div>
+
+                        <p class="mt-3 text-sm font-semibold text-gray-400">
+                            Belum ada komentar
+                        </p>
+
+                        <p class="mt-1 text-xs text-gray-600">
+                            Jadilah yang pertama memulai diskusi.
+                        </p>
+                    </div>
+
+                    <div
+                        id="commentsPagination"
+                        class="hidden mt-5 flex items-center justify-between"
+                    >
+                        <button
+                            id="commentsPrevious"
+                            class="px-4 py-2 rounded-xl border border-white/[.07] text-xs font-semibold disabled:opacity-30"
+                        >
+                            ← Sebelumnya
+                        </button>
+
+                        <span
+                            id="commentsPageInfo"
+                            class="text-xs text-gray-600"
+                        ></span>
+
+                        <button
+                            id="commentsNext"
+                            class="px-4 py-2 rounded-xl border border-white/[.07] text-xs font-semibold disabled:opacity-30"
+                        >
+                            Berikutnya →
+                        </button>
+                    </div>
+
+                </section>
+
+            </div>
+
+            <aside class="space-y-5">
+
+                <section id="ratingSection" class="glass rounded-2xl p-5 sm:p-6">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+                            <h2 class="font-bold text-white">
+                                Rating
+                            </h2>
+
+                            <p class="text-xs text-gray-500 mt-1">
+                                Penilaian postingan
+                            </p>
+                        </div>
+
+                        <div class="text-right">
+                            <div
+                                id="ratingAverageLarge"
+                                class="text-2xl font-black text-white"
+                            >
+                                0.0
+                            </div>
+
+                            <div class="text-xs text-gray-600">
+                                <span id="ratingCountLarge">0</span> rating
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="ratingLoginNotice"
+                        class="hidden mt-5 rounded-xl bg-white/[.03] p-4 text-xs text-gray-500"
+                    >
+                        Login untuk memberikan rating.
+                    </div>
+
+                    <div
+                        id="ratingOwnNotice"
+                        class="hidden mt-5 rounded-xl bg-blue-500/5 border border-blue-500/10 p-4"
+                    >
+                        <p class="text-xs text-blue-300">
+                            Kamu tidak dapat memberikan rating pada postingan milik sendiri.
+                        </p>
+                    </div>
+
+                    <form
+                        id="ratingForm"
+                        class="hidden mt-5"
+                    >
+
+                        <div
+                            id="ratingStars"
+                            class="flex items-center gap-1"
+                        >
+                            <button type="button" data-rating="1" class="rating-star text-2xl text-gray-700">
+                                ★
+                            </button>
+
+                            <button type="button" data-rating="2" class="rating-star text-2xl text-gray-700">
+                                ★
+                            </button>
+
+                            <button type="button" data-rating="3" class="rating-star text-2xl text-gray-700">
+                                ★
+                            </button>
+
+                            <button type="button" data-rating="4" class="rating-star text-2xl text-gray-700">
+                                ★
+                            </button>
+
+                            <button type="button" data-rating="5" class="rating-star text-2xl text-gray-700">
+                                ★
+                            </button>
+                        </div>
+
+                        <textarea
+                            id="ratingReview"
+                            maxlength="2000"
+                            rows="4"
+                            placeholder="Tulis review (opsional)..."
+                            class="mt-4 w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none resize-y text-sm text-white placeholder-gray-600 focus:border-blue-500/50"
+                        ></textarea>
+
+                        <button
+                            type="submit"
+                            id="ratingSubmit"
+                            class="mt-3 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-sm font-bold text-white transition"
+                        >
+                            Kirim Rating
+                        </button>
+
+                    </form>
+
+                    <div
+                        id="ratingDistribution"
+                        class="mt-6 space-y-2"
+                    ></div>
+
+                </section>
+
+                <section class="glass rounded-2xl p-5 sm:p-6">
+
+                    <h2 class="font-bold text-white">
+                        Tentang Postingan
+                    </h2>
+
+                    <div class="mt-4 space-y-3 text-xs">
+
+                        <div class="flex justify-between gap-3">
+                            <span class="text-gray-600">
+                                Kategori
+                            </span>
+
+                            <span
+                                id="sideCategory"
+                                class="text-gray-300 text-right"
+                            >
+                                -
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between gap-3">
+                            <span class="text-gray-600">
+                                Tipe
+                            </span>
+
+                            <span
+                                id="sideType"
+                                class="text-gray-300 text-right"
+                            >
+                                -
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between gap-3">
+                            <span class="text-gray-600">
+                                Visibility
+                            </span>
+
+                            <span
+                                id="sideVisibility"
+                                class="text-gray-300 text-right"
+                            >
+                                -
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between gap-3">
+                            <span class="text-gray-600">
+                                Dibuat
+                            </span>
+
+                            <span
+                                id="sideDate"
+                                class="text-gray-300 text-right"
+                            >
+                                -
+                            </span>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div
+    id="reportModal"
+    class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm p-4 items-center justify-center"
+>
+
+    <div class="glass w-full max-w-md rounded-2xl p-5 sm:p-6">
+
+        <div class="flex items-center justify-between gap-4">
+
+            <div>
+                <h2 class="font-bold text-white">
+                    Laporkan Postingan
+                </h2>
+
+                <p class="text-xs text-gray-500 mt-1">
+                    Pilih alasan laporan.
+                </p>
+            </div>
+
+            <button
+                id="closeReport"
+                class="w-9 h-9 rounded-xl hover:bg-white/[.05] text-gray-500 hover:text-white"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <form id="reportForm" class="mt-5">
+
+            <select
+                id="reportReason"
+                required
+                class="w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white focus:border-blue-500/50"
+            >
+                <option value="scam">Scam / Penipuan</option>
+                <option value="spam">Spam</option>
+                <option value="product_mismatch">Produk tidak sesuai</option>
+                <option value="rule_violation">Pelanggaran aturan</option>
+                <option value="suspicious">Mencurigakan</option>
+                <option value="other">Lainnya</option>
+            </select>
+
+            <textarea
+                id="reportDetails"
+                maxlength="3000"
+                rows="5"
+                placeholder="Detail laporan..."
+                class="mt-3 w-full px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none resize-y text-sm text-white placeholder-gray-600 focus:border-blue-500/50"
+            ></textarea>
+
+            <div
+                id="reportError"
+                class="hidden mt-3 text-xs text-red-400"
+            ></div>
+
+            <button
+                id="reportSubmit"
+                type="submit"
+                class="mt-4 w-full py-3 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-sm font-bold text-white transition"
+            >
+                Kirim Laporan
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div
+    id="toast"
+    class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-[120] transition-all duration-300"
+>
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span
+            id="toastMessage"
+            class="text-sm font-semibold text-white"
+        ></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    postId: null,
+    post: null,
+    viewer: null,
+    loggedIn: false,
+    isOwner: false,
+    isAdmin: false,
+    liked: false,
+    selectedRating: 0,
+    commentsPage: 1,
+    commentsLimit: 20,
+    commentsTotalPages: 0,
+    commentsLoading: false,
+    ratingLoading: false,
+    reportLoading: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID')
+        .format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) {
+        return '-'
+    }
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    }).format(date)
+}
+
+function showToast(message) {
+    $('toastMessage').textContent = message
+
+    $('toast').classList.remove(
+        'translate-y-20',
+        'opacity-0'
+    )
+
+    $('toast').classList.add(
+        'translate-y-0',
+        'opacity-100'
+    )
+
+    clearTimeout(window.toastTimer)
+
+    window.toastTimer = setTimeout(() => {
+        $('toast').classList.add(
+            'translate-y-20',
+            'opacity-0'
+        )
+
+        $('toast').classList.remove(
+            'translate-y-0',
+            'opacity-100'
+        )
+    }, 2500)
+}
+
+function getPostId() {
+    const params = new URLSearchParams(location.search)
+
+    return (
+        params.get('id') ||
+        params.get('postId') ||
+        params.get('post')
+    )
+}
+
+async function loadSession() {
+    try {
+        const response = await fetch('/api/auth/me', {
+            credentials: 'include'
+        })
+
+        const data = await response.json()
+
+        if (
+            response.ok &&
+            data.success &&
+            data.user
+        ) {
+            state.loggedIn = true
+            state.viewer = data.user
+
+            $('loginButton').textContent =
+                data.user.username
+                    ? `@${data.user.username}`
+                    : 'Profile'
+
+            $('loginButton').href =
+                `/profile.html?username=${encodeURIComponent(data.user.username)}`
+        }
+    } catch {
+        state.loggedIn = false
+    }
+}
+
+async function loadPost() {
+    const response = await fetch(
+        `/api/posts/detail?id=${encodeURIComponent(state.postId)}`,
+        {
+            credentials: 'include'
+        }
+    )
+
+    const data = await response.json()
+
+    if (
+        !response.ok ||
+        !data.success
+    ) {
+        throw new Error(
+            data.message ||
+            'Postingan tidak ditemukan.'
+        )
+    }
+
+    state.post =
+        data.post ||
+        data.data
+
+    state.viewer =
+        data.viewer ||
+        state.viewer
+
+    state.loggedIn =
+        Boolean(
+            data.viewer?.loggedIn ||
+            state.viewer
+        )
+
+    state.isOwner =
+        Boolean(
+            data.viewer?.isOwner
+        )
+
+    state.isAdmin =
+        Boolean(
+            data.viewer?.isAdmin
+        )
+
+    renderPost()
+
+    $('loadingState').classList.add('hidden')
+    $('postSection').classList.remove('hidden')
+
+    updateInteractionAccess()
+
+    await Promise.all([
+        loadComments(),
+        loadRatings()
+    ])
+}
+
+function getBadge(user) {
+    if (!user) {
+        return null
+    }
+
+    if (user.role === 'developer') {
+        return {
+            text: 'DEVELOPER',
+            className: 'bg-black text-white border border-white/10'
+        }
+    }
+
+    if (user.role === 'system') {
+        return {
+            text: 'SYSTEM',
+            className: 'bg-blue-600 text-white'
+        }
+    }
+
+    if (
+        user.resellerStatus === 'approved' &&
+        user.verified
+    ) {
+        return {
+            text: 'RESELLER',
+            className: 'bg-blue-600 text-white'
+        }
+    }
+
+    return null
+}
+
+function renderPost() {
+    const post = state.post
+
+    if (!post) {
+        return
+    }
+
+    const author =
+        post.author ||
+        {}
+
+    const authorUsername =
+        author.username ||
+        'user'
+
+    const avatar =
+        author.avatar ||
+        authorUsername.charAt(0).toUpperCase()
+
+    if (
+        typeof avatar === 'string' &&
+        /^https?:\/\//i.test(avatar)
+    ) {
+        $('authorAvatar').innerHTML = `
+            <img
+                src="${escapeHtml(avatar)}"
+                alt=""
+                class="w-full h-full object-cover"
+            >
+        `
+    } else {
+        $('authorAvatar').textContent =
+            avatar
+    }
+
+    $('authorName').textContent =
+        authorUsername
+
+    $('authorName').href =
+        `/profile.html?username=${encodeURIComponent(authorUsername)}`
+
+    $('authorAvatar').href =
+        `/profile.html?username=${encodeURIComponent(authorUsername)}`
+
+    if (author.verified) {
+        $('verifiedBadge').classList.remove('hidden')
+    }
+
+    const badge = getBadge(author)
+
+    if (badge) {
+        $('roleBadge').textContent =
+            badge.text
+
+        $('roleBadge').className =
+            `px-2 py-0.5 rounded-md text-[9px] font-bold uppercase ${badge.className}`
+
+        $('roleBadge').classList.remove('hidden')
+    }
+
+    $('postDate').textContent =
+        formatDate(post.createdAt)
+
+    const type =
+        post.type === 'product'
+            ? 'Produk'
+            : 'Post'
+
+    $('typeBadge').textContent =
+        type
+
+    $('categoryBadge').textContent =
+        post.category || 'general'
+
+    $('subcategoryBadge').textContent =
+        post.subcategory || '-'
+
+    $('sideCategory').textContent =
+        post.subcategory
+            ? `${post.category || '-'} / ${post.subcategory}`
+            : post.category || '-'
+
+    $('sideType').textContent =
+        type
+
+    $('sideVisibility').textContent =
+        post.visibility === 'private'
+            ? 'Private'
+            : 'Public'
+
+    $('sideDate').textContent =
+        formatDate(post.createdAt)
+
+    if (post.visibility === 'private') {
+        $('visibilityBadge').classList.remove('hidden')
+    }
+
+    if (post.status !== 'active') {
+        $('statusBadge').textContent =
+            post.status
+
+        $('statusBadge').classList.remove('hidden')
+    }
+
+    if (post.title) {
+        $('postTitle').textContent =
+            post.title
+
+        $('postTitle').classList.remove('hidden')
+
+        document.title =
+            `${post.title} - Forum FJB ReyCode`
+    } else {
+        document.title =
+            `Post - Forum FJB ReyCode`
+    }
+
+    $('postContent').textContent =
+        post.content || ''
+
+    if (
+        post.type === 'product' &&
+        post.price !== null &&
+        post.price !== undefined
+    ) {
+        $('productPrice').textContent =
+            `Rp ${formatNumber(post.price)}`
+
+        $('productPrice').classList.remove('hidden')
+
+        $('productStock').textContent =
+            post.stock === null ||
+            post.stock === undefined
+                ? 'Stok tidak dicantumkan'
+                : `Stok: ${formatNumber(post.stock)}`
+
+        $('productStock').classList.remove('hidden')
+    }
+
+    renderMedia()
+
+    $('likeText').textContent =
+        state.liked
+            ? 'Liked'
+            : 'Like'
+
+    $('commentCount').textContent =
+        formatNumber(post.commentsCount)
+
+    $('commentsTotal').textContent =
+        `${formatNumber(post.commentsCount)} komentar`
+
+    $('ratingAverage').textContent =
+        Number(post.ratingAverage || 0).toFixed(1)
+
+    $('ratingAverageLarge').textContent =
+        Number(post.ratingAverage || 0).toFixed(1)
+
+    $('ratingCount').textContent =
+        formatNumber(post.ratingsCount)
+
+    $('ratingCountLarge').textContent =
+        formatNumber(post.ratingsCount)
+}
+
+function renderMedia() {
+    const post = state.post
+
+    const images =
+        Array.isArray(post.images)
+            ? post.images
+            : []
+
+    if (!images.length) {
+        $('mediaGrid').classList.add('hidden')
+        return
+    }
+
+    const media = images
+        .slice(0, 10)
+        .map(item => {
+            const url =
+                typeof item === 'string'
+                    ? item
+                    : item?.url
+
+            const type =
+                typeof item === 'object'
+                    ? item?.type
+                    : 'image'
+
+            if (!url) {
+                return ''
+            }
+
+            if (type === 'video') {
+                return `
+                    <div class="media-view rounded-2xl overflow-hidden border border-white/[.06]">
+                        <video
+                            src="${escapeHtml(url)}"
+                            controls
+                            preload="metadata"
+                            class="w-full max-h-[600px] object-contain"
+                        ></video>
+                    </div>
+                `
+            }
+
+            return `
+                <a
+                    href="${escapeHtml(url)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block media-view rounded-2xl overflow-hidden border border-white/[.06]"
+                >
+                    <img
+                        src="${escapeHtml(url)}"
+                        alt=""
+                        loading="lazy"
+                        class="w-full max-h-[600px] object-contain"
+                    >
+                </a>
+            `
+        })
+        .filter(Boolean)
+
+    $('mediaGrid').innerHTML =
+        media.join('')
+
+    $('mediaGrid').classList.remove('hidden')
+
+    if (media.length === 1) {
+        $('mediaGrid').className =
+            'mt-6 grid grid-cols-1 gap-3'
+    } else {
+        $('mediaGrid').className =
+            'mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3'
+    }
+}
+
+function updateInteractionAccess() {
+    if (!state.loggedIn) {
+        $('commentLoginNotice').classList.remove('hidden')
+        $('ratingLoginNotice').classList.remove('hidden')
+
+        $('likeButton').onclick = () => {
+            location.href =
+                `/login.html?redirect=${encodeURIComponent(location.href)}`
+        }
+
+        $('ratingForm').classList.add('hidden')
+        return
+    }
+
+    $('commentLoginNotice').classList.add('hidden')
+
+    if (state.isOwner) {
+        $('ratingOwnNotice').classList.remove('hidden')
+        $('ratingForm').classList.add('hidden')
+    } else {
+        $('ratingOwnNotice').classList.add('hidden')
+        $('ratingLoginNotice').classList.add('hidden')
+        $('ratingForm').classList.remove('hidden')
+    }
+}
+
+async function toggleLike() {
+    if (!state.loggedIn) {
+        location.href =
+            `/login.html?redirect=${encodeURIComponent(location.href)}`
+        return
+    }
+
+    $('likeButton').disabled = true
+
+    try {
+        const response = await fetch('/api/posts/like', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                postId: state.postId,
+                action: state.liked
+                    ? 'unlike'
+                    : 'like'
+            })
+        })
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengubah like.'
+            )
+        }
+
+        state.liked =
+            Boolean(data.liked)
+
+        state.post.likesCount =
+            data.likesCount
+
+        $('likeText').textContent =
+            state.liked
+                ? 'Liked'
+                : 'Like'
+
+        showToast(
+            state.liked
+                ? 'Postingan disukai'
+                : 'Like dibatalkan'
+        )
+    } catch (error) {
+        showToast(error.message)
+    } finally {
+        $('likeButton').disabled = false
+    }
+}
+
+async function loadComments() {
+    if (state.commentsLoading) {
+        return
+    }
+
+    state.commentsLoading = true
+
+    $('commentsLoading').classList.remove('hidden')
+    $('commentsContainer').classList.add('hidden')
+    $('commentsEmpty').classList.add('hidden')
+
+    try {
+        const params = new URLSearchParams()
+
+        params.set('postId', state.postId)
+        params.set('page', state.commentsPage)
+        params.set('limit', state.commentsLimit)
+
+        const response = await fetch(
+            `/api/comments/list?${params.toString()}`,
+            {
+                credentials: 'include'
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengambil komentar.'
+            )
+        }
+
+        const comments =
+            data.comments || []
+
+        renderComments(comments)
+
+        const pagination =
+            data.pagination || {}
+
+        state.commentsTotalPages =
+            Number(
+                pagination.totalPages ||
+                pagination.pages ||
+                0
+            )
+
+        if (
+            !state.commentsTotalPages &&
+            pagination.total
+        ) {
+            state.commentsTotalPages =
+                Math.ceil(
+                    Number(pagination.total) /
+                    state.commentsLimit
+                )
+        }
+
+        renderCommentPagination(
+            pagination
+        )
+    } catch (error) {
+        $('commentsContainer').innerHTML = `
+            <div class="rounded-xl border border-red-500/10 bg-red-500/5 p-5 text-center">
+                <p class="text-sm text-red-400">
+                    ${escapeHtml(error.message)}
+                </p>
+            </div>
+        `
+
+        $('commentsContainer').classList.remove('hidden')
+    } finally {
+        $('commentsLoading').classList.add('hidden')
+        state.commentsLoading = false
+    }
+}
+
+function renderComments(comments) {
+    if (!comments.length) {
+        $('commentsContainer').classList.add('hidden')
+        $('commentsEmpty').classList.remove('hidden')
+        return
+    }
+
+    $('commentsContainer').innerHTML =
+        comments.map(renderComment).join('')
+
+    $('commentsContainer').classList.remove('hidden')
+}
+
+function renderComment(comment, isReply = false) {
+    const author =
+        comment.author ||
+        {}
+
+    const username =
+        author.username ||
+        'user'
+
+    const avatar =
+        author.avatar ||
+        username.charAt(0).toUpperCase()
+
+    const badge =
+        getBadge(author)
+
+    const replies =
+        Array.isArray(comment.replies)
+            ? comment.replies
+            : []
+
+    return `
+        <div class="${isReply ? 'ml-5 sm:ml-10 mt-2' : ''}">
+            <div
+                class="comment-card rounded-xl border border-white/[.06] bg-white/[.02] p-4 fade"
+            >
+
+                <div class="flex items-start gap-3">
+
+                    <a
+                        href="/profile.html?username=${encodeURIComponent(username)}"
+                        class="w-9 h-9 rounded-full bg-blue-600/10 border border-blue-500/10 flex items-center justify-center text-xs font-bold text-blue-300 shrink-0 overflow-hidden"
+                    >
+                        ${
+                            /^https?:\/\//i.test(String(avatar))
+                                ? `
+                                    <img
+                                        src="${escapeHtml(avatar)}"
+                                        class="w-full h-full object-cover"
+                                        alt=""
+                                    >
+                                `
+                                : escapeHtml(
+                                    String(avatar).charAt(0).toUpperCase()
+                                )
+                        }
+                    </a>
+
+                    <div class="flex-1 min-w-0">
+
+                        <div class="flex flex-wrap items-center gap-2">
+
+                            <a
+                                href="/profile.html?username=${encodeURIComponent(username)}"
+                                class="text-sm font-bold text-white hover:text-blue-400"
+                            >
+                                ${escapeHtml(username)}
+                            </a>
+
+                            ${
+                                author.verified
+                                    ? `
+                                        <span class="text-blue-400 text-[11px]">
+                                            ✓
+                                        </span>
+                                    `
+                                    : ''
+                            }
+
+                            ${
+                                badge
+                                    ? `
+                                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold ${badge.className}">
+                                            ${escapeHtml(badge.text)}
+                                        </span>
+                                    `
+                                    : ''
+                            }
+
+                        </div>
+
+                        <div class="mt-1 text-[10px] text-gray-600">
+                            ${escapeHtml(formatDate(comment.createdAt))}
+                        </div>
+
+                        <p class="mt-3 text-sm text-gray-400 leading-6 whitespace-pre-wrap break-words">
+                            ${escapeHtml(comment.content)}
+                        </p>
+
+                        <div class="mt-3 flex items-center gap-4">
+
+                            <button
+                                type="button"
+                                data-comment-like="${escapeHtml(comment._id)}"
+                                class="text-xs text-gray-600 hover:text-red-400 transition"
+                            >
+                                ❤️ ${formatNumber(comment.likesCount)}
+                            </button>
+
+                            ${
+                                !isReply
+                                    ? `
+                                        <button
+                                            type="button"
+                                            data-comment-reply="${escapeHtml(comment._id)}"
+                                            class="text-xs text-gray-600 hover:text-blue-400 transition"
+                                        >
+                                            Balas
+                                        </button>
+                                    `
+                                    : ''
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            ${
+                replies.length
+                    ? `
+                        <div>
+                            ${replies
+                                .map(reply =>
+                                    renderComment(
+                                        reply,
+                                        true
+                                    )
+                                )
+                                .join('')}
+                        </div>
+                    `
+                    : ''
+            }
+
+        </div>
+    `
+}
+
+function renderCommentPagination(pagination) {
+    const totalPages =
+        Number(
+            pagination.totalPages ||
+            state.commentsTotalPages ||
+            0
+        )
+
+    if (totalPages <= 1) {
+        $('commentsPagination').classList.add('hidden')
+        return
+    }
+
+    $('commentsPagination').classList.remove('hidden')
+
+    $('commentsPrevious').disabled =
+        state.commentsPage <= 1
+
+    $('commentsNext').disabled =
+        state.commentsPage >= totalPages
+
+    $('commentsPageInfo').textContent =
+        `Halaman ${state.commentsPage} dari ${totalPages}`
+}
+
+async function submitComment(event) {
+    event.preventDefault()
+
+    if (!state.loggedIn) {
+        return
+    }
+
+    const content =
+        $('commentInput').value.trim()
+
+    if (!content) {
+        return
+    }
+
+    if (content.length > 3000) {
+        showToast(
+            'Komentar maksimal 3000 karakter.'
+        )
+        return
+    }
+
+    $('commentSubmit').disabled = true
+    $('commentSubmit').textContent = 'Mengirim...'
+
+    try {
+        const response = await fetch(
+            '/api/comments/create',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    postId: state.postId,
+                    content
+                })
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengirim komentar.'
+            )
+        }
+
+        $('commentInput').value = ''
+        $('commentLength').textContent =
+            '0/3000'
+
+        state.commentsPage = 1
+
+        await loadComments()
+
+        state.post.commentsCount =
+            Number(state.post.commentsCount || 0) + 1
+
+        $('commentCount').textContent =
+            formatNumber(
+                state.post.commentsCount
+            )
+
+        $('commentsTotal').textContent =
+            `${formatNumber(state.post.commentsCount)} komentar`
+
+        showToast('Komentar berhasil dikirim.')
+    } catch (error) {
+        showToast(error.message)
+    } finally {
+        $('commentSubmit').disabled = false
+        $('commentSubmit').textContent = 'Kirim'
+    }
+}
+
+async function toggleCommentLike(commentId, button) {
+    if (!state.loggedIn) {
+        location.href =
+            `/login.html?redirect=${encodeURIComponent(location.href)}`
+        return
+    }
+
+    button.disabled = true
+
+    try {
+        const response = await fetch(
+            '/api/comments/like',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    commentId,
+                    action: 'toggle'
+                })
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengubah like komentar.'
+            )
+        }
+
+        button.innerHTML =
+            `❤️ ${formatNumber(data.likesCount)}`
+
+        if (data.liked) {
+            button.classList.add('text-red-400')
+        } else {
+            button.classList.remove('text-red-400')
+        }
+    } catch (error) {
+        showToast(error.message)
+    } finally {
+        button.disabled = false
+    }
+}
+
+function replyToComment(commentId) {
+    if (!state.loggedIn) {
+        location.href =
+            `/login.html?redirect=${encodeURIComponent(location.href)}`
+        return
+    }
+
+    const input =
+        $('commentInput')
+
+    input.focus()
+
+    input.dataset.parentId =
+        commentId
+
+    input.placeholder =
+        'Tulis balasan komentar...'
+
+    showToast(
+        'Mode balas aktif. Kirim komentar untuk membalas.'
+    )
+}
+
+async function loadRatings() {
+    try {
+        const params = new URLSearchParams()
+
+        params.set(
+            'postId',
+            state.postId
+        )
+
+        params.set(
+            'page',
+            1
+        )
+
+        params.set(
+            'limit',
+            20
+        )
+
+        const response = await fetch(
+            `/api/ratings/list?${params.toString()}`,
+            {
+                credentials: 'include'
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengambil rating.'
+            )
+        }
+
+        const average =
+            Number(
+                data.average ??
+                data.ratingAverage ??
+                state.post.ratingAverage ??
+                0
+            )
+
+        const count =
+            Number(
+                data.total ??
+                data.ratingsCount ??
+                state.post.ratingsCount ??
+                0
+            )
+
+        $('ratingAverage').textContent =
+            average.toFixed(1)
+
+        $('ratingAverageLarge').textContent =
+            average.toFixed(1)
+
+        $('ratingCount').textContent =
+            formatNumber(count)
+
+        $('ratingCountLarge').textContent =
+            formatNumber(count)
+
+        renderRatingDistribution(
+            data.distribution ||
+            data.stats?.distribution ||
+            {}
+        )
+
+        const own =
+            data.viewerRating ||
+            data.myRating ||
+            null
+
+        if (own) {
+            state.selectedRating =
+                Number(own.rating || 0)
+
+            $('ratingReview').value =
+                own.review || ''
+
+            updateRatingStars()
+        }
+    } catch {
+        renderRatingDistribution({})
+    }
+}
+
+function renderRatingDistribution(distribution) {
+    const container =
+        $('ratingDistribution')
+
+    const values = [5, 4, 3, 2, 1]
+
+    container.innerHTML =
+        values.map(star => {
+            const count =
+                Number(
+                    distribution[star] ||
+                    distribution[String(star)] ||
+                    0
+                )
+
+            return `
+                <div class="flex items-center gap-2 text-xs">
+
+                    <span class="w-6 text-gray-500">
+                        ${star}★
+                    </span>
+
+                    <div class="flex-1 h-1.5 rounded-full bg-white/[.05] overflow-hidden">
+                        <div
+                            class="h-full rounded-full bg-blue-500"
+                            style="width:${Math.min(count, 100)}%"
+                        ></div>
+                    </div>
+
+                    <span class="w-7 text-right text-gray-600">
+                        ${formatNumber(count)}
+                    </span>
+
+                </div>
+            `
+        })
+        .join('')
+}
+
+function updateRatingStars() {
+    document
+        .querySelectorAll('[data-rating]')
+        .forEach(button => {
+            const value =
+                Number(button.dataset.rating)
+
+            if (value <= state.selectedRating) {
+                button.classList.remove('text-gray-700')
+                button.classList.add('text-yellow-400')
+            } else {
+                button.classList.add('text-gray-700')
+                button.classList.remove('text-yellow-400')
+            }
+        })
+}
+
+async function submitRating(event) {
+    event.preventDefault()
+
+    if (!state.loggedIn) {
+        return
+    }
+
+    if (state.isOwner) {
+        showToast(
+            'Kamu tidak dapat rating post sendiri.'
+        )
+        return
+    }
+
+    if (
+        !Number.isInteger(state.selectedRating) ||
+        state.selectedRating < 1 ||
+        state.selectedRating > 5
+    ) {
+        showToast(
+            'Pilih rating 1 sampai 5.'
+        )
+        return
+    }
+
+    if (state.ratingLoading) {
+        return
+    }
+
+    state.ratingLoading = true
+
+    $('ratingSubmit').disabled = true
+    $('ratingSubmit').textContent =
+        'Mengirim...'
+
+    try {
+        const response = await fetch(
+            '/api/ratings/create',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    postId: state.postId,
+                    rating: state.selectedRating,
+                    review: $('ratingReview').value.trim()
+                })
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengirim rating.'
+            )
+        }
+
+        await loadRatings()
+
+        showToast(
+            'Rating berhasil disimpan.'
+        )
+    } catch (error) {
+        showToast(error.message)
+    } finally {
+        state.ratingLoading = false
+        $('ratingSubmit').disabled = false
+        $('ratingSubmit').textContent =
+            'Kirim Rating'
+    }
+}
+
+function openReport() {
+    if (!state.loggedIn) {
+        location.href =
+            `/login.html?redirect=${encodeURIComponent(location.href)}`
+        return
+    }
+
+    $('reportModal').classList.remove('hidden')
+    $('reportModal').classList.add('flex')
+}
+
+function closeReport() {
+    $('reportModal').classList.add('hidden')
+    $('reportModal').classList.remove('flex')
+    $('reportError').classList.add('hidden')
+}
+
+async function submitReport(event) {
+    event.preventDefault()
+
+    if (!state.loggedIn) {
+        return
+    }
+
+    if (state.reportLoading) {
+        return
+    }
+
+    state.reportLoading = true
+
+    $('reportSubmit').disabled = true
+    $('reportSubmit').textContent =
+        'Mengirim...'
+
+    $('reportError').classList.add('hidden')
+
+    try {
+        const response = await fetch(
+            '/api/reports/create',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    targetType: 'post',
+                    targetPost: state.postId,
+                    reason: $('reportReason').value,
+                    details: $('reportDetails').value.trim()
+                })
+            }
+        )
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                'Gagal mengirim laporan.'
+            )
+        }
+
+        $('reportForm').reset()
+
+        closeReport()
+
+        showToast(
+            'Laporan berhasil dikirim ke admin.'
+        )
+    } catch (error) {
+        $('reportError').textContent =
+            error.message
+
+        $('reportError').classList.remove('hidden')
+    } finally {
+        state.reportLoading = false
+        $('reportSubmit').disabled = false
+        $('reportSubmit').textContent =
+            'Kirim Laporan'
+    }
+}
+
+$('likeButton').addEventListener(
+    'click',
+    toggleLike
+)
+
+$('commentScrollButton').addEventListener(
+    'click',
+    () => {
+        $('commentsSection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        })
+
+        setTimeout(() => {
+            if (state.loggedIn) {
+                $('commentInput').focus()
+            }
+        }, 500)
+    }
+)
+
+$('ratingScrollButton').addEventListener(
+    'click',
+    () => {
+        $('ratingSection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        })
+    }
+)
+
+$('ratingStars').addEventListener(
+    'click',
+    event => {
+        const button =
+            event.target.closest('[data-rating]')
+
+        if (!button) {
+            return
+        }
+
+        state.selectedRating =
+            Number(button.dataset.rating)
+
+        updateRatingStars()
+    }
+)
+
+$('ratingForm').addEventListener(
+    'submit',
+    submitRating
+)
+
+$('commentForm').addEventListener(
+    'submit',
+    submitComment
+)
+
+$('commentInput').addEventListener(
+    'input',
+    event => {
+        $('commentLength').textContent =
+            `${event.target.value.length}/3000`
+    }
+)
+
+$('commentsPrevious').addEventListener(
+    'click',
+    async () => {
+        if (state.commentsPage <= 1) {
+            return
+        }
+
+        state.commentsPage--
+
+        await loadComments()
+    }
+)
+
+$('commentsNext').addEventListener(
+    'click',
+    async () => {
+        if (
+            state.commentsPage >=
+            state.commentsTotalPages
+        ) {
+            return
+        }
+
+        state.commentsPage++
+
+        await loadComments()
+    }
+)
+
+$('commentsContainer').addEventListener(
+    'click',
+    event => {
+        const likeButton =
+            event.target.closest(
+                '[data-comment-like]'
+            )
+
+        if (likeButton) {
+            toggleCommentLike(
+                likeButton.dataset.commentLike,
+                likeButton
+            )
+
+            return
+        }
+
+        const replyButton =
+            event.target.closest(
+                '[data-comment-reply]'
+            )
+
+        if (replyButton) {
+            replyToComment(
+                replyButton.dataset.commentReply
+            )
+        }
+    }
+)
+
+$('reportButton').addEventListener(
+    'click',
+    openReport
+)
+
+$('closeReport').addEventListener(
+    'click',
+    closeReport
+)
+
+$('reportModal').addEventListener(
+    'click',
+    event => {
+        if (event.target === $('reportModal')) {
+            closeReport()
+        }
+    }
+)
+
+$('reportForm').addEventListener(
+    'submit',
+    submitReport
+)
+
+async function init() {
+    state.postId = getPostId()
+
+    if (!state.postId) {
+        $('loadingState').classList.add('hidden')
+        $('errorState').classList.remove('hidden')
+        $('errorMessage').textContent =
+            'ID postingan tidak ditemukan.'
+        return
+    }
+
+    await loadSession()
+
+    try {
+        await loadPost()
+    } catch (error) {
+        $('loadingState').classList.add('hidden')
+        $('errorState').classList.remove('hidden')
+        $('errorMessage').textContent =
+            error.message ||
+            'Postingan tidak tersedia.'
+    }
+}
+
+init()
+</script>
+
+</body>
+</html>

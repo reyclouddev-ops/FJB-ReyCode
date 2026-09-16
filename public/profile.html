@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Forum FJB ReyCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn .35s ease-out',
+                        'slide-up': 'slideUp .4s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(15px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at 15% 0%, rgba(59, 130, 246, .12), transparent 30%),
+                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, .08), transparent 25%),
+                #05070b;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(10, 14, 22, .78);
+            border: 1px solid rgba(255, 255, 255, .07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .avatar-ring {
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, .08),
+                0 0 35px rgba(59, 130, 246, .15);
+        }
+
+        .post-card {
+            transition: transform .2s ease, border-color .2s ease, background .2s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, .25);
+            background: rgba(14, 19, 29, .9);
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .12);
+            border-radius: 999px;
+        }
+
+        .tab-active {
+            color: white;
+            border-bottom-color: #3b82f6;
+        }
+
+        .badge-developer {
+            background: #050505;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .badge-reseller {
+            background: #2563eb;
+            color: white;
+        }
+
+        .badge-system {
+            background: #2563eb;
+            color: white;
+        }
+
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,.04),
+                rgba(255,255,255,.09),
+                rgba(255,255,255,.04)
+            );
+            background-size: 200% 100%;
+            animation: skeleton 1.4s infinite;
+        }
+
+        @keyframes skeleton {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="sticky top-0 z-40 border-b border-white/[.06] bg-[#05070b]/85 backdrop-blur-xl">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between gap-4">
+            <a href="/" class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center">
+                    <span class="font-black text-blue-400">R</span>
+                </div>
+                <div class="hidden sm:block">
+                    <div class="font-bold text-white leading-none">ReyCode</div>
+                    <div class="text-[11px] text-gray-500 mt-1">Forum FJB</div>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <a href="/" class="px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition">
+                    Home
+                </a>
+                <a href="/forum.html" class="px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/[.05] transition">
+                    Forum
+                </a>
+                <a id="loginButton" href="/login.html" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition">
+                    Login
+                </a>
+                <button id="profileButton" class="hidden w-9 h-9 rounded-full overflow-hidden border border-white/10 bg-white/[.05]">
+                    <span id="headerAvatar" class="w-full h-full flex items-center justify-center font-bold text-white"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+    <div id="loadingProfile" class="glass rounded-2xl p-5 sm:p-7 animate-pulse">
+        <div class="flex flex-col sm:flex-row gap-5">
+            <div class="w-24 h-24 rounded-full skeleton shrink-0"></div>
+            <div class="flex-1">
+                <div class="h-6 w-48 rounded skeleton"></div>
+                <div class="h-4 w-32 rounded skeleton mt-3"></div>
+                <div class="h-4 w-full max-w-xl rounded skeleton mt-5"></div>
+                <div class="h-4 w-3/4 max-w-lg rounded skeleton mt-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <section id="profileSection" class="hidden animate-fade-in">
+        <div class="glass rounded-2xl overflow-hidden">
+            <div class="h-28 sm:h-36 bg-gradient-to-br from-blue-600/20 via-slate-900 to-cyan-500/10 relative">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,.15),transparent_35%)]"></div>
+            </div>
+
+            <div class="px-5 sm:px-8 pb-6">
+                <div class="-mt-12 sm:-mt-14 flex flex-col sm:flex-row sm:items-end gap-4">
+                    <div id="avatar" class="avatar-ring w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 border-4 border-[#080b11] flex items-center justify-center text-3xl sm:text-4xl font-black text-white shrink-0">
+                        R
+                    </div>
+
+                    <div class="flex-1 min-w-0 sm:pb-2">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h1 id="displayName" class="text-2xl sm:text-3xl font-black text-white break-words">
+                                User
+                            </h1>
+                            <span id="verifiedBadge" class="hidden px-2 py-1 rounded-md text-[11px] font-bold">
+                                ✓ VERIFIED
+                            </span>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2 mt-1">
+                            <span id="username" class="text-sm text-gray-500">@username</span>
+                            <span id="roleBadge" class="hidden px-2 py-0.5 rounded-md text-[10px] font-bold uppercase"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 sm:pb-2">
+                        <button id="followButton" class="hidden px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition">
+                            Follow
+                        </button>
+                        <a id="editProfileButton" href="/settings.html" class="hidden px-5 py-2.5 rounded-xl border border-white/10 hover:bg-white/[.05] text-white text-sm font-bold transition">
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-5 max-w-3xl">
+                    <p id="bio" class="text-sm sm:text-base text-gray-400 leading-relaxed whitespace-pre-wrap"></p>
+                    <p id="emptyBio" class="hidden text-sm text-gray-600 italic">
+                        Belum ada bio.
+                    </p>
+                </div>
+
+                <div class="mt-6 flex flex-wrap gap-6">
+                    <div>
+                        <div id="postsCount" class="text-lg font-black text-white">0</div>
+                        <div class="text-xs text-gray-500">Postingan</div>
+                    </div>
+
+                    <button id="followersButton" class="text-left">
+                        <div id="followersCount" class="text-lg font-black text-white">0</div>
+                        <div class="text-xs text-gray-500">Followers</div>
+                    </button>
+
+                    <button id="followingButton" class="text-left">
+                        <div id="followingCount" class="text-lg font-black text-white">0</div>
+                        <div class="text-xs text-gray-500">Following</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 glass rounded-2xl">
+            <div class="px-4 sm:px-6 border-b border-white/[.06]">
+                <div class="flex items-center gap-6 overflow-x-auto scrollbar">
+                    <button data-tab="all" class="tab-button tab-active shrink-0 py-4 border-b-2 border-blue-500 text-sm font-semibold">
+                        Semua
+                    </button>
+                    <button data-tab="products" class="tab-button shrink-0 py-4 border-b-2 border-transparent text-gray-500 hover:text-white text-sm font-semibold">
+                        Produk
+                    </button>
+                    <button data-tab="media" class="tab-button shrink-0 py-4 border-b-2 border-transparent text-gray-500 hover:text-white text-sm font-semibold">
+                        Media
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row gap-3 mb-5">
+                    <input
+                        id="categoryInput"
+                        type="text"
+                        placeholder="Filter kategori..."
+                        class="flex-1 px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                    >
+
+                    <input
+                        id="subcategoryInput"
+                        type="text"
+                        placeholder="Subkategori..."
+                        class="flex-1 px-4 py-3 rounded-xl bg-white/[.04] border border-white/[.07] outline-none text-sm text-white placeholder-gray-600 focus:border-blue-500/50 transition"
+                    >
+
+                    <button
+                        id="filterButton"
+                        class="px-5 py-3 rounded-xl bg-white/[.06] hover:bg-white/[.1] border border-white/[.07] text-sm font-semibold text-white transition"
+                    >
+                        Filter
+                    </button>
+                </div>
+
+                <div id="postsLoading" class="space-y-4">
+                    <div class="h-48 rounded-2xl skeleton"></div>
+                    <div class="h-48 rounded-2xl skeleton"></div>
+                </div>
+
+                <div id="postsContainer" class="hidden space-y-4"></div>
+
+                <div id="emptyPosts" class="hidden py-16 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-2xl">
+                        📭
+                    </div>
+                    <h3 class="mt-4 font-bold text-white">Belum ada postingan</h3>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Pengguna ini belum memiliki postingan yang sesuai.
+                    </p>
+                </div>
+
+                <div id="privateMessage" class="hidden py-16 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-white/[.04] flex items-center justify-center text-2xl">
+                        🔒
+                    </div>
+                    <h3 class="mt-4 font-bold text-white">Postingan terbatas</h3>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Beberapa postingan hanya dapat dilihat oleh pemilik atau moderator.
+                    </p>
+                </div>
+
+                <div id="pagination" class="hidden mt-6 flex items-center justify-between gap-3">
+                    <button id="previousButton" class="px-4 py-2.5 rounded-xl border border-white/[.08] hover:bg-white/[.05] text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed">
+                        ← Sebelumnya
+                    </button>
+
+                    <span id="pageInfo" class="text-xs text-gray-500"></span>
+
+                    <button id="nextButton" class="px-4 py-2.5 rounded-xl border border-white/[.08] hover:bg-white/[.05] text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed">
+                        Berikutnya →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="errorSection" class="hidden glass rounded-2xl p-10 text-center">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 border border-red-500/10 flex items-center justify-center text-2xl">
+            ⚠️
+        </div>
+        <h2 id="errorTitle" class="mt-4 text-xl font-bold text-white">
+            Profile tidak ditemukan
+        </h2>
+        <p id="errorMessage" class="mt-2 text-sm text-gray-500">
+            Profile yang kamu cari tidak tersedia.
+        </p>
+        <a href="/" class="inline-flex mt-6 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold">
+            Kembali ke Home
+        </a>
+    </section>
+
+</main>
+
+<div id="toast" class="fixed left-1/2 bottom-6 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none z-50 transition-all duration-300">
+    <div class="glass rounded-xl px-5 py-3 shadow-2xl">
+        <span id="toastMessage" class="text-sm font-semibold text-white"></span>
+    </div>
+</div>
+
+<script>
+const state = {
+    username: null,
+    userId: null,
+    viewer: null,
+    profile: null,
+    tab: 'all',
+    page: 1,
+    limit: 20,
+    totalPages: 0,
+    category: '',
+    subcategory: '',
+    loading: false
+}
+
+const $ = id => document.getElementById(id)
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat('id-ID').format(Number(value || 0))
+}
+
+function formatDate(value) {
+    if (!value) return '-'
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return '-'
+    }
+
+    return new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    }).format(date)
+}
+
+function showToast(message) {
+    $('toastMessage').textContent = message
+    $('toast').classList.remove('translate-y-20', 'opacity-0')
+    $('toast').classList.add('translate-y-0', 'opacity-100')
+
+    clearTimeout(window.toastTimer)
+
+    window.toastTimer = setTimeout(() => {
+        $('toast').classList.add('translate-y-20', 'opacity-0')
+        $('toast').classList.remove('translate-y-0', 'opacity-100')
+    }, 2500)
+}
+
+function getQuery() {
+    const params = new URLSearchParams(location.search)
+
+    state.username = params.get('username')
+    state.userId = params.get('userId') || params.get('id')
+
+    return params
+}
+
+async function getCurrentUser() {
+    try {
+        const response = await fetch('/api/auth/me', {
+            credentials: 'include'
+        })
+
+        const data = await response.json()
+
+        if (data.success && data.user) {
+            state.viewer = data.user
+
+            $('loginButton').classList.add('hidden')
+            $('profileButton').classList.remove('hidden')
+
+            $('headerAvatar').textContent =
+                data.user.avatar ||
+                String(data.user.username || 'U').charAt(0).toUpperCase()
+
+            $('profileButton').onclick = () => {
+                location.href = `/profile.html?username=${encodeURIComponent(data.user.username)}`
+            }
+        }
+    } catch {
+        state.viewer = null
+    }
+}
+
+function getBadge(user) {
+    if (user.role === 'developer') {
+        return {
+            text: 'DEVELOPER',
+            className: 'badge-developer'
+        }
+    }
+
+    if (user.role === 'system') {
+        return {
+            text: 'SYSTEM',
+            className: 'badge-system'
+        }
+    }
+
+    if (user.resellerStatus === 'approved' && user.verified) {
+        return {
+            text: 'RESELLER',
+            className: 'badge-reseller'
+        }
+    }
+
+    return null
+}
+
+function renderProfile(data) {
+    const profile = data.profile || data.user || data
+
+    state.profile = profile
+
+    $('displayName').textContent =
+        profile.displayName ||
+        profile.name ||
+        profile.username ||
+        'User'
+
+    $('username').textContent = `@${profile.username || ''}`
+
+    const avatarValue = profile.avatar ||
+        String(profile.username || 'U').charAt(0).toUpperCase()
+
+    if (
+        typeof avatarValue === 'string' &&
+        /^https?:\/\//i.test(avatarValue)
+    ) {
+        $('avatar').innerHTML = `
+            <img
+                src="${escapeHtml(avatarValue)}"
+                alt="${escapeHtml(profile.username || 'avatar')}"
+                class="w-full h-full object-cover rounded-full"
+                onerror="this.style.display='none';this.parentElement.textContent='${escapeHtml(String(profile.username || 'U').charAt(0).toUpperCase())}'"
+            >
+        `
+    } else {
+        $('avatar').textContent = avatarValue
+    }
+
+    const badge = getBadge(profile)
+
+    if (badge) {
+        $('roleBadge').textContent = badge.text
+        $('roleBadge').className = `px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${badge.className}`
+        $('roleBadge').classList.remove('hidden')
+    } else {
+        $('roleBadge').classList.add('hidden')
+    }
+
+    if (profile.verified) {
+        $('verifiedBadge').classList.remove('hidden')
+    } else {
+        $('verifiedBadge').classList.add('hidden')
+    }
+
+    const bio = profile.bio || ''
+
+    if (bio.trim()) {
+        $('bio').textContent = bio
+        $('bio').classList.remove('hidden')
+        $('emptyBio').classList.add('hidden')
+    } else {
+        $('bio').classList.add('hidden')
+        $('emptyBio').classList.remove('hidden')
+    }
+
+    const followers =
+        data.followersCount ??
+        profile.followersCount ??
+        0
+
+    const following =
+        data.followingCount ??
+        profile.followingCount ??
+        0
+
+    const posts =
+        data.postsCount ??
+        profile.postsCount ??
+        0
+
+    $('followersCount').textContent = formatNumber(followers)
+    $('followingCount').textContent = formatNumber(following)
+    $('postsCount').textContent = formatNumber(posts)
+
+    const isOwner =
+        Boolean(data.viewer?.isOwner) ||
+        Boolean(data.isOwner) ||
+        Boolean(
+            state.viewer &&
+            profile._id &&
+            String(state.viewer._id) === String(profile._id)
+        )
+
+    if (isOwner) {
+        $('editProfileButton').classList.remove('hidden')
+        $('followButton').classList.add('hidden')
+    } else if (state.viewer && profile._id) {
+        $('followButton').classList.remove('hidden')
+        updateFollowButton(
+            Boolean(data.following)
+        )
+    }
+}
+
+function updateFollowButton(following) {
+    const button = $('followButton')
+
+    button.dataset.following = following ? 'true' : 'false'
+
+    if (following) {
+        button.textContent = 'Following'
+        button.className = 'px-5 py-2.5 rounded-xl border border-white/[.1] bg-white/[.06] hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 text-white text-sm font-bold transition'
+    } else {
+        button.textContent = 'Follow'
+        button.className = 'px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition'
+    }
+}
+
+async function loadProfile() {
+    const params = new URLSearchParams()
+
+    if (state.username) {
+        params.set('username', state.username)
+    }
+
+    if (state.userId) {
+        params.set('userId', state.userId)
+    }
+
+    if (!state.username && !state.userId) {
+        throw new Error('Username atau userId tidak ditemukan')
+    }
+
+    const response = await fetch(`/api/profile/detail?${params.toString()}`, {
+        credentials: 'include'
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Profile tidak ditemukan')
+    }
+
+    renderProfile(data)
+}
+
+async function loadPosts() {
+    if (state.loading) return
+
+    state.loading = true
+
+    $('postsLoading').classList.remove('hidden')
+    $('postsContainer').classList.add('hidden')
+    $('emptyPosts').classList.add('hidden')
+    $('privateMessage').classList.add('hidden')
+
+    const params = new URLSearchParams()
+
+    if (state.username) {
+        params.set('username', state.username)
+    }
+
+    if (state.userId) {
+        params.set('userId', state.userId)
+    }
+
+    params.set('tab', state.tab)
+    params.set('page', state.page)
+    params.set('limit', state.limit)
+
+    if (state.category) {
+        params.set('category', state.category)
+    }
+
+    if (state.subcategory) {
+        params.set('subcategory', state.subcategory)
+    }
+
+    try {
+        const response = await fetch(`/api/profile/detail?${params.toString()}`, {
+            credentials: 'include'
+        })
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Gagal mengambil postingan')
+        }
+
+        if (data.profile) {
+            state.profile = data.profile
+        }
+
+        renderPosts(data.posts || [])
+
+        const pagination = data.pagination || {}
+
+        state.totalPages =
+            Number(
+                pagination.totalPages ??
+                pagination.pages ??
+                0
+            )
+
+        if (!state.totalPages && pagination.total) {
+            state.totalPages = Math.ceil(
+                Number(pagination.total) / state.limit
+            )
+        }
+
+        renderPagination(pagination)
+    } catch (error) {
+        $('postsContainer').innerHTML = `
+            <div class="rounded-2xl border border-red-500/10 bg-red-500/5 p-8 text-center">
+                <div class="text-2xl">⚠️</div>
+                <div class="mt-3 font-semibold text-white">
+                    Gagal memuat postingan
+                </div>
+                <div class="mt-1 text-sm text-gray-500">
+                    ${escapeHtml(error.message)}
+                </div>
+            </div>
+        `
+
+        $('postsContainer').classList.remove('hidden')
+    } finally {
+        $('postsLoading').classList.add('hidden')
+        state.loading = false
+    }
+}
+
+function renderPosts(posts) {
+    const container = $('postsContainer')
+
+    if (!posts.length) {
+        container.classList.add('hidden')
+        $('emptyPosts').classList.remove('hidden')
+        return
+    }
+
+    container.innerHTML = posts.map(renderPost).join('')
+    container.classList.remove('hidden')
+}
+
+function renderPost(post) {
+    const title = post.title || ''
+
+    const content = post.content || ''
+
+    const images = Array.isArray(post.images)
+        ? post.images
+        : []
+
+    const category = post.category || 'general'
+    const subcategory = post.subcategory || ''
+
+    const price =
+        post.price !== null &&
+        post.price !== undefined
+            ? `Rp ${formatNumber(post.price)}`
+            : null
+
+    const status = post.status || 'active'
+
+    const media = images.slice(0, 4).map(item => {
+        const url =
+            typeof item === 'string'
+                ? item
+                : item?.url
+
+        if (!url) return ''
+
+        const type =
+            typeof item === 'object'
+                ? item.type
+                : 'image'
+
+        if (type === 'video') {
+            return `
+                <div class="aspect-video rounded-xl overflow-hidden bg-black">
+                    <video
+                        src="${escapeHtml(url)}"
+                        controls
+                        preload="metadata"
+                        class="w-full h-full object-cover"
+                    ></video>
+                </div>
+            `
+        }
+
+        return `
+            <img
+                src="${escapeHtml(url)}"
+                alt=""
+                loading="lazy"
+                class="w-full aspect-video object-cover rounded-xl bg-black"
+                onerror="this.style.display='none'"
+            >
+        `
+    }).filter(Boolean)
+
+    const mediaHtml = media.length
+        ? `
+            <div class="grid ${
+                media.length === 1
+                    ? 'grid-cols-1'
+                    : 'grid-cols-2'
+            } gap-2 mt-4">
+                ${media.join('')}
+            </div>
+        `
+        : ''
+
+    const author = post.author || state.profile || {}
+
+    const badge = getBadge(author)
+
+    const statusHtml =
+        status !== 'active'
+            ? `
+                <span class="px-2 py-1 rounded-md bg-yellow-500/10 text-yellow-400 border border-yellow-500/10 text-[10px] font-bold uppercase">
+                    ${escapeHtml(status)}
+                </span>
+            `
+            : ''
+
+    return `
+        <article class="post-card rounded-2xl border border-white/[.07] bg-white/[.025] p-4 sm:p-5 animate-slide-up">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-600/15 border border-blue-500/10 flex items-center justify-center text-sm font-bold text-blue-300 shrink-0">
+                    ${escapeHtml(
+                        String(
+                            author.avatar ||
+                            author.username ||
+                            'U'
+                        ).charAt(0).toUpperCase()
+                    )}
+                </div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-bold text-white">
+                            ${escapeHtml(author.username || state.profile?.username || 'User')}
+                        </span>
+
+                        ${
+                            badge
+                                ? `
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${badge.className}">
+                                        ${escapeHtml(badge.text)}
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                        ${
+                            author.verified
+                                ? `
+                                    <span class="text-blue-400 text-xs">
+                                        ✓
+                                    </span>
+                                `
+                                : ''
+                        }
+                    </div>
+
+                    <div class="mt-0.5 text-xs text-gray-600">
+                        ${escapeHtml(formatDate(post.createdAt))}
+                    </div>
+                </div>
+
+                ${statusHtml}
+            </div>
+
+            ${
+                title
+                    ? `
+                        <h2 class="mt-4 text-lg sm:text-xl font-bold text-white">
+                            ${escapeHtml(title)}
+                        </h2>
+                    `
+                    : ''
+            }
+
+            <p class="mt-3 text-sm text-gray-400 leading-6 whitespace-pre-wrap line-clamp-3">
+                ${escapeHtml(content)}
+            </p>
+
+            <div class="flex flex-wrap items-center gap-2 mt-4">
+                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[11px] font-semibold">
+                    ${escapeHtml(category)}
+                </span>
+
+                ${
+                    subcategory
+                        ? `
+                            <span class="px-2.5 py-1 rounded-lg bg-white/[.05] text-gray-400 text-[11px] font-semibold">
+                                ${escapeHtml(subcategory)}
+                            </span>
+                        `
+                        : ''
+                }
+
+                <span class="px-2.5 py-1 rounded-lg bg-white/[.05] text-gray-500 text-[11px] font-semibold">
+                    ${post.type === 'product' ? 'Produk' : 'Post'}
+                </span>
+
+                ${
+                    post.visibility === 'private'
+                        ? `
+                            <span class="px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-400 text-[11px] font-semibold">
+                                🔒 Private
+                            </span>
+                        `
+                        : ''
+                }
+            </div>
+
+            ${
+                price !== null
+                    ? `
+                        <div class="mt-4 text-lg font-black text-white">
+                            ${price}
+                        </div>
+                    `
+                    : ''
+            }
+
+            ${mediaHtml}
+
+            <div class="mt-5 pt-4 border-t border-white/[.05] flex items-center gap-5 text-xs text-gray-500">
+                <span>
+                    ❤️ ${formatNumber(post.likesCount)}
+                </span>
+
+                <span>
+                    💬 ${formatNumber(post.commentsCount)}
+                </span>
+
+                <span>
+                    ⭐ ${Number(post.ratingAverage || 0).toFixed(1)}
+                </span>
+
+                <a
+                    href="/post.html?id=${encodeURIComponent(post._id)}"
+                    class="ml-auto text-blue-400 hover:text-blue-300 font-semibold"
+                >
+                    Lihat →
+                </a>
+            </div>
+        </article>
+    `
+}
+
+function renderPagination(pagination) {
+    const total =
+        Number(
+            pagination.total ??
+            0
+        )
+
+    const totalPages =
+        Number(
+            pagination.totalPages ??
+            state.totalPages ??
+            0
+        )
+
+    const hasPrevious =
+        pagination.hasPreviousPage ??
+        state.page > 1
+
+    const hasNext =
+        pagination.hasNextPage ??
+        state.page < totalPages
+
+    if (totalPages <= 1) {
+        $('pagination').classList.add('hidden')
+        return
+    }
+
+    $('pagination').classList.remove('hidden')
+
+    $('previousButton').disabled = !hasPrevious
+    $('nextButton').disabled = !hasNext
+
+    $('pageInfo').textContent =
+        `Halaman ${state.page} dari ${totalPages}${total ? ` • ${formatNumber(total)} post` : ''}`
+}
+
+async function toggleFollow() {
+    if (!state.viewer) {
+        location.href = `/login.html?redirect=${encodeURIComponent(location.href)}`
+        return
+    }
+
+    if (!state.profile?._id) {
+        return
+    }
+
+    const button = $('followButton')
+
+    const following =
+        button.dataset.following === 'true'
+
+    button.disabled = true
+
+    try {
+        const response = await fetch('/api/follows/toggle', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                targetUserId: state.profile._id,
+                action: following ? 'unfollow' : 'follow'
+            })
+        })
+
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Gagal mengubah follow')
+        }
+
+        updateFollowButton(Boolean(data.following))
+
+        if (data.target) {
+            $('followersCount').textContent =
+                formatNumber(data.target.followersCount)
+        } else if (data.followersCount !== undefined) {
+            $('followersCount').textContent =
+                formatNumber(data.followersCount)
+        }
+
+        showToast(
+            data.following
+                ? 'Berhasil mengikuti user'
+                : 'Berhasil berhenti mengikuti user'
+        )
+    } catch (error) {
+        showToast(error.message)
+    } finally {
+        button.disabled = false
+    }
+}
+
+function openFollowList(type) {
+    if (!state.profile?.username) return
+
+    location.href =
+        `/forum.html?view=${type}&username=${encodeURIComponent(state.profile.username)}`
+}
+
+function setActiveTab(tab) {
+    state.tab = tab
+    state.page = 1
+
+    document.querySelectorAll('.tab-button').forEach(button => {
+        const active = button.dataset.tab === tab
+
+        if (active) {
+            button.classList.add(
+                'tab-active',
+                'border-blue-500',
+                'text-white'
+            )
+
+            button.classList.remove(
+                'border-transparent',
+                'text-gray-500'
+            )
+        } else {
+            button.classList.remove(
+                'tab-active',
+                'border-blue-500',
+                'text-white'
+            )
+
+            button.classList.add(
+                'border-transparent',
+                'text-gray-500'
+            )
+        }
+    })
+
+    loadPosts()
+}
+
+function applyFilter() {
+    state.category =
+        $('categoryInput').value.trim().toLowerCase()
+
+    state.subcategory =
+        $('subcategoryInput').value.trim().toLowerCase()
+
+    state.page = 1
+
+    loadPosts()
+}
+
+async function init() {
+    getQuery()
+
+    await getCurrentUser()
+
+    try {
+        await loadProfile()
+
+        $('loadingProfile').classList.add('hidden')
+        $('profileSection').classList.remove('hidden')
+
+        await loadPosts()
+    } catch (error) {
+        $('loadingProfile').classList.add('hidden')
+        $('errorSection').classList.remove('hidden')
+
+        $('errorTitle').textContent =
+            'Profile tidak ditemukan'
+
+        $('errorMessage').textContent =
+            error.message || 'Profile tidak tersedia.'
+    }
+}
+
+$('followButton').addEventListener('click', toggleFollow)
+
+$('followersButton').addEventListener('click', () => {
+    openFollowList('followers')
+})
+
+$('followingButton').addEventListener('click', () => {
+    openFollowList('following')
+})
+
+$('filterButton').addEventListener('click', applyFilter)
+
+$('categoryInput').addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+        applyFilter()
+    }
+})
+
+$('subcategoryInput').addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+        applyFilter()
+    }
+})
+
+$('previousButton').addEventListener('click', () => {
+    if (state.page <= 1) return
+
+    state.page--
+    loadPosts()
+
+    window.scrollTo({
+        top: 450,
+        behavior: 'smooth'
+    })
+})
+
+$('nextButton').addEventListener('click', () => {
+    if (state.page >= state.totalPages) return
+
+    state.page++
+    loadPosts()
+
+    window.scrollTo({
+        top: 450,
+        behavior: 'smooth'
+    })
+})
+
+document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', () => {
+        setActiveTab(button.dataset.tab)
+    })
+})
+
+init()
+</script>
+
+</body>
+</html>
