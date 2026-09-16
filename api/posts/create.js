@@ -38,10 +38,7 @@ function normalizeImages(images) {
       if (item && typeof item === 'object') {
         return {
           url: normalizeString(item.url),
-          type:
-            item.type === 'video'
-              ? 'video'
-              : 'image'
+          type: item.type === 'video' ? 'video' : 'image'
         }
       }
 
@@ -107,6 +104,29 @@ function runAuth(req, res) {
   })
 }
 
+function getPublicUser(user) {
+  if (!user) {
+    return null
+  }
+
+  return {
+    id: String(user._id),
+    _id: String(user._id),
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar || null,
+    bio: user.bio || '',
+    role: user.role,
+    verified: Boolean(user.verified),
+    resellerStatus: user.resellerStatus,
+    accountStatus: user.accountStatus,
+    followersCount: user.followersCount || 0,
+    followingCount: user.followingCount || 0,
+    postsCount: user.postsCount || 0,
+    systemAccount: Boolean(user.systemAccount)
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({
@@ -122,6 +142,20 @@ module.exports = async function handler(req, res) {
 
     if (res.headersSent) {
       return
+    }
+
+    if (!req.user) {
+      return res.status(401).json({
+        status: false,
+        message: 'Belum login'
+      })
+    }
+
+    if (req.user.accountStatus !== 'active') {
+      return res.status(403).json({
+        status: false,
+        message: 'Akun tidak aktif'
+      })
     }
 
     const body = getBody(req)
@@ -216,9 +250,7 @@ module.exports = async function handler(req, res) {
       })
     }
 
-    const images = normalizeImages(
-      body.images
-    )
+    const images = normalizeImages(body.images)
 
     if (images.length > MAX_IMAGES) {
       return res.status(400).json({
@@ -258,4 +290,75 @@ module.exports = async function handler(req, res) {
         stock < 0 ||
         !Number.isInteger(stock)
       ) {
-        return res.status(400).
+        return res.status(400).json({
+          status: false,
+          message: 'Stock product tidak valid'
+        })
+      }
+    }
+
+    const post = await Post.create({
+      author: req.user._id,
+      type,
+      title: title || null,
+      content,
+      images,
+      visibility,
+      category,
+      subcategory,
+      price,
+      currency: 'IDR',
+      stock,
+      likesCount: 0,
+      commentsCount: 0,
+      ratingsCount: 0,
+      ratingAverage: 0,
+      status: 'active',
+      moderationReason: null,
+      moderatedBy: null,
+      moderatedAt: null
+    })
+
+    await User.updateOne(
+      {
+        _id: req.user._id
+      },
+      {
+        $inc: {
+          postsCount: 1
+        }
+      }
+    )
+
+    const populatedPost = await Post.findById(post._id)
+      .populate(
+        'author',
+        'username avatar bio role verified resellerStatus accountStatus followersCount followingCount postsCount'
+      )
+      .lean()
+
+    return res.status(201).json({
+      status: true,
+      message: 'Post berhasil dibuat',
+      post: populatedPost,
+      user: getPublicUser(req.user)
+    })
+  } catch (error) {
+    console.error('POST CREATE ERROR:', error)
+
+    if (error && error.code === 11000) {
+      return res.status(409).json({
+        status: false,
+        message: 'Data sudah ada'
+      })
+    }
+
+    return res.status(500).json({
+      status: false,
+      message: 'Gagal membuat post',
+      error: process.env.NODE_ENV === 'development'
+        ? error.message
+        : undefined
+    })
+  }
+}
