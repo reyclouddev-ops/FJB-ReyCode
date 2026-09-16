@@ -130,7 +130,11 @@ function getPostData(post) {
 }
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'PUT' && req.method !== 'PATCH' && req.method !== 'POST') {
+  if (
+    req.method !== 'PUT' &&
+    req.method !== 'PATCH' &&
+    req.method !== 'POST'
+  ) {
     return res.status(405).json({
       status: false,
       message: 'Method tidak diizinkan'
@@ -144,6 +148,20 @@ module.exports = async function handler(req, res) {
 
     if (res.headersSent) {
       return
+    }
+
+    if (!req.user) {
+      return res.status(401).json({
+        status: false,
+        message: 'Belum login'
+      })
+    }
+
+    if (req.user.accountStatus !== 'active') {
+      return res.status(403).json({
+        status: false,
+        message: 'Akun tidak aktif'
+      })
     }
 
     const body = getBody(req)
@@ -441,4 +459,34 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     console.error('UPDATE_POST_ERROR:', error)
 
-    if (!res.headers
+    if (res.headersSent) {
+      return
+    }
+
+    if (
+      error instanceof mongoose.Error.ValidationError
+    ) {
+      return res.status(400).json({
+        status: false,
+        message: 'Data post tidak valid',
+        error: error.message
+      })
+    }
+
+    if (error && error.name === 'CastError') {
+      return res.status(400).json({
+        status: false,
+        message: 'Data post tidak valid'
+      })
+    }
+
+    return res.status(500).json({
+      status: false,
+      message: 'Gagal memperbarui post',
+      error:
+        process.env.NODE_ENV === 'development'
+          ? error.message
+          : undefined
+    })
+  }
+}
